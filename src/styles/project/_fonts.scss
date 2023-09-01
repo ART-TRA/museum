@@ -1,0 +1,22 @@
+$fontVariants: (
+  300: Ligth,
+  400: Regular,
+  500: Medium,
+  600: SemiBold,
+  700: Bold,
+);
+
+$fontFormats: (
+  woff2: woff2,
+);
+
+$fontFamily: 'SpaceGrotesk', sans-serif;
+
+@include font-face(
+  'SpaceGrotesk',
+  SpaceGrotesk,
+  $fontVariants,
+  $fontFormats,
+  true,
+  true
+);
