@@ -32,6 +32,7 @@ export function Level(props) {
   action.current.play();
 
   const detectTrackpad = (event) => {
+    console.log('detect touchpad');
     const { deltaY, wheelDeltaY, deltaMode } = event;
     return wheelDeltaY ? wheelDeltaY === -3 * deltaY : deltaMode === 0;
   };
