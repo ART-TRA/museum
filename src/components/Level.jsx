@@ -31,19 +31,32 @@ export function Level(props) {
   const action = useRef(mixer.current.clipAction(animations[0]));
   action.current.play();
 
-  const onWheel = (event) => {
-    if (event.deltaY > 0) {
-      mixer.current.update(0.1);
+  const detectTrackpad = (event) => {
+    const { deltaY, wheelDeltaY, deltaMode } = event;
+    return wheelDeltaY ? wheelDeltaY === -3 * deltaY : deltaMode === 0;
+  };
+
+  const onObserveRoom = (event) => {
+    if (detectTrackpad(event)) {
+      if (event.deltaY > 0) {
+        mixer.current.update(0.01);
+      } else {
+        mixer.current.update(-0.01);
+      }
     } else {
-      mixer.current.update(-0.1);
+      if (event.deltaY > 0) {
+        mixer.current.update(0.1);
+      } else {
+        mixer.current.update(-0.1);
+      }
     }
   };
 
   useLayoutEffect(() => {
-    document.addEventListener('wheel', onWheel);
+    document.addEventListener('wheel', onObserveRoom);
 
     return () => {
-      document.removeEventListener('wheel', onWheel);
+      document.removeEventListener('wheel', onObserveRoom);
     };
   }, []);
 
