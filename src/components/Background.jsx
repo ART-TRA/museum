@@ -2,7 +2,14 @@ import React, { useLayoutEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { useThree } from '@react-three/fiber';
 import { Environment, useHelper } from '@react-three/drei';
-// import { Bloom, EffectComposer } from '@react-three/postprocessing';
+import {
+  Bloom,
+  BrightnessContrast,
+  ColorAverage,
+  EffectComposer,
+  Noise,
+} from '@react-three/postprocessing';
+import { BlendFunction } from 'postprocessing';
 
 export const Background = () => {
   const { gl } = useThree();
@@ -13,36 +20,37 @@ export const Background = () => {
 
   // const light = useRecoilValue(lightAtom);
 
-  useLayoutEffect(() => {
-    gl.shadowMap.enabled = true;
-    gl.shadowMap.type = THREE.PCFSoftShadowMap;
-  }, [gl]);
+  // useLayoutEffect(() => {
+  //   gl.shadowMap.enabled = true;
+  //   gl.shadowMap.type = THREE.PCFSoftShadowMap;
+  //   gl.setClearColor('#fff', 0);
+  // }, [gl]);
 
   return (
     <>
-      <ambientLight intensity={1} />
-      {/*<Environment preset="forest" background blur={0.5} />*/}
-      <Environment files="/images/lake.hdr" background blur={0.5} />
+      {/*<ambientLight intensity={0.2} />*/}
+      {/*<Environment preset="sunset" background blur={0.5} />*/}
+      <Environment files="/images/environment3.hdr" background blur={0.5} />
       {/*<color attach="background" args={['']} />*/}
-      {/*<fog attach="fog" args={[light ? '#7fc7e1' : '#020c25', 7, 35]} />*/}
-      <directionalLight
-        ref={lightHelper}
-        color={'#ffffff'}
-        position={[4, 10, 5]}
-        castShadow
-        intensity={1}
-        shadow-mapSize={[2048, 2048]}
-        // shadow-camera-far={6}
-        // shadow-camera-left={-6}
-        // shadow-camera-right={6}
-        // shadow-camera-top={6}
-        // shadow-camera-bottom={-6}
-        // decay={1}
-        penumbra={1}
-        // bias={0.0001}
-      >
-        <perspectiveCamera ref={shadowCameraRef} attach="shadow-camera" />
-      </directionalLight>
+      {/*<fog attach="fog" args={['#ffffff00', 0, 95]} />*/}
+      {/*<directionalLight*/}
+      {/*  ref={lightHelper}*/}
+      {/*  color={'#ffffff'}*/}
+      {/*  position={[4, 10, 5]}*/}
+      {/*  castShadow*/}
+      {/*  intensity={1}*/}
+      {/*  shadow-mapSize={[2048, 2048]}*/}
+      {/*  // shadow-camera-far={6}*/}
+      {/*  // shadow-camera-left={-6}*/}
+      {/*  // shadow-camera-right={6}*/}
+      {/*  // shadow-camera-top={6}*/}
+      {/*  // shadow-camera-bottom={-6}*/}
+      {/*  // decay={1}*/}
+      {/*  penumbra={1}*/}
+      {/*  // bias={0.0001}*/}
+      {/*>*/}
+      {/*  <perspectiveCamera ref={shadowCameraRef} attach="shadow-camera" />*/}
+      {/*</directionalLight>*/}
 
       {/*<pointLight*/}
       {/*  color={'#ffffff'}*/}
@@ -62,6 +70,8 @@ export const Background = () => {
       {/*/>*/}
 
       {/*<EffectComposer>*/}
+      {/*<BrightnessContrast brightness={0} contrast={-0.6} />*/}
+      {/*<ColorAverage blendFunction={BlendFunction.ALPHA} />*/}
       {/*  <Bloom*/}
       {/*    // luminanceThreshold={0}*/}
       {/*    // mipmapBlur*/}
@@ -74,6 +84,7 @@ export const Background = () => {
       {/*    intensity={0.5}*/}
       {/*    // radius={0.9}*/}
       {/*  />*/}
+      {/*  <Noise opacity={0.1} />*/}
       {/*</EffectComposer>*/}
     </>
   );

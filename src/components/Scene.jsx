@@ -3,6 +3,8 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stats, Stage } from '@react-three/drei';
 import { Background } from 'src/components/Background';
 import { Level } from 'src/components/Level';
+import { OfficeModel } from 'src/components/OfficeModel';
+import * as THREE from 'three';
 
 export const Scene = () => {
   // const ref = useRef();
@@ -13,12 +15,19 @@ export const Scene = () => {
       id="scene"
       dpr={[1, 2]}
       // style={{ pointerEvents: 'none' }}
-      camera={{ fov: 32, position: [-17.0, 1.4, -1.6], near: 0.01, far: 10000 }}
+      camera={{
+        fov: 32,
+        position: [-17.0, 1.4, -1.6],
+        near: 0.01,
+        far: 100000,
+      }}
       gl={{
-        // toneMapping: THREE.ACESFilmicToneMapping,
-        // toneMappingExposure: 0.8,
+        toneMapping: THREE.ACESFilmicToneMapping,
+        toneMappingExposure: 1.5,
         antialias: true,
         // physicallyCorrectLights: true,
+        alpha: true,
+        outputColorSpace: 'srgb',
       }}
       eventSource={document.getElementById('root')}
       eventPrefix="client"
@@ -33,6 +42,7 @@ export const Scene = () => {
       {/*  environment="city"*/}
       {/*>*/}
       <Level />
+      {/*<OfficeModel />*/}
       {/*</Stage>*/}
       <Background />
       <Stats showPanel={0} className="stats" />

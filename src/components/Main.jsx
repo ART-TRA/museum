@@ -12,6 +12,7 @@ export const Main = () => {
         {/*<Overlay />*/}
         <AtomEffects />
         <Suspense fallback={null}>
+          <div className="grain" />
           <div className="scene">
             <Scene />
             {/*<FadeIn />*/}

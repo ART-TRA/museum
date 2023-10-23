@@ -17,4 +17,9 @@ export default defineConfig({
       src: '/src',
     },
   },
+  base: '/',
+  server: {
+    host: true,
+    port: 3000,
+  },
 });
