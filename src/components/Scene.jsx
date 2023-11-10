@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stats, Stage } from '@react-three/drei';
 import { Background } from 'src/components/Background';
-import { Level } from 'src/components/Level';
+import { Level3 } from 'src/components/TestLevel';
 import { OfficeModel } from 'src/components/OfficeModel';
 import * as THREE from 'three';
 
@@ -11,7 +11,7 @@ export const Scene = () => {
 
   return (
     <Canvas
-      shadows
+      // shadows
       id="scene"
       dpr={[1, 2]}
       // style={{ pointerEvents: 'none' }}
@@ -22,8 +22,8 @@ export const Scene = () => {
         far: 100000,
       }}
       gl={{
-        toneMapping: THREE.ACESFilmicToneMapping,
-        toneMappingExposure: 1.5,
+        // toneMapping: THREE.ACESFilmicToneMapping,
+        // toneMappingExposure: 1.5,
         antialias: true,
         // physicallyCorrectLights: true,
         alpha: true,
@@ -32,7 +32,7 @@ export const Scene = () => {
       eventSource={document.getElementById('root')}
       eventPrefix="client"
     >
-      {/*<OrbitControls />*/}
+      <OrbitControls />
       {/*<Stage*/}
       {/*  controls={ref}*/}
       {/*  preset="soft"*/}
@@ -41,7 +41,7 @@ export const Scene = () => {
       {/*  shadows={false}*/}
       {/*  environment="city"*/}
       {/*>*/}
-      <Level />
+      <Level3 />
       {/*<OfficeModel />*/}
       {/*</Stage>*/}
       <Background />

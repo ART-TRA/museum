@@ -1,5 +1,11 @@
 import React, { useRef, useLayoutEffect, useEffect, useCallback } from 'react';
-import { OrbitControls, useGLTF } from '@react-three/drei';
+import {
+  MeshReflectorMaterial,
+  OrbitControls,
+  PerspectiveCamera,
+  useGLTF,
+  useTexture,
+} from '@react-three/drei';
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useSetRecoilState } from 'recoil';
@@ -33,8 +39,8 @@ export function Level(props) {
     scrollSpeed: { value: 0.12, min: 0.005, max: 0.5 },
   });
   const { nodes, materials, animations, scene, cameras } =
-    useGLTF('models/level3.glb');
-  const modelLevel = useGLTF('models/level3.glb');
+    useGLTF('models/level2.glb');
+  const modelLevel = useGLTF('models/level.glb');
   const mixer = useRef(new THREE.AnimationMixer(scene));
   // console.log(modelLevel);
   const action = useRef(mixer.current.clipAction(animations[0]));
@@ -71,23 +77,44 @@ export function Level(props) {
     isTouch.current = action;
   };
 
+  const aoWall1Texture = useTexture('/textures/scene/AO_wall_1_1.jpg');
+  aoWall1Texture.flipY = false;
+  aoWall1Texture.anisotropy = 4.5;
+  aoWall1Texture.needsPMREMUpdate = true;
+
+  useEffect(() => {
+    scene.traverse((n) => {
+      if (n.isMesh) {
+        n.material.toneMapped = false;
+        n.material.emissive = new THREE.Color('#fdfdff');
+        n.material.emissiveIntensity = 0.35;
+        n.material.envMapIntensity = 0.8;
+
+        if (n.name === 'WALL_11') {
+          console.log('AAAAAA');
+          // n.material.map = aoWall1Texture;
+          n.material.toneMapped = false;
+        }
+      }
+    });
+  }, [materials]);
+
   useEffect(() => {
     console.log('speed', scrollSpeed);
-    document.addEventListener('wheel', onObserveRoom);
+    // document.addEventListener('wheel', onObserveRoom);
     document.addEventListener('pointerdown', () => onMouseTouch(1));
     document.addEventListener('pointerup', () => onMouseTouch(0));
 
     return () => {
-      document.removeEventListener('wheel', onObserveRoom);
+      // document.removeEventListener('wheel', onObserveRoom);
       document.removeEventListener('pointerdown', () => onMouseTouch(1));
       document.removeEventListener('pointerup', () => onMouseTouch(0));
     };
   }, [scrollSpeed, touchPadSpeed]);
 
   useFrame((state, delta) => {
-    console.log('camera', camera.position);
-    state.camera.position.lerp(cameras[0].parent.position, 0.08);
-    state.camera.quaternion.slerp(cameras[0].parent.quaternion, 0.08);
+    // state.camera.position.lerp(cameras[0].parent.position, 0.08);
+    // state.camera.quaternion.slerp(cameras[0].parent.quaternion, 0.08);
 
     if (isTouch.current) {
       // camera.quaternion.y -= state.mouse.x * 0.008;
@@ -96,396 +123,496 @@ export function Level(props) {
       // state.camera.quaternion.slerp(cameras[0].parent.quaternion, 0.08);
     }
 
-    state.camera.scale.lerp(cameras[0].parent.scale, 0.08);
-    state.camera.updateProjectionMatrix();
-    state.camera.updateMatrixWorld();
+    // state.camera.scale.lerp(cameras[0].parent.scale, 0.08);
+    // state.camera.updateProjectionMatrix();
+    // state.camera.updateMatrixWorld();
   });
 
   return (
-    <group {...props} dispose={null}>
-      <primitive ref={modelRef} object={scene} position={[0, 0, 0]} />
-      {/*<OrbitControls />*/}
-      {/*<group>*/}
-      {/*  <group name="----------Exponats----------">*/}
-      {/*    <LevelGroup name="Shoes" position={[-26.923, 0.293, -7.992]}>*/}
-      {/*      <mesh*/}
-      {/*        name="Shoes_L"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.Shoes_L.geometry}*/}
-      {/*        material={materials.E01_Shoes_L}*/}
-      {/*        position={[0.069, 0.539, -0.039]}*/}
-      {/*        rotation={[0, 0.504, 0]}*/}
-      {/*      />*/}
-      {/*      <mesh*/}
-      {/*        name="Shoes_R"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.Shoes_R.geometry}*/}
-      {/*        material={materials.E01_Shoes_R}*/}
-      {/*        position={[-0.08, 0.539, 0.049]}*/}
-      {/*        rotation={[0, 0.652, 0]}*/}
-      {/*      />*/}
-      {/*    </LevelGroup>*/}
-      {/*    <LevelGroup*/}
-      {/*      name="Caps"*/}
-      {/*      position={[-36.012, 0.297, 7.955]}*/}
-      {/*      rotation={[-0.01, -0.005, -0.001]}*/}
-      {/*    >*/}
-      {/*      <mesh*/}
-      {/*        name="Caps"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.Caps.geometry}*/}
-      {/*        material={materials.E02_Cups}*/}
-      {/*        position={[0, 0.585, -0.014]}*/}
-      {/*      />*/}
-      {/*    </LevelGroup>*/}
-      {/*    <LevelGroup*/}
-      {/*      name="Bed"*/}
-      {/*      position={[-21.776, 0, 19.522]}*/}
-      {/*      rotation={[Math.PI, -0.96, Math.PI]}*/}
-      {/*    >*/}
-      {/*      <mesh*/}
-      {/*        name="Bed_low"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.Bed_low.geometry}*/}
-      {/*        material={materials.E03_Bed}*/}
-      {/*        position={[0, 0.2, 0]}*/}
-      {/*      />*/}
-      {/*    </LevelGroup>*/}
-      {/*    <LevelGroup*/}
-      {/*      name="Cubes"*/}
-      {/*      position={[-0.338, 0.007, -0.79]}*/}
-      {/*      rotation={[-Math.PI, 0, -Math.PI]}*/}
-      {/*    >*/}
-      {/*      <mesh*/}
-      {/*        name="Cubes"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.Kubiki.geometry}*/}
-      {/*        material={materials.E04_Kubiki}*/}
-      {/*        position={[0.033, 0.578, 0.096]}*/}
-      {/*      />*/}
-      {/*    </LevelGroup>*/}
-      {/*    <LevelGroup*/}
-      {/*      name="Child_art"*/}
-      {/*      position={[13.882, 1.4, 12.397]}*/}
-      {/*      rotation={[-Math.PI / 2, 0, 0]}*/}
-      {/*    >*/}
-      {/*      <mesh*/}
-      {/*        name="Child_art"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.Child_art.geometry}*/}
-      {/*        material={materials.E05_Child_art}*/}
-      {/*        position={[0, -0.301, 0.3]}*/}
-      {/*      />*/}
-      {/*    </LevelGroup>*/}
-      {/*    <LevelGroup*/}
-      {/*      name="Xilofon"*/}
-      {/*      position={[25.275, -0.015, -2.434]}*/}
-      {/*      rotation={[Math.PI / 2, 0, Math.PI / 9]}*/}
-      {/*    >*/}
-      {/*      <mesh*/}
-      {/*        name="Xilofon"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.Xilofon.geometry}*/}
-      {/*        material={materials.E06_Xilofon}*/}
-      {/*        position={[-0.011, 0.046, -1.405]}*/}
-      {/*      />*/}
-      {/*    </LevelGroup>*/}
-      {/*    <LevelGroup*/}
-      {/*      name="Diary"*/}
-      {/*      position={[46.131, -0.001, 33.496]}*/}
-      {/*      rotation={[0, -0.295, 0]}*/}
-      {/*    >*/}
-      {/*      <mesh*/}
-      {/*        name="Diary"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.Diary.geometry}*/}
-      {/*        material={materials.E07_Diary}*/}
-      {/*        position={[0, 1.488, 0]}*/}
-      {/*        rotation={[0, 0.698, 0]}*/}
-      {/*      />*/}
-      {/*    </LevelGroup>*/}
-      {/*    <LevelGroup*/}
-      {/*      name="Kollaj"*/}
-      {/*      position={[66.573, 1.4, 30.021]}*/}
-      {/*      rotation={[Math.PI / 2, 0, 2.473]}*/}
-      {/*    >*/}
-      {/*      <mesh*/}
-      {/*        name="Kollaj"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.Kollaj.geometry}*/}
-      {/*        material={materials.E08_Kollaj}*/}
-      {/*        position={[-0.015, -0.081, -0.35]}*/}
-      {/*      />*/}
-      {/*    </LevelGroup>*/}
-      {/*    <LevelGroup*/}
-      {/*      name="Christmas_Ball"*/}
-      {/*      position={[58.205, -0.088, 4.855]}*/}
-      {/*      rotation={[-Math.PI, 0.36, -Math.PI]}*/}
-      {/*    >*/}
-      {/*      <mesh*/}
-      {/*        name="Christmas_Ball"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.Christmass_Ball.geometry}*/}
-      {/*        material={materials.E09_Christmass_Ball}*/}
-      {/*        position={[-0.278, 1.668, 0.148]}*/}
-      {/*        rotation={[0, 0.122, 0]}*/}
-      {/*      />*/}
-      {/*    </LevelGroup>*/}
-      {/*    <LevelGroup*/}
-      {/*      name="BowTie"*/}
-      {/*      position={[55.58, 0, -12.921]}*/}
-      {/*      rotation={[0, -0.403, 0]}*/}
-      {/*    >*/}
-      {/*      <mesh*/}
-      {/*        name="bow_tie_LP"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.bow_tie_LP.geometry}*/}
-      {/*        material={materials.E10_bow_tie_LP}*/}
-      {/*        position={[0.047, 1.643, 0.012]}*/}
-      {/*        rotation={[1.18, 1.025, -1.13]}*/}
-      {/*      />*/}
-      {/*    </LevelGroup>*/}
-      {/*    <LevelGroup*/}
-      {/*      name="Exponat_11"*/}
-      {/*      position={[66.969, 0, -42.586]}*/}
-      {/*      rotation={[0, -0.215, -Math.PI]}*/}
-      {/*      scale={[1, -1, 1]}*/}
-      {/*    >*/}
-      {/*      <mesh*/}
-      {/*        name="Ball"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.Ball.geometry}*/}
-      {/*        material={materials.E11_Ball}*/}
-      {/*        position={[6.714, 0.25, -0.376]}*/}
-      {/*        rotation={[0, -0.215, Math.PI]}*/}
-      {/*        scale={[1, -1, 1]}*/}
-      {/*      />*/}
-      {/*      <mesh*/}
-      {/*        name="Toy_boxs"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.Toy_boxs.geometry}*/}
-      {/*        material={materials.E11_Toy_boxes}*/}
-      {/*        position={[7.6, 0.478, -1.65]}*/}
-      {/*        rotation={[0, -0.215, Math.PI]}*/}
-      {/*        scale={[1, -1, 1]}*/}
-      {/*      />*/}
-      {/*      <mesh*/}
-      {/*        name="Skis"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.Skis.geometry}*/}
-      {/*        material={materials.E11_Skies}*/}
-      {/*        position={[8.374, 1.332, -2.144]}*/}
-      {/*        rotation={[0, -0.215, Math.PI]}*/}
-      {/*        scale={[1, -1, 1]}*/}
-      {/*      />*/}
-      {/*      <mesh*/}
-      {/*        name="Hare"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.Hare.geometry}*/}
-      {/*        material={materials.E11_Hare}*/}
-      {/*        position={[7.312, 0.273, -1.366]}*/}
-      {/*        rotation={[0, 0.175, -Math.PI]}*/}
-      {/*        scale={[1, -1, 1]}*/}
-      {/*      />*/}
-      {/*      <mesh*/}
-      {/*        name="Bear_LP"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.Bear_LP.geometry}*/}
-      {/*        material={materials.E11_Bear_LP}*/}
-      {/*        position={[7.386, 0.026, -1.056]}*/}
-      {/*        rotation={[Math.PI, 1.396, 0]}*/}
-      {/*        scale={[1, -1, 1]}*/}
-      {/*      />*/}
-      {/*    </LevelGroup>*/}
-      {/*    <group*/}
-      {/*      name="Exponat_12"*/}
-      {/*      position={[46.632, 0, -37.835]}*/}
-      {/*      rotation={[Math.PI, Math.PI / 4, -Math.PI]}*/}
-      {/*    >*/}
-      {/*      <mesh*/}
-      {/*        name="bear_body"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.bear_body.geometry}*/}
-      {/*        material={materials.E12_bear_body}*/}
-      {/*        position={[-0.003, 0.947, 0.056]}*/}
-      {/*        rotation={[Math.PI, -Math.PI / 4, Math.PI]}*/}
-      {/*      />*/}
-      {/*    </group>*/}
-      {/*    <group*/}
-      {/*      name="Exponat_13"*/}
-      {/*      position={[48.412, 0, -57.511]}*/}
-      {/*      rotation={[0, 0.782, 0]}*/}
-      {/*    >*/}
-      {/*      <mesh*/}
-      {/*        name="Truck"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.Truck.geometry}*/}
-      {/*        material={materials.E13_Truck}*/}
-      {/*        position={[0.023, 0.329, -0.006]}*/}
-      {/*        rotation={[Math.PI, Math.PI / 3, -Math.PI]}*/}
-      {/*      />*/}
-      {/*    </group>*/}
-      {/*    <group*/}
-      {/*      name="Exponat_14"*/}
-      {/*      position={[67.651, 0, -57.222]}*/}
-      {/*      rotation={[0, Math.PI / 4, 0]}*/}
-      {/*    >*/}
-      {/*      <mesh*/}
-      {/*        name="Dolls"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.Dolls.geometry}*/}
-      {/*        material={materials.E14_Dolls}*/}
-      {/*        position={[-0.025, 0.858, 0.002]}*/}
-      {/*        rotation={[0, -1.571, 0]}*/}
-      {/*      />*/}
-      {/*    </group>*/}
-      {/*    <group*/}
-      {/*      name="Exponat_15"*/}
-      {/*      position={[83.289, 2.963, -34.818]}*/}
-      {/*      rotation={[Math.PI, -0.794, Math.PI]}*/}
-      {/*    >*/}
-      {/*      <mesh*/}
-      {/*        name="Hand"*/}
-      {/*        castShadow*/}
-      {/*        receiveShadow*/}
-      {/*        geometry={nodes.Hand.geometry}*/}
-      {/*        material={materials.E15_Hand}*/}
-      {/*        position={[-0.066, -1.535, 3.488]}*/}
-      {/*        rotation={[0, -0.01, 1.544]}*/}
-      {/*      />*/}
-      {/*    </group>*/}
-      {/*  </group>*/}
-      {/*  <group name="----------Elements----------">*/}
-      {/*    <mesh*/}
-      {/*      name="Elements_1"*/}
-      {/*      castShadow*/}
-      {/*      receiveShadow*/}
-      {/*      geometry={nodes.Elements_1.geometry}*/}
-      {/*      material={materials['Elements 1']}*/}
-      {/*      position={[8.922, 11.159, 5.981]}*/}
-      {/*    />*/}
-      {/*    <mesh*/}
-      {/*      name="Elements_2"*/}
-      {/*      castShadow*/}
-      {/*      receiveShadow*/}
-      {/*      geometry={nodes.Elements_2.geometry}*/}
-      {/*      material={materials['Elements 2']}*/}
-      {/*      position={[60.685, 12.8, 4.482]}*/}
-      {/*    />*/}
-      {/*    <mesh*/}
-      {/*      name="Elements_3"*/}
-      {/*      castShadow*/}
-      {/*      receiveShadow*/}
-      {/*      geometry={nodes.Elements_3.geometry}*/}
-      {/*      material={materials['Elements 3']}*/}
-      {/*      position={[22.931, 1.906, -18.994]}*/}
-      {/*    />*/}
-      {/*    <mesh*/}
-      {/*      name="Elements_Exponats"*/}
-      {/*      castShadow*/}
-      {/*      receiveShadow*/}
-      {/*      geometry={nodes.Elements_Exponats.geometry}*/}
-      {/*      material={materials['Elements Exponats']}*/}
-      {/*      position={[22.931, 1.906, -18.994]}*/}
-      {/*    />*/}
-      {/*  </group>*/}
-      {/*  <group name="----------Walls--------------">*/}
-      {/*    <mesh*/}
-      {/*      name="WALL_1"*/}
-      {/*      castShadow*/}
-      {/*      receiveShadow*/}
-      {/*      geometry={nodes.WALL_1.geometry}*/}
-      {/*      material={materials.Wall_1}*/}
-      {/*      position={[29.995, 3.179, -10.327]}*/}
-      {/*    />*/}
-      {/*    <mesh*/}
-      {/*      name="WALL_2"*/}
-      {/*      castShadow*/}
-      {/*      receiveShadow*/}
-      {/*      geometry={nodes.WALL_2.geometry}*/}
-      {/*      material={materials.Wall_2}*/}
-      {/*      position={[52.81, 2.92, -17.295]}*/}
-      {/*    />*/}
-      {/*    <mesh*/}
-      {/*      name="WALL_3"*/}
-      {/*      castShadow*/}
-      {/*      receiveShadow*/}
-      {/*      geometry={nodes.WALL_3.geometry}*/}
-      {/*      material={materials.Wall_3}*/}
-      {/*      position={[29.995, 3.179, -10.327]}*/}
-      {/*    />*/}
-      {/*    <mesh*/}
-      {/*      name="WALL_4"*/}
-      {/*      castShadow*/}
-      {/*      receiveShadow*/}
-      {/*      geometry={nodes.WALL_4.geometry}*/}
-      {/*      material={materials.Wall_4}*/}
-      {/*      position={[29.995, 3.179, -10.327]}*/}
-      {/*    />*/}
-      {/*    <mesh*/}
-      {/*      name="WALL_5"*/}
-      {/*      castShadow*/}
-      {/*      receiveShadow*/}
-      {/*      geometry={nodes.WALL_5.geometry}*/}
-      {/*      material={materials.Wall_5}*/}
-      {/*      position={[64.191, -2.636, 14.136]}*/}
-      {/*    />*/}
-      {/*    <mesh*/}
-      {/*      name="FLOOR_1"*/}
-      {/*      castShadow*/}
-      {/*      receiveShadow*/}
-      {/*      geometry={nodes.FLOOR_1.geometry}*/}
-      {/*      material={materials.Floor_1}*/}
-      {/*      position={[49.121, -0.05, 9.568]}*/}
-      {/*    />*/}
-      {/*    <mesh*/}
-      {/*      name="FLOOR_2"*/}
-      {/*      castShadow*/}
-      {/*      receiveShadow*/}
-      {/*      geometry={nodes.FLOOR_2.geometry}*/}
-      {/*      material={materials.Floor_2}*/}
-      {/*      position={[39.558, 1.564, -0.38]}*/}
-      {/*    />*/}
-      {/*    <mesh*/}
-      {/*      name="FLOOR_3"*/}
-      {/*      castShadow*/}
-      {/*      receiveShadow*/}
-      {/*      geometry={nodes.FLOOR_3.geometry}*/}
-      {/*      material={materials.Floor_3}*/}
-      {/*      position={[49.121, -0.05, 9.568]}*/}
-      {/*    />*/}
-      {/*    <mesh*/}
-      {/*      name="FLOOR_4"*/}
-      {/*      castShadow*/}
-      {/*      receiveShadow*/}
-      {/*      geometry={nodes.FLOOR_4.geometry}*/}
-      {/*      material={materials.Floor_4}*/}
-      {/*      position={[49.121, -0.05, 9.568]}*/}
-      {/*    />*/}
-      {/*  </group>*/}
-      {/*</group>*/}
+    <group ref={modelRef} {...props} dispose={null}>
+      <group>
+        <group name="----------Exponats----------">
+          <group name="Exponat_01" position={[-2692.303, 29.345, -799.19]}>
+            <mesh
+              name="Shoes_L"
+              castShadow
+              receiveShadow
+              geometry={nodes.Shoes_L.geometry}
+              material={materials.Mat}
+              position={[6.882, 53.855, -3.868]}
+              rotation={[0, 0.504, 0]}
+            />
+            <mesh
+              name="Shoes_R"
+              castShadow
+              receiveShadow
+              geometry={nodes.Shoes_R.geometry}
+              material={materials.Mat}
+              position={[-8.003, 53.855, 4.867]}
+              rotation={[0, 0.652, 0]}
+            />
+          </group>
+          <group
+            name="Exponat_02"
+            position={[-3601.168, 29.663, 795.458]}
+            rotation={[-0.01, -0.005, -0.001]}
+          >
+            <mesh
+              name="Caps"
+              castShadow
+              receiveShadow
+              geometry={nodes.Caps.geometry}
+              material={materials.Mat}
+              position={[0.017, 58.543, -1.431]}
+            />
+          </group>
+          <group
+            name="Exponat_03"
+            position={[-2177.609, 0, 1952.233]}
+            rotation={[Math.PI, -0.96, Math.PI]}
+          >
+            <mesh
+              name="Bed_low"
+              castShadow
+              receiveShadow
+              geometry={nodes.Bed_low.geometry}
+              material={materials.Mat}
+              position={[0, 20, 0]}
+            />
+          </group>
+          <group
+            name="Exponat_04"
+            position={[-33.821, 0.701, -78.993]}
+            rotation={[-Math.PI, 0, -Math.PI]}
+          >
+            <mesh
+              name="Kubiki"
+              castShadow
+              receiveShadow
+              geometry={nodes.Kubiki.geometry}
+              material={materials.Mat}
+              position={[3.269, 57.781, 9.589]}
+            />
+          </group>
+          <group
+            name="Exponat_05"
+            position={[1388.209, 140, 1239.745]}
+            rotation={[-Math.PI / 2, 0, 0]}
+          >
+            <mesh
+              name="Child_art"
+              castShadow
+              receiveShadow
+              geometry={nodes.Child_art.geometry}
+              material={materials.Mat}
+              position={[0, -30.117, 30]}
+            />
+          </group>
+          <group
+            name="Exponat_06"
+            position={[2527.55, -1.452, -243.404]}
+            rotation={[Math.PI / 2, 0, Math.PI / 9]}
+          >
+            <mesh
+              name="Xilofon"
+              castShadow
+              receiveShadow
+              geometry={nodes.Xilofon.geometry}
+              material={materials.Mat}
+              position={[-1.108, 4.55, -140.475]}
+            />
+          </group>
+          <group
+            name="Exponat_07"
+            position={[4613.149, -0.105, 3349.584]}
+            rotation={[0, -0.295, 0]}
+          >
+            <mesh
+              name="Diary"
+              castShadow
+              receiveShadow
+              geometry={nodes.Diary.geometry}
+              material={materials.Mat}
+              position={[0, 148.829, 0.042]}
+              rotation={[0, 0.698, 0]}
+            />
+          </group>
+          <group
+            name="Exponat_08"
+            position={[6657.277, 140, 3002.112]}
+            rotation={[Math.PI / 2, 0, 2.473]}
+          >
+            <mesh
+              name="Kollaj"
+              castShadow
+              receiveShadow
+              geometry={nodes.Kollaj.geometry}
+              material={materials.Mat}
+              position={[-1.532, -8.108, -35]}
+            />
+          </group>
+          <group
+            name="Exponat_09"
+            position={[5820.472, -8.756, 485.536]}
+            rotation={[-Math.PI, 0.36, -Math.PI]}
+          >
+            <mesh
+              name="Christmass_Ball"
+              castShadow
+              receiveShadow
+              geometry={nodes.Christmass_Ball.geometry}
+              material={materials.Mat}
+              position={[-27.75, 166.762, 14.773]}
+              rotation={[0, 0.122, 0]}
+            />
+          </group>
+          <group
+            name="Exponat_10"
+            position={[5557.986, 0, -1292.088]}
+            rotation={[0, -0.403, 0]}
+          >
+            <mesh
+              name="bow_tie_LP"
+              castShadow
+              receiveShadow
+              geometry={nodes.bow_tie_LP.geometry}
+              material={materials.Mat}
+              position={[4.715, 164.332, 1.235]}
+              rotation={[1.18, 1.025, -1.13]}
+            />
+          </group>
+          <group
+            name="Exponat_11"
+            position={[6696.894, 0, -4258.613]}
+            rotation={[0, -0.215, -Math.PI]}
+            scale={[1, -1, 1]}
+          >
+            <mesh
+              name="Ball"
+              castShadow
+              receiveShadow
+              geometry={nodes.Ball.geometry}
+              material={materials.Mat}
+              position={[671.45, 25, -37.629]}
+              rotation={[0, -0.215, Math.PI]}
+              scale={[1, -1, 1]}
+            />
+            <mesh
+              name="Toy_boxs"
+              castShadow
+              receiveShadow
+              geometry={nodes.Toy_boxs.geometry}
+              material={materials.Mat}
+              position={[760.023, 47.842, -165.019]}
+              rotation={[0, -0.215, Math.PI]}
+              scale={[1, -1, 1]}
+            />
+            <mesh
+              name="Skis"
+              castShadow
+              receiveShadow
+              geometry={nodes.Skis.geometry}
+              material={materials.Mat}
+              position={[837.381, 133.218, -214.427]}
+              rotation={[0, -0.215, Math.PI]}
+              scale={[1, -1, 1]}
+            />
+            <mesh
+              name="Hare"
+              castShadow
+              receiveShadow
+              geometry={nodes.Hare.geometry}
+              material={materials.Mat}
+              position={[731.21, 27.329, -136.602]}
+              rotation={[0, 0.175, -Math.PI]}
+              scale={[1, -1, 1]}
+            />
+            <mesh
+              name="Bear_LP"
+              castShadow
+              receiveShadow
+              geometry={nodes.Bear_LP.geometry}
+              material={materials.Mat}
+              position={[738.58, 2.632, -105.581]}
+              rotation={[Math.PI, 1.396, 0]}
+              scale={[1, -1, 1]}
+            />
+          </group>
+          <group
+            name="Exponat_12"
+            position={[4663.247, 0, -3783.545]}
+            rotation={[Math.PI, Math.PI / 4, -Math.PI]}
+          >
+            <mesh
+              name="bear_body"
+              castShadow
+              receiveShadow
+              geometry={nodes.bear_body.geometry}
+              material={materials.Mat}
+              position={[-0.271, 94.731, 5.639]}
+              rotation={[Math.PI, -Math.PI / 4, Math.PI]}
+            />
+          </group>
+          <group
+            name="Exponat_13"
+            position={[4841.208, 0, -5751.099]}
+            rotation={[0, 0.782, 0]}
+          >
+            <mesh
+              name="Truck"
+              castShadow
+              receiveShadow
+              geometry={nodes.Truck.geometry}
+              material={materials.Mat}
+              position={[2.268, 32.946, -0.642]}
+              rotation={[Math.PI, Math.PI / 3, -Math.PI]}
+            />
+          </group>
+          <group
+            name="Exponat_14"
+            position={[6765.105, 0, -5722.216]}
+            rotation={[0, Math.PI / 4, 0]}
+          >
+            <mesh
+              name="Dolls"
+              castShadow
+              receiveShadow
+              geometry={nodes.Dolls.geometry}
+              material={materials.Mat}
+              position={[-2.475, 85.784, 0.232]}
+              rotation={[0, -1.571, 0]}
+            />
+          </group>
+          <group
+            name="Exponat_15"
+            position={[8328.934, 296.289, -3481.771]}
+            rotation={[Math.PI, -0.794, Math.PI]}
+          >
+            <mesh
+              name="Hand"
+              castShadow
+              receiveShadow
+              geometry={nodes.Hand.geometry}
+              material={materials.Mat}
+              position={[-6.642, -153.523, 348.776]}
+              rotation={[0, -0.01, 1.544]}
+            />
+          </group>
+        </group>
+        <group name="----------Elements----------">
+          <mesh
+            name="Elements_11"
+            castShadow
+            receiveShadow
+            geometry={nodes.Elements_11.geometry}
+            material={materials.Mat}
+          />
+          <mesh
+            name="Elements_12"
+            castShadow
+            receiveShadow
+            geometry={nodes.Elements_12.geometry}
+            material={materials.Mat}
+          />
+          <mesh
+            name="Elements_13"
+            castShadow
+            receiveShadow
+            geometry={nodes.Elements_13.geometry}
+            material={materials.Mat}
+          />
+          <mesh
+            name="Elements_14"
+            castShadow
+            receiveShadow
+            geometry={nodes.Elements_14.geometry}
+            material={materials.Mat}
+          />
+          <mesh
+            name="Elements_2"
+            castShadow
+            receiveShadow
+            geometry={nodes.Elements_2.geometry}
+            material={materials.Mat}
+          />
+        </group>
+        <group name="----------Walls--------------">
+          <mesh
+            name="Ceiling_1"
+            castShadow
+            receiveShadow
+            geometry={nodes.Ceiling_1.geometry}
+            material={materials.Mat}
+          />
+          <mesh
+            name="WALL_113"
+            castShadow
+            receiveShadow
+            geometry={nodes.WALL_113.geometry}
+            material={materials.Mat}
+          />
+          <mesh
+            name="WALL_112"
+            castShadow
+            receiveShadow
+            geometry={nodes.WALL_112.geometry}
+            material={materials.Mat}
+          />
+          <mesh
+            name="WALL_111"
+            castShadow
+            receiveShadow
+            geometry={nodes.WALL_111.geometry}
+            material={materials.Mat}
+          />
+          <mesh
+            name="WALL_110"
+            castShadow
+            receiveShadow
+            geometry={nodes.WALL_110.geometry}
+            material={materials.Mat}
+          />
+          <mesh
+            name="WALL_19"
+            castShadow
+            receiveShadow
+            geometry={nodes.WALL_19.geometry}
+            material={materials.Mat}
+          />
+          <mesh
+            name="WALL_18"
+            castShadow
+            receiveShadow
+            geometry={nodes.WALL_18.geometry}
+            material={materials.Mat}
+          />
+          <mesh
+            name="WALL_17"
+            castShadow
+            receiveShadow
+            geometry={nodes.WALL_17.geometry}
+            material={materials.Mat}
+          />
+          <mesh
+            name="WALL_16"
+            castShadow
+            receiveShadow
+            geometry={nodes.WALL_16.geometry}
+            material={materials.Mat}
+          />
+          <mesh
+            name="WALL_15"
+            castShadow
+            receiveShadow
+            geometry={nodes.WALL_15.geometry}
+            material={materials.Mat}
+          />
+          <mesh
+            name="WALL_14"
+            castShadow
+            receiveShadow
+            geometry={nodes.WALL_14.geometry}
+            material={materials.Mat}
+          />
+          <mesh
+            name="WALL_13"
+            castShadow
+            receiveShadow
+            geometry={nodes.WALL_13.geometry}
+            material={materials.Mat}
+          />
+          <mesh
+            name="WALL_12"
+            castShadow
+            receiveShadow
+            geometry={nodes.WALL_12.geometry}
+            material={materials.Mat}
+          />
+          <mesh
+            name="WALL_11"
+            castShadow
+            receiveShadow
+            geometry={nodes.WALL_11.geometry}
+            material={materials.Mat}
+            position={[5279.651, 20.652, 16.261]}
+          />
+          <mesh
+            name="FLOOR_11"
+            castShadow
+            receiveShadow
+            geometry={nodes.FLOOR_11.geometry}
+            // material={materials.Mat}
+            position={[-2850.75, -0.073, 876.75]}
+          >
+            <MeshReflectorMaterial
+              // blur={[1048, 1048]}
+              resolution={2048}
+              args={[4000, 4000]}
+              mirror={0.8}
+              mixBlur={1}
+              mixStrength={0.5}
+              rotation={[-Math.PI / 2, 0, 0]}
+              position={[0, -1, 0]}
+              minDepthThreshold={0.4}
+              maxDepthThreshold={1.4}
+              // color={'#919191'}
+              color={'#ffffff'}
+              metalness={0.8}
+              roughness={0.4}
+              // roughnessMap={floor}
+              // normalMap={normal}
+              // normalScale={[0.2, 0.2]}
+              // roughnessScale={[0.02, 0.02]}
+            />
+          </mesh>
+          <mesh
+            name="FLOOR_12"
+            castShadow
+            receiveShadow
+            geometry={nodes.FLOOR_12.geometry}
+            material={materials.Mat}
+          />
+          <mesh
+            name="FLOOR_13"
+            castShadow
+            receiveShadow
+            geometry={nodes.FLOOR_13.geometry}
+            material={materials.Mat}
+            position={[3515.082, 75.695, -69.535]}
+          />
+          <mesh
+            name="FLOOR_14"
+            castShadow
+            receiveShadow
+            geometry={nodes.FLOOR_14.geometry}
+            material={materials.Mat}
+            position={[3515.082, 75.695, -69.535]}
+          />
+          <mesh
+            name="FLOOR_15"
+            castShadow
+            receiveShadow
+            geometry={nodes.FLOOR_15.geometry}
+            material={materials.Mat}
+            position={[3515.082, 75.695, -69.535]}
+          />
+        </group>
+        <group
+          name="Camera_Null"
+          position={[7425, 360, -4370.621]}
+          rotation={[-3.018, -0.782, -3.055]}
+        >
+          <PerspectiveCamera
+            name="Camera"
+            makeDefault={false}
+            far={10000000000}
+            near={0.01}
+            fov={32.269}
+          />
+        </group>
+      </group>
     </group>
   );
 }
 
-useGLTF.preload('models/level3.glb');
-// useGLTF.preload('models/level.gltf');
+useGLTF.preload('models/level2.glb');
