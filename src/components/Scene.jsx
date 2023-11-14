@@ -5,6 +5,7 @@ import { Background } from 'src/components/Background';
 import { Level3 } from 'src/components/TestLevel';
 import { OfficeModel } from 'src/components/OfficeModel';
 import * as THREE from 'three';
+import { ModelLast } from 'src/components/LevelVol2';
 
 export const Scene = () => {
   // const ref = useRef();
@@ -27,12 +28,12 @@ export const Scene = () => {
         antialias: true,
         // physicallyCorrectLights: true,
         alpha: true,
-        outputColorSpace: 'srgb',
+        // outputColorSpace: 'srgb',
       }}
       eventSource={document.getElementById('root')}
       eventPrefix="client"
     >
-      <OrbitControls />
+      {/*<OrbitControls />*/}
       {/*<Stage*/}
       {/*  controls={ref}*/}
       {/*  preset="soft"*/}
@@ -41,7 +42,8 @@ export const Scene = () => {
       {/*  shadows={false}*/}
       {/*  environment="city"*/}
       {/*>*/}
-      <Level3 />
+      {/*<Level3 />*/}
+      <ModelLast />
       {/*<OfficeModel />*/}
       {/*</Stage>*/}
       <Background />
