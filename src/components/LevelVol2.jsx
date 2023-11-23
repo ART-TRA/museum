@@ -458,6 +458,7 @@ export function ModelLast(props) {
               color={'#ffffff'}
               map={textures.elements.aoEl4}
               toneMapped={false}
+              side={THREE.DoubleSide}
             />
           </mesh>
           <mesh name="Elements_2" geometry={nodes.Elements_2.geometry}>
@@ -616,7 +617,11 @@ export function ModelLast(props) {
                 toneMapped={false}
               />
             </mesh>
-            <mesh name="WALL_19" geometry={nodes.WALL_19.geometry}>
+            <mesh
+              name="WALL_19"
+              geometry={nodes.WALL_19.geometry}
+              position={[79.43, -0.001, -0.365]}
+            >
               <meshStandardMaterial
                 color={'#ffffff'}
                 map={textures.walls.aoWall9}

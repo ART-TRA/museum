@@ -13,6 +13,18 @@ import { BlendFunction } from 'postprocessing';
 import { AmbientLight, DirectionalLight } from 'three';
 import { useControls } from 'leva';
 
+const envs = [
+  '/environment/env1.hdr',
+  '/environment/env2.hdr',
+  '/environment/env3.hdr',
+  '/environment/env4.hdr',
+  '/environment/env5.hdr',
+  '/environment/env6.hdr',
+  '/environment/env7.hdr',
+  '/environment/env8.hdr',
+  '/environment/env9.hdr',
+];
+
 export const Background = () => {
   const { gl, scene } = useThree();
   const lightHelper = useRef();
@@ -28,13 +40,19 @@ export const Background = () => {
   //   gl.setClearColor('#fff', 0);
   // }, [gl]);
 
-  const { ambientLight, directionalLight, ambientLightON, directionalLightON } =
-    useControls({
-      ambientLight: { value: 0.8, min: 0, max: 2, step: 0.01 },
-      directionalLight: { value: 0.7, min: 0, max: 2, step: 0.01 },
-      ambientLightON: true,
-      directionalLightON: true,
-    });
+  const {
+    ambientLight,
+    directionalLight,
+    ambientLightON,
+    directionalLightON,
+    envMaps,
+  } = useControls({
+    ambientLight: { value: 0.8, min: 0, max: 4, step: 0.01 },
+    directionalLight: { value: 0.7, min: 0, max: 4, step: 0.01 },
+    ambientLightON: true,
+    directionalLightON: true,
+    envMaps: { value: 0, min: 0, max: 8, step: 1 },
+  });
 
   // -------------------------------------------------------------------------
   const ambLight = useRef(new AmbientLight(0xffffff, ambientLight));
@@ -78,7 +96,7 @@ export const Background = () => {
       {/*<ambientLight intensity={0.2} />*/}
       {/*<Environment preset="sunset" background blur={0.5} />*/}
 
-      <Environment files="/images/environment5.hdr" background blur={0.5}>
+      <Environment files={envs[envMaps]} background blur={0.5}>
         <Lightformer
           intensity={0.5}
           rotation-x={Math.PI / 2}

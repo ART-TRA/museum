@@ -1,50 +1,39 @@
-import React, { useRef, useLayoutEffect, useEffect, useCallback } from 'react';
+import React, { useRef, useCallback, useEffect } from 'react';
 import {
-  MeshReflectorMaterial,
-  OrbitControls,
-  PerspectiveCamera,
   useGLTF,
-  useTexture,
+  PerspectiveCamera,
+  MeshReflectorMaterial,
 } from '@react-three/drei';
+import { useTextures } from 'src/components/useTextures';
 import * as THREE from 'three';
-import { useFrame, useThree } from '@react-three/fiber';
-import { useSetRecoilState } from 'recoil';
 import { useControls } from 'leva';
-import cursorAtom from 'src/recoil/atoms/cursor';
+import { useFrame } from '@react-three/fiber';
 
-const LevelGroup = ({ children, ...props }) => {
-  const setHovered = useSetRecoilState(cursorAtom);
-
-  const onModelClick = (name) => {
-    console.log('click', name);
-  };
-
-  return (
-    <group
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
-      onClick={() => onModelClick(props.name)}
-      {...props}
-    >
-      {children}
-    </group>
-  );
-};
-
-export function Level(props) {
-  const { camera } = useThree();
-  const modelRef = useRef();
-  const { touchPadSpeed, scrollSpeed } = useControls({
-    touchPadSpeed: { value: 0.01, min: 0.005, max: 0.1, step: 0.001 },
-    scrollSpeed: { value: 0.12, min: 0.005, max: 0.5 },
-  });
-  const { nodes, materials, animations, scene, cameras } =
-    useGLTF('models/level2.glb');
-  const modelLevel = useGLTF('models/level.glb');
+export function Model(props) {
+  const group = useRef();
+  const { nodes, animations, scene, cameras } = useGLTF('models/model.gltf');
+  const textures = useTextures();
   const mixer = useRef(new THREE.AnimationMixer(scene));
-  // console.log(modelLevel);
   const action = useRef(mixer.current.clipAction(animations[0]));
   action.current.play();
+
+  const {
+    floorMirrorStrength,
+    reflectorVisible,
+    exhibitsVisible,
+    wallsVisible,
+    touchPadSpeed,
+    scrollSpeed,
+    superSlowTouchPadSpeed,
+  } = useControls({
+    floorMirrorStrength: { value: 0.3, min: 0, max: 1, step: 0.01 },
+    reflectorVisible: true,
+    exhibitsVisible: true,
+    wallsVisible: true,
+    touchPadSpeed: { value: 0.01, min: 0.01, max: 0.1, step: 0.01 },
+    scrollSpeed: { value: 0.12, min: 0.005, max: 0.5 },
+    superSlowTouchPadSpeed: false,
+  });
 
   const detectTrackpad = (event) => {
     const { deltaY, wheelDeltaY, deltaMode } = event;
@@ -54,14 +43,23 @@ export function Level(props) {
   const onObserveRoom = useCallback(
     (event) => {
       if (detectTrackpad(event)) {
-        console.log('detect touchpad');
         if (event.deltaY > 0) {
-          mixer.current.update(touchPadSpeed);
+          if (superSlowTouchPadSpeed) {
+            console.log('superSlowTouchPadSpeed', touchPadSpeed * 0.1);
+            mixer.current.update(touchPadSpeed * 0.1);
+          } else {
+            mixer.current.update(touchPadSpeed);
+          }
         } else {
-          mixer.current.update(-touchPadSpeed);
+          if (superSlowTouchPadSpeed) {
+            console.log('superSlowTouchPadSpeed', -touchPadSpeed * 0.1);
+            mixer.current.update(-touchPadSpeed * 0.1);
+          } else {
+            mixer.current.update(-touchPadSpeed);
+          }
         }
       } else {
-        console.log(scrollSpeed);
+        console.log('scroll', scrollSpeed);
         if (event.deltaY > 0) {
           mixer.current.update(scrollSpeed);
         } else {
@@ -69,541 +67,652 @@ export function Level(props) {
         }
       }
     },
-    [scrollSpeed, touchPadSpeed]
+    [scrollSpeed, touchPadSpeed, superSlowTouchPadSpeed]
   );
-
-  const isTouch = useRef(false);
-  const onMouseTouch = (action) => {
-    isTouch.current = action;
-  };
-
-  const aoWall1Texture = useTexture('/textures/scene/AO_wall_1_1.jpg');
-  aoWall1Texture.flipY = false;
-  aoWall1Texture.anisotropy = 4.5;
-  aoWall1Texture.needsPMREMUpdate = true;
-
-  useEffect(() => {
-    scene.traverse((n) => {
-      if (n.isMesh) {
-        n.material.toneMapped = false;
-        n.material.emissive = new THREE.Color('#fdfdff');
-        n.material.emissiveIntensity = 0.35;
-        n.material.envMapIntensity = 0.8;
-
-        if (n.name === 'WALL_11') {
-          console.log('AAAAAA');
-          // n.material.map = aoWall1Texture;
-          n.material.toneMapped = false;
-        }
-      }
-    });
-  }, [materials]);
 
   useEffect(() => {
     console.log('speed', scrollSpeed);
-    // document.addEventListener('wheel', onObserveRoom);
-    document.addEventListener('pointerdown', () => onMouseTouch(1));
-    document.addEventListener('pointerup', () => onMouseTouch(0));
+    document.addEventListener('wheel', onObserveRoom);
 
     return () => {
-      // document.removeEventListener('wheel', onObserveRoom);
-      document.removeEventListener('pointerdown', () => onMouseTouch(1));
-      document.removeEventListener('pointerup', () => onMouseTouch(0));
+      document.removeEventListener('wheel', onObserveRoom);
     };
-  }, [scrollSpeed, touchPadSpeed]);
+  }, [scrollSpeed, touchPadSpeed, superSlowTouchPadSpeed]);
 
-  useFrame((state, delta) => {
-    // state.camera.position.lerp(cameras[0].parent.position, 0.08);
-    // state.camera.quaternion.slerp(cameras[0].parent.quaternion, 0.08);
-
-    if (isTouch.current) {
-      // camera.quaternion.y -= state.mouse.x * 0.008;
-      // camera.quaternion.x -= state.mouse.y * 0.008;
-      // state.camera.rotation.copy(new THREE.Vector3(state.mouse, 0));
-      // state.camera.quaternion.slerp(cameras[0].parent.quaternion, 0.08);
-    }
-
-    // state.camera.scale.lerp(cameras[0].parent.scale, 0.08);
-    // state.camera.updateProjectionMatrix();
-    // state.camera.updateMatrixWorld();
+  useFrame((state) => {
+    state.camera.position.lerp(cameras[0].parent.position, 0.08);
+    state.camera.quaternion.slerp(cameras[0].parent.quaternion, 0.08);
+    state.camera.scale.lerp(cameras[0].parent.scale, 0.08);
+    state.camera.updateProjectionMatrix();
+    state.camera.updateMatrixWorld();
   });
 
   return (
-    <group ref={modelRef} {...props} dispose={null}>
+    <group ref={group} {...props} dispose={null}>
       <group>
-        <group name="----------Exponats----------">
-          <group name="Exponat_01" position={[-2692.303, 29.345, -799.19]}>
-            <mesh
-              name="Shoes_L"
-              castShadow
-              receiveShadow
-              geometry={nodes.Shoes_L.geometry}
-              material={materials.Mat}
-              position={[6.882, 53.855, -3.868]}
-              rotation={[0, 0.504, 0]}
-            />
-            <mesh
-              name="Shoes_R"
-              castShadow
-              receiveShadow
-              geometry={nodes.Shoes_R.geometry}
-              material={materials.Mat}
-              position={[-8.003, 53.855, 4.867]}
-              rotation={[0, 0.652, 0]}
-            />
-          </group>
-          <group
-            name="Exponat_02"
-            position={[-3601.168, 29.663, 795.458]}
-            rotation={[-0.01, -0.005, -0.001]}
-          >
-            <mesh
-              name="Caps"
-              castShadow
-              receiveShadow
-              geometry={nodes.Caps.geometry}
-              material={materials.Mat}
-              position={[0.017, 58.543, -1.431]}
-            />
-          </group>
-          <group
-            name="Exponat_03"
-            position={[-2177.609, 0, 1952.233]}
-            rotation={[Math.PI, -0.96, Math.PI]}
-          >
-            <mesh
-              name="Bed_low"
-              castShadow
-              receiveShadow
-              geometry={nodes.Bed_low.geometry}
-              material={materials.Mat}
-              position={[0, 20, 0]}
-            />
-          </group>
-          <group
-            name="Exponat_04"
-            position={[-33.821, 0.701, -78.993]}
-            rotation={[-Math.PI, 0, -Math.PI]}
-          >
-            <mesh
-              name="Kubiki"
-              castShadow
-              receiveShadow
-              geometry={nodes.Kubiki.geometry}
-              material={materials.Mat}
-              position={[3.269, 57.781, 9.589]}
-            />
-          </group>
-          <group
-            name="Exponat_05"
-            position={[1388.209, 140, 1239.745]}
-            rotation={[-Math.PI / 2, 0, 0]}
-          >
-            <mesh
-              name="Child_art"
-              castShadow
-              receiveShadow
-              geometry={nodes.Child_art.geometry}
-              material={materials.Mat}
-              position={[0, -30.117, 30]}
-            />
-          </group>
-          <group
-            name="Exponat_06"
-            position={[2527.55, -1.452, -243.404]}
-            rotation={[Math.PI / 2, 0, Math.PI / 9]}
-          >
-            <mesh
-              name="Xilofon"
-              castShadow
-              receiveShadow
-              geometry={nodes.Xilofon.geometry}
-              material={materials.Mat}
-              position={[-1.108, 4.55, -140.475]}
-            />
-          </group>
-          <group
-            name="Exponat_07"
-            position={[4613.149, -0.105, 3349.584]}
-            rotation={[0, -0.295, 0]}
-          >
-            <mesh
-              name="Diary"
-              castShadow
-              receiveShadow
-              geometry={nodes.Diary.geometry}
-              material={materials.Mat}
-              position={[0, 148.829, 0.042]}
-              rotation={[0, 0.698, 0]}
-            />
-          </group>
-          <group
-            name="Exponat_08"
-            position={[6657.277, 140, 3002.112]}
-            rotation={[Math.PI / 2, 0, 2.473]}
-          >
-            <mesh
-              name="Kollaj"
-              castShadow
-              receiveShadow
-              geometry={nodes.Kollaj.geometry}
-              material={materials.Mat}
-              position={[-1.532, -8.108, -35]}
-            />
-          </group>
-          <group
-            name="Exponat_09"
-            position={[5820.472, -8.756, 485.536]}
-            rotation={[-Math.PI, 0.36, -Math.PI]}
-          >
-            <mesh
-              name="Christmass_Ball"
-              castShadow
-              receiveShadow
-              geometry={nodes.Christmass_Ball.geometry}
-              material={materials.Mat}
-              position={[-27.75, 166.762, 14.773]}
-              rotation={[0, 0.122, 0]}
-            />
-          </group>
-          <group
-            name="Exponat_10"
-            position={[5557.986, 0, -1292.088]}
-            rotation={[0, -0.403, 0]}
-          >
-            <mesh
-              name="bow_tie_LP"
-              castShadow
-              receiveShadow
-              geometry={nodes.bow_tie_LP.geometry}
-              material={materials.Mat}
-              position={[4.715, 164.332, 1.235]}
-              rotation={[1.18, 1.025, -1.13]}
-            />
-          </group>
-          <group
-            name="Exponat_11"
-            position={[6696.894, 0, -4258.613]}
-            rotation={[0, -0.215, -Math.PI]}
-            scale={[1, -1, 1]}
-          >
-            <mesh
-              name="Ball"
-              castShadow
-              receiveShadow
-              geometry={nodes.Ball.geometry}
-              material={materials.Mat}
-              position={[671.45, 25, -37.629]}
-              rotation={[0, -0.215, Math.PI]}
+        {exhibitsVisible && (
+          <group name="----------Exponats----------">
+            <group name="Exponat_01" position={[-26.923, 0.293, -7.992]}>
+              <mesh
+                name="Shoes_L"
+                geometry={nodes.Shoes_L.geometry}
+                position={[0.069, 0.539, -0.039]}
+                rotation={[0, 0.504, 0]}
+              >
+                <meshStandardMaterial
+                  // color={'#ffffff'}
+                  map={textures.exhibits.shoe1}
+                  aoMap={textures.exhibits.aoShoe1}
+                  toneMapped={false}
+                />
+              </mesh>
+              <mesh
+                name="Shoes_R"
+                geometry={nodes.Shoes_R.geometry}
+                position={[-0.08, 0.539, 0.049]}
+                rotation={[0, 0.652, 0]}
+              >
+                <meshStandardMaterial
+                  // color={'#ffffff'}
+                  map={textures.exhibits.shoe2}
+                  aoMap={textures.exhibits.aoShoe2}
+                  toneMapped={false}
+                />
+              </mesh>
+            </group>
+            <group
+              name="Exponat_02"
+              position={[-36.012, 0.297, 7.955]}
+              rotation={[-0.01, -0.005, -0.001]}
+            >
+              <mesh
+                name="Caps"
+                geometry={nodes.Caps.geometry}
+                position={[0, 0.585, -0.014]}
+              >
+                <meshStandardMaterial
+                  // color={'#ffffff'}
+                  map={textures.exhibits.cups}
+                  aoMap={textures.exhibits.aoCups}
+                  toneMapped={false}
+                />
+              </mesh>
+            </group>
+            <group
+              name="Exponat_03"
+              position={[-21.776, 0, 19.522]}
+              rotation={[Math.PI, -0.96, Math.PI]}
+            >
+              <mesh
+                name="Bed_low"
+                geometry={nodes.Bed_low.geometry}
+                position={[0, 0.2, 0]}
+              >
+                <meshStandardMaterial
+                  // color={'#ffffff'}
+                  map={textures.exhibits.bed}
+                  aoMap={textures.exhibits.aoBed}
+                  toneMapped={false}
+                />
+              </mesh>
+            </group>
+            <group
+              name="Exponat_04"
+              position={[-0.338, 0.007, -0.79]}
+              rotation={[-Math.PI, 0, -Math.PI]}
+            >
+              <mesh
+                name="Kubiki"
+                geometry={nodes.Kubiki.geometry}
+                position={[0.033, 0.578, 0.096]}
+              >
+                <meshStandardMaterial
+                  color={'#ffffff'}
+                  map={textures.exhibits.cubes}
+                  aoMap={textures.exhibits.aoCubes}
+                  toneMapped={false}
+                />
+              </mesh>
+            </group>
+            <group
+              name="Exponat_05"
+              position={[13.882, 1.4, 12.397]}
+              rotation={[-Math.PI / 2, 0, 0]}
+            >
+              <mesh
+                name="Child_art"
+                geometry={nodes.Child_art.geometry}
+                position={[0, -0.301, 0.3]}
+              >
+                <meshStandardMaterial
+                  color={'#ffffff'}
+                  map={textures.exhibits.art}
+                  aoMap={textures.exhibits.aoArt}
+                  // toneMapped={false}
+                />
+              </mesh>
+            </group>
+            <group
+              name="Exponat_06"
+              position={[25.275, -0.015, -2.434]}
+              rotation={[Math.PI / 2, 0, Math.PI / 9]}
+            >
+              <mesh
+                name="Xilofon"
+                geometry={nodes.Xilofon.geometry}
+                position={[-0.011, 0.046, -1.405]}
+              >
+                <meshStandardMaterial
+                  color={'#ffffff'}
+                  map={textures.exhibits.xylophone}
+                  aoMap={textures.exhibits.aoXylophone}
+                  toneMapped={false}
+                />
+              </mesh>
+            </group>
+            <group
+              name="Exponat_07"
+              position={[46.131, -0.001, 33.496]}
+              rotation={[0, -0.295, 0]}
+            >
+              <mesh
+                name="Diary"
+                geometry={nodes.Diary.geometry}
+                position={[0, 1.488, 0]}
+                rotation={[0, 0.698, 0]}
+              >
+                <meshStandardMaterial
+                  color={'#ffffff'}
+                  map={textures.exhibits.diary}
+                  aoMap={textures.exhibits.aoDiary}
+                  toneMapped={false}
+                />
+              </mesh>
+            </group>
+            <group
+              name="Exponat_08"
+              position={[66.573, 1.4, 30.021]}
+              rotation={[Math.PI / 2, 0, 2.473]}
+            >
+              <mesh
+                name="Kollag"
+                geometry={nodes.Kollag.geometry}
+                position={[-0.015, -0.081, -0.35]}
+              >
+                <meshStandardMaterial
+                  color={'#ffffff'}
+                  map={textures.exhibits.collage}
+                  // aoMap={textures.exhibits.aoCollage}
+                  // toneMapped={false}
+                />
+              </mesh>
+            </group>
+            <group
+              name="Exponat_09"
+              position={[58.205, -0.088, 4.855]}
+              rotation={[-Math.PI, 0.36, -Math.PI]}
+            >
+              <mesh
+                name="Christmass_Ball"
+                geometry={nodes.Christmass_Ball.geometry}
+                position={[-0.278, 1.668, 0.148]}
+                rotation={[0, 0.122, 0]}
+              >
+                <meshStandardMaterial
+                  color={'#ffffff'}
+                  map={textures.exhibits.bauble}
+                  aoMap={textures.exhibits.aoBauble}
+                  toneMapped={false}
+                />
+              </mesh>
+            </group>
+            <group
+              name="Exponat_10"
+              position={[55.58, 0, -12.921]}
+              rotation={[0, -0.403, 0]}
+            >
+              <mesh
+                name="Bow_tie"
+                geometry={nodes.Bow_tie.geometry}
+                position={[0.047, 1.643, 0.012]}
+                rotation={[1.18, 1.025, -1.13]}
+              >
+                <meshStandardMaterial
+                  color={'#ffffff'}
+                  map={textures.exhibits.bowTie}
+                  aoMap={textures.exhibits.aoBowTie}
+                  toneMapped={false}
+                />
+              </mesh>
+            </group>
+            <group
+              name="Exponat_11"
+              position={[66.969, 0, -42.586]}
+              rotation={[0, -0.215, -Math.PI]}
               scale={[1, -1, 1]}
-            />
-            <mesh
-              name="Toy_boxs"
-              castShadow
-              receiveShadow
-              geometry={nodes.Toy_boxs.geometry}
-              material={materials.Mat}
-              position={[760.023, 47.842, -165.019]}
-              rotation={[0, -0.215, Math.PI]}
-              scale={[1, -1, 1]}
-            />
-            <mesh
-              name="Skis"
-              castShadow
-              receiveShadow
-              geometry={nodes.Skis.geometry}
-              material={materials.Mat}
-              position={[837.381, 133.218, -214.427]}
-              rotation={[0, -0.215, Math.PI]}
-              scale={[1, -1, 1]}
-            />
-            <mesh
-              name="Hare"
-              castShadow
-              receiveShadow
-              geometry={nodes.Hare.geometry}
-              material={materials.Mat}
-              position={[731.21, 27.329, -136.602]}
-              rotation={[0, 0.175, -Math.PI]}
-              scale={[1, -1, 1]}
-            />
-            <mesh
-              name="Bear_LP"
-              castShadow
-              receiveShadow
-              geometry={nodes.Bear_LP.geometry}
-              material={materials.Mat}
-              position={[738.58, 2.632, -105.581]}
-              rotation={[Math.PI, 1.396, 0]}
-              scale={[1, -1, 1]}
-            />
+            >
+              <mesh
+                name="Ball"
+                geometry={nodes.Ball.geometry}
+                position={[6.714, 0.25, -0.376]}
+                rotation={[0, -0.215, Math.PI]}
+                scale={[1, -1, 1]}
+              >
+                <meshStandardMaterial
+                  color={'#ffffff'}
+                  map={textures.exhibits.ball}
+                  aoMap={textures.exhibits.aoBall}
+                  toneMapped={false}
+                />
+              </mesh>
+              <mesh
+                name="Toy_boxes"
+                geometry={nodes.Toy_boxes.geometry}
+                position={[7.6, 0.478, -1.65]}
+                rotation={[0, -0.215, Math.PI]}
+                scale={[1, -1, 1]}
+              >
+                <meshStandardMaterial
+                  color={'#ffffff'}
+                  map={textures.exhibits.toyBoxes}
+                  aoMap={textures.exhibits.aoToyBoxes}
+                  toneMapped={false}
+                />
+              </mesh>
+              <mesh
+                name="Skies"
+                geometry={nodes.Skies.geometry}
+                position={[7.78, 1.332, -2.173]}
+                rotation={[0, -0.215, Math.PI]}
+                scale={[1, -1, 1]}
+              >
+                <meshStandardMaterial
+                  color={'#ffffff'}
+                  map={textures.exhibits.skies}
+                  aoMap={textures.exhibits.aoSkies}
+                  toneMapped={false}
+                />
+              </mesh>
+              <mesh
+                name="Hare"
+                geometry={nodes.Hare.geometry}
+                position={[7.312, 0.273, -1.366]}
+                rotation={[0, 0.175, Math.PI]}
+                scale={[1, -1, 1]}
+              >
+                <meshStandardMaterial
+                  color={'#ffffff'}
+                  map={textures.exhibits.hare}
+                  aoMap={textures.exhibits.aoHare}
+                  toneMapped={false}
+                />
+              </mesh>
+              <mesh
+                name="Bear"
+                geometry={nodes.Bear.geometry}
+                position={[7.386, 0.026, -1.056]}
+                rotation={[Math.PI, 1.396, 0]}
+                scale={[1, -1, 1]}
+              >
+                <meshStandardMaterial
+                  color={'#ffffff'}
+                  map={textures.exhibits.bear1}
+                  aoMap={textures.exhibits.aoBear1}
+                  toneMapped={false}
+                />
+              </mesh>
+            </group>
+            <group
+              name="Exponat_12"
+              position={[46.632, 0, -37.835]}
+              rotation={[Math.PI, Math.PI / 4, -Math.PI]}
+            >
+              <mesh
+                name="Bear_body"
+                geometry={nodes.Bear_body.geometry}
+                position={[-0.003, 0.947, 0.056]}
+                rotation={[Math.PI, -Math.PI / 4, Math.PI]}
+              >
+                <meshStandardMaterial
+                  color={'#ffffff'}
+                  map={textures.exhibits.bear2}
+                  aoMap={textures.exhibits.aoBear2}
+                  toneMapped={false}
+                />
+              </mesh>
+            </group>
+            <group
+              name="Exponat_13"
+              position={[48.412, 0, -57.511]}
+              rotation={[0, 0.782, 0]}
+            >
+              <mesh
+                name="Truck"
+                geometry={nodes.Truck.geometry}
+                position={[0.023, 0.329, -0.006]}
+                rotation={[Math.PI, Math.PI / 3, -Math.PI]}
+              >
+                <meshStandardMaterial
+                  color={'#ffffff'}
+                  map={textures.exhibits.truck}
+                  aoMap={textures.exhibits.aoTruck}
+                  toneMapped={false}
+                />
+              </mesh>
+            </group>
+            <group
+              name="Exponat_14"
+              position={[67.651, 0, -57.222]}
+              rotation={[0, Math.PI / 4, 0]}
+            >
+              <mesh
+                name="Doll"
+                geometry={nodes.Doll.geometry}
+                position={[-0.025, 0.858, 0.002]}
+                rotation={[0, -1.571, 0]}
+              >
+                <meshStandardMaterial
+                  color={'#ffffff'}
+                  map={textures.exhibits.doll}
+                  aoMap={textures.exhibits.aoDoll}
+                  toneMapped={false}
+                />
+              </mesh>
+            </group>
+            <group
+              name="Exponat_15"
+              position={[83.289, 2.963, -34.818]}
+              rotation={[Math.PI, -0.794, Math.PI]}
+            >
+              <mesh
+                name="Hand"
+                geometry={nodes.Hand.geometry}
+                position={[-0.066, -1.535, 3.488]}
+                rotation={[0, -0.01, 1.544]}
+              >
+                <meshStandardMaterial
+                  color={'#ffffff'}
+                  map={textures.exhibits.aoHand}
+                  // aoMap={textures.exhibits.hand}
+                  toneMapped={false}
+                />
+              </mesh>
+            </group>
           </group>
-          <group
-            name="Exponat_12"
-            position={[4663.247, 0, -3783.545]}
-            rotation={[Math.PI, Math.PI / 4, -Math.PI]}
-          >
-            <mesh
-              name="bear_body"
-              castShadow
-              receiveShadow
-              geometry={nodes.bear_body.geometry}
-              material={materials.Mat}
-              position={[-0.271, 94.731, 5.639]}
-              rotation={[Math.PI, -Math.PI / 4, Math.PI]}
-            />
-          </group>
-          <group
-            name="Exponat_13"
-            position={[4841.208, 0, -5751.099]}
-            rotation={[0, 0.782, 0]}
-          >
-            <mesh
-              name="Truck"
-              castShadow
-              receiveShadow
-              geometry={nodes.Truck.geometry}
-              material={materials.Mat}
-              position={[2.268, 32.946, -0.642]}
-              rotation={[Math.PI, Math.PI / 3, -Math.PI]}
-            />
-          </group>
-          <group
-            name="Exponat_14"
-            position={[6765.105, 0, -5722.216]}
-            rotation={[0, Math.PI / 4, 0]}
-          >
-            <mesh
-              name="Dolls"
-              castShadow
-              receiveShadow
-              geometry={nodes.Dolls.geometry}
-              material={materials.Mat}
-              position={[-2.475, 85.784, 0.232]}
-              rotation={[0, -1.571, 0]}
-            />
-          </group>
-          <group
-            name="Exponat_15"
-            position={[8328.934, 296.289, -3481.771]}
-            rotation={[Math.PI, -0.794, Math.PI]}
-          >
-            <mesh
-              name="Hand"
-              castShadow
-              receiveShadow
-              geometry={nodes.Hand.geometry}
-              material={materials.Mat}
-              position={[-6.642, -153.523, 348.776]}
-              rotation={[0, -0.01, 1.544]}
-            />
-          </group>
-        </group>
+        )}
         <group name="----------Elements----------">
-          <mesh
-            name="Elements_11"
-            castShadow
-            receiveShadow
-            geometry={nodes.Elements_11.geometry}
-            material={materials.Mat}
-          />
-          <mesh
-            name="Elements_12"
-            castShadow
-            receiveShadow
-            geometry={nodes.Elements_12.geometry}
-            material={materials.Mat}
-          />
-          <mesh
-            name="Elements_13"
-            castShadow
-            receiveShadow
-            geometry={nodes.Elements_13.geometry}
-            material={materials.Mat}
-          />
-          <mesh
-            name="Elements_14"
-            castShadow
-            receiveShadow
-            geometry={nodes.Elements_14.geometry}
-            material={materials.Mat}
-          />
-          <mesh
-            name="Elements_2"
-            castShadow
-            receiveShadow
-            geometry={nodes.Elements_2.geometry}
-            material={materials.Mat}
-          />
+          <mesh name="Elements_11" geometry={nodes.Elements_11.geometry}>
+            <meshStandardMaterial
+              color={'#ffffff'}
+              map={textures.elements.aoEl1}
+              toneMapped={false}
+            />
+          </mesh>
+          <mesh name="Elements_12" geometry={nodes.Elements_12.geometry}>
+            <meshStandardMaterial
+              color={'#ffffff'}
+              map={textures.elements.aoEl2}
+              toneMapped={false}
+            />
+          </mesh>
+          <mesh name="Elements_13" geometry={nodes.Elements_13.geometry}>
+            <meshStandardMaterial
+              color={'#ffffff'}
+              map={textures.elements.aoEl3}
+              toneMapped={false}
+            />
+          </mesh>
+          <mesh name="Elements_14" geometry={nodes.Elements_14.geometry}>
+            <meshStandardMaterial
+              color={'#ffffff'}
+              map={textures.elements.aoEl4}
+              toneMapped={false}
+            />
+          </mesh>
+          <mesh name="Elements_2" geometry={nodes.Elements_2.geometry}>
+            <meshStandardMaterial
+              color={'#ffffff'}
+              // map={textures.elements.aoEl4}
+              toneMapped={false}
+            />
+          </mesh>
         </group>
-        <group name="----------Walls--------------">
-          <mesh
-            name="Ceiling_1"
-            castShadow
-            receiveShadow
-            geometry={nodes.Ceiling_1.geometry}
-            material={materials.Mat}
-          />
-          <mesh
-            name="WALL_113"
-            castShadow
-            receiveShadow
-            geometry={nodes.WALL_113.geometry}
-            material={materials.Mat}
-          />
-          <mesh
-            name="WALL_112"
-            castShadow
-            receiveShadow
-            geometry={nodes.WALL_112.geometry}
-            material={materials.Mat}
-          />
-          <mesh
-            name="WALL_111"
-            castShadow
-            receiveShadow
-            geometry={nodes.WALL_111.geometry}
-            material={materials.Mat}
-          />
-          <mesh
-            name="WALL_110"
-            castShadow
-            receiveShadow
-            geometry={nodes.WALL_110.geometry}
-            material={materials.Mat}
-          />
-          <mesh
-            name="WALL_19"
-            castShadow
-            receiveShadow
-            geometry={nodes.WALL_19.geometry}
-            material={materials.Mat}
-          />
-          <mesh
-            name="WALL_18"
-            castShadow
-            receiveShadow
-            geometry={nodes.WALL_18.geometry}
-            material={materials.Mat}
-          />
-          <mesh
-            name="WALL_17"
-            castShadow
-            receiveShadow
-            geometry={nodes.WALL_17.geometry}
-            material={materials.Mat}
-          />
-          <mesh
-            name="WALL_16"
-            castShadow
-            receiveShadow
-            geometry={nodes.WALL_16.geometry}
-            material={materials.Mat}
-          />
-          <mesh
-            name="WALL_15"
-            castShadow
-            receiveShadow
-            geometry={nodes.WALL_15.geometry}
-            material={materials.Mat}
-          />
-          <mesh
-            name="WALL_14"
-            castShadow
-            receiveShadow
-            geometry={nodes.WALL_14.geometry}
-            material={materials.Mat}
-          />
-          <mesh
-            name="WALL_13"
-            castShadow
-            receiveShadow
-            geometry={nodes.WALL_13.geometry}
-            material={materials.Mat}
-          />
-          <mesh
-            name="WALL_12"
-            castShadow
-            receiveShadow
-            geometry={nodes.WALL_12.geometry}
-            material={materials.Mat}
-          />
-          <mesh
-            name="WALL_11"
-            castShadow
-            receiveShadow
-            geometry={nodes.WALL_11.geometry}
-            material={materials.Mat}
-            position={[5279.651, 20.652, 16.261]}
-          />
+        <group name="----------Floors------------">
+          {reflectorVisible && (
+            <>
+              <mesh
+                name="FLOOR_11mirror"
+                position={[20, 0.02, 14]}
+                rotation={[-Math.PI * 0.5, 0, 0]}
+              >
+                <planeGeometry args={[140, 54]} />
+                <MeshReflectorMaterial
+                  transparent={true}
+                  opacity={floorMirrorStrength}
+                  // blur={[1048, 1048]}
+                  resolution={2048}
+                  args={[3800, 4280]}
+                  color={'#ffffff'}
+                  mirror={0.8}
+                  mixBlur={1}
+                  position={[0, 0, 0]}
+                  mixStrength={0.5}
+                  // rotation={[Math.PI / 2, 0, 0]}
+                  minDepthThreshold={0.4}
+                  maxDepthThreshold={1.4}
+                  // map={aoFloor1Texture}
+                  // aoMap={aoFloor1Texture}
+                  // toneMapped={false}
+                  metalness={0.8}
+                  roughness={0.4}
+                />
+              </mesh>
+              <mesh
+                name="FLOOR_11mirror2"
+                position={[60, 0.02, -45]}
+                rotation={[-Math.PI * 0.5, 0, 0]}
+              >
+                <planeGeometry args={[60, 64]} />
+                <MeshReflectorMaterial
+                  transparent={true}
+                  opacity={floorMirrorStrength}
+                  // blur={[1048, 1048]}
+                  resolution={2048}
+                  args={[3800, 4280]}
+                  color={'#ffffff'}
+                  mirror={0.8}
+                  mixBlur={1}
+                  position={[0, 0, 0]}
+                  mixStrength={0.5}
+                  // rotation={[Math.PI / 2, 0, 0]}
+                  minDepthThreshold={0.4}
+                  maxDepthThreshold={1.4}
+                  // map={aoFloor1Texture}
+                  // aoMap={aoFloor1Texture}
+                  // toneMapped={false}
+                  metalness={0.8}
+                  roughness={0.4}
+                />
+              </mesh>
+            </>
+          )}
           <mesh
             name="FLOOR_11"
-            castShadow
-            receiveShadow
             geometry={nodes.FLOOR_11.geometry}
-            // material={materials.Mat}
-            position={[-2850.75, -0.073, 876.75]}
+            position={[-28.507, -0.001, 8.767]}
           >
-            <MeshReflectorMaterial
-              // blur={[1048, 1048]}
-              resolution={2048}
-              args={[4000, 4000]}
-              mirror={0.8}
-              mixBlur={1}
-              mixStrength={0.5}
-              rotation={[-Math.PI / 2, 0, 0]}
-              position={[0, -1, 0]}
-              minDepthThreshold={0.4}
-              maxDepthThreshold={1.4}
-              // color={'#919191'}
+            <meshStandardMaterial
               color={'#ffffff'}
-              metalness={0.8}
-              roughness={0.4}
-              // roughnessMap={floor}
-              // normalMap={normal}
-              // normalScale={[0.2, 0.2]}
-              // roughnessScale={[0.02, 0.02]}
+              aoMap={textures.floors.aoFloor1}
+              toneMapped={false}
+            />
+          </mesh>
+          <mesh name="FLOOR_12" geometry={nodes.FLOOR_12.geometry}>
+            <meshStandardMaterial
+              color={'#ffffff'}
+              map={textures.floors.aoFloor2}
+              toneMapped={false}
             />
           </mesh>
           <mesh
-            name="FLOOR_12"
-            castShadow
-            receiveShadow
-            geometry={nodes.FLOOR_12.geometry}
-            material={materials.Mat}
-          />
-          <mesh
             name="FLOOR_13"
-            castShadow
-            receiveShadow
             geometry={nodes.FLOOR_13.geometry}
-            material={materials.Mat}
-            position={[3515.082, 75.695, -69.535]}
-          />
+            position={[35.151, 0.757, -0.695]}
+          >
+            <meshStandardMaterial
+              color={'#ffffff'}
+              map={textures.floors.aoFloor3}
+              toneMapped={false}
+            />
+          </mesh>
           <mesh
             name="FLOOR_14"
-            castShadow
-            receiveShadow
             geometry={nodes.FLOOR_14.geometry}
-            material={materials.Mat}
-            position={[3515.082, 75.695, -69.535]}
-          />
+            position={[35.151, 0.757, -0.695]}
+          >
+            <meshStandardMaterial
+              color={'#ffffff'}
+              map={textures.floors.aoFloor4}
+              toneMapped={false}
+            />
+          </mesh>
           <mesh
             name="FLOOR_15"
-            castShadow
-            receiveShadow
             geometry={nodes.FLOOR_15.geometry}
-            material={materials.Mat}
-            position={[3515.082, 75.695, -69.535]}
-          />
+            position={[35.151, 0.757, -0.695]}
+          >
+            <meshStandardMaterial
+              color={'#ffffff'}
+              map={textures.floors.aoFloor5}
+              toneMapped={false}
+            />
+          </mesh>
         </group>
+        {wallsVisible && (
+          <group name="----------Walls--------------">
+            <mesh name="Ceiling_11" geometry={nodes.Ceiling_11.geometry}>
+              <meshStandardMaterial
+                color={'#ffffff'}
+                map={textures.floors.aoCeiling}
+                toneMapped={false}
+              />
+            </mesh>
+            <mesh name="WALL_113" geometry={nodes.WALL_113.geometry}>
+              <meshStandardMaterial
+                color={'#ffffff'}
+                map={textures.walls.aoWall13}
+                toneMapped={false}
+              />
+            </mesh>
+            <mesh name="WALL_112" geometry={nodes.WALL_112.geometry}>
+              <meshStandardMaterial
+                color={'#ffffff'}
+                map={textures.walls.aoWall12}
+                toneMapped={false}
+              />
+            </mesh>
+            <mesh name="WALL_111" geometry={nodes.WALL_111.geometry}>
+              <meshStandardMaterial
+                color={'#ffffff'}
+                map={textures.walls.aoWall11}
+                toneMapped={false}
+              />
+            </mesh>
+            <mesh name="WALL_110" geometry={nodes.WALL_110.geometry}>
+              <meshStandardMaterial
+                color={'#ffffff'}
+                map={textures.walls.aoWall10}
+                toneMapped={false}
+              />
+            </mesh>
+            <mesh
+              name="WALL_19"
+              geometry={nodes.WALL_19.geometry}
+              position={[79.43, -0.001, -0.365]}
+            >
+              <meshStandardMaterial
+                color={'#ffffff'}
+                map={textures.walls.aoWall9}
+                toneMapped={false}
+              />
+            </mesh>
+            <mesh name="WALL_18" geometry={nodes.WALL_18.geometry}>
+              <meshStandardMaterial
+                color={'#ffffff'}
+                map={textures.walls.aoWall8}
+                toneMapped={false}
+              />
+            </mesh>
+            <mesh
+              name="WALL_17"
+              geometry={nodes.WALL_17.geometry}
+              position={[52.288, 6.3, 6.693]}
+            >
+              <meshStandardMaterial
+                color={'#ffffff'}
+                map={textures.walls.aoWall7}
+                toneMapped={false}
+              />
+            </mesh>
+            <mesh name="WALL_16" geometry={nodes.WALL_16.geometry}>
+              <meshStandardMaterial
+                color={'#ffffff'}
+                map={textures.walls.aoWall6}
+                toneMapped={false}
+              />
+            </mesh>
+            <mesh
+              name="WALL_15"
+              geometry={nodes.WALL_15.geometry}
+              position={[15.615, -0.001, 21.461]}
+            >
+              <meshStandardMaterial
+                color={'#ffffff'}
+                map={textures.walls.aoWall5}
+                toneMapped={false}
+              />
+            </mesh>
+            <mesh name="WALL_14" geometry={nodes.WALL_14.geometry}>
+              <meshStandardMaterial
+                color={'#ffffff'}
+                map={textures.walls.aoWall4}
+                toneMapped={false}
+              />
+            </mesh>
+            <mesh name="WALL_13" geometry={nodes.WALL_13.geometry}>
+              <meshStandardMaterial
+                color={'#ffffff'}
+                map={textures.walls.aoWall3}
+                toneMapped={false}
+              />
+            </mesh>
+            <mesh name="WALL_12" geometry={nodes.WALL_12.geometry}>
+              <meshStandardMaterial
+                color={'#ffffff'}
+                map={textures.walls.aoWall2}
+                toneMapped={false}
+              />
+            </mesh>
+            <mesh
+              name="WALL_11"
+              geometry={nodes.WALL_11.geometry}
+              position={[52.797, 0.207, 0.163]}
+            >
+              <meshStandardMaterial
+                color={'#ffffff'}
+                map={textures.walls.aoWall1}
+                toneMapped={false}
+              />
+            </mesh>
+          </group>
+        )}
         <group
           name="Camera_Null"
-          position={[7425, 360, -4370.621]}
-          rotation={[-3.018, -0.782, -3.055]}
+          position={[-17, 1.4, -1.6]}
+          rotation={[0, -1.571, 0]}
         >
           <PerspectiveCamera
-            name="Camera"
+            name="OctaneCamera"
             makeDefault={false}
             far={10000000000}
             near={0.01}
@@ -615,4 +724,4 @@ export function Level(props) {
   );
 }
 
-useGLTF.preload('models/level2.glb');
+useGLTF.preload('models/model.gltf');
