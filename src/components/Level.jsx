@@ -1,5 +1,6 @@
-import React, { useRef, useCallback, useEffect } from 'react';
+import React, { useRef, useCallback, useEffect, useState } from 'react';
 import {
+  useCursor,
   useGLTF,
   PerspectiveCamera,
   MeshReflectorMaterial,
@@ -8,14 +9,20 @@ import { useTextures } from 'src/components/useTextures';
 import * as THREE from 'three';
 import { useControls } from 'leva';
 import { useFrame } from '@react-three/fiber';
+import { Quaternion, Vector3 } from 'three';
+import { easing } from 'maath';
 
 export function Model(props) {
   const group = useRef();
+  const exhibitOnObserve = useRef(null);
   const { nodes, animations, scene, cameras } = useGLTF('models/model.gltf');
   const textures = useTextures();
   const mixer = useRef(new THREE.AnimationMixer(scene));
   const action = useRef(mixer.current.clipAction(animations[0]));
   action.current.play();
+  const [hover, setHover] = useState(false);
+
+  useCursor(hover);
 
   const {
     floorMirrorStrength,
@@ -35,6 +42,13 @@ export function Model(props) {
     superSlowTouchPadSpeed: false,
   });
 
+  const onExhibitClick = (event, position, quaternion) => {
+    exhibitOnObserve.current = {
+      position,
+      quaternion,
+    };
+  };
+
   const detectTrackpad = (event) => {
     const { deltaY, wheelDeltaY, deltaMode } = event;
     return wheelDeltaY ? wheelDeltaY === -3 * deltaY : deltaMode === 0;
@@ -42,6 +56,7 @@ export function Model(props) {
 
   const onObserveRoom = useCallback(
     (event) => {
+      if (exhibitOnObserve.current) exhibitOnObserve.current = null;
       if (detectTrackpad(event)) {
         if (event.deltaY > 0) {
           if (superSlowTouchPadSpeed) {
@@ -80,9 +95,27 @@ export function Model(props) {
   }, [scrollSpeed, touchPadSpeed, superSlowTouchPadSpeed]);
 
   useFrame((state) => {
-    state.camera.position.lerp(cameras[0].parent.position, 0.08);
-    state.camera.quaternion.slerp(cameras[0].parent.quaternion, 0.08);
-    state.camera.scale.lerp(cameras[0].parent.scale, 0.08);
+    if (exhibitOnObserve.current) {
+      // easing.damp3(
+      //   state.camera.position,
+      //   exhibitOnObserve.current?.position,
+      //   0.4,
+      //   0.08
+      // );
+      // easing.dampQ(
+      //   state.camera.quaternion,
+      //   exhibitOnObserve.current?.quaternion,
+      //   0.4,
+      //   0.08
+      // );
+
+      state.camera.position.lerp(exhibitOnObserve.current?.position, 0.08);
+      state.camera.quaternion.slerp(exhibitOnObserve.current?.quaternion, 0.08);
+    } else {
+      state.camera.position.lerp(cameras[0].parent.position, 0.08);
+      state.camera.quaternion.slerp(cameras[0].parent.quaternion, 0.08);
+      state.camera.scale.lerp(cameras[0].parent.scale, 0.08);
+    }
     state.camera.updateProjectionMatrix();
     state.camera.updateMatrixWorld();
   });
@@ -92,7 +125,19 @@ export function Model(props) {
       <group>
         {exhibitsVisible && (
           <group name="----------Exponats----------">
-            <group name="Exponat_01" position={[-26.923, 0.293, -7.992]}>
+            <group
+              name="Exponat_01"
+              position={[-26.923, 0.293, -7.992]}
+              onPointerOver={() => setHover(true)}
+              onPointerOut={() => setHover(false)}
+              onClick={(event) =>
+                onExhibitClick(
+                  event,
+                  new Vector3(-26.923, 1, -6),
+                  event.eventObject.quaternion
+                )
+              }
+            >
               <mesh
                 name="Shoes_L"
                 geometry={nodes.Shoes_L.geometry}
@@ -124,6 +169,18 @@ export function Model(props) {
               name="Exponat_02"
               position={[-36.012, 0.297, 7.955]}
               rotation={[-0.01, -0.005, -0.001]}
+              onPointerOver={() => setHover(true)}
+              onPointerOut={() => setHover(false)}
+              onClick={(event) =>
+                onExhibitClick(
+                  event,
+                  new Vector3(-34, 1, 7.955),
+                  new THREE.Quaternion().setFromAxisAngle(
+                    new THREE.Vector3(0, 1, 0),
+                    Math.PI / 2
+                  )
+                )
+              }
             >
               <mesh
                 name="Caps"
@@ -142,6 +199,18 @@ export function Model(props) {
               name="Exponat_03"
               position={[-21.776, 0, 19.522]}
               rotation={[Math.PI, -0.96, Math.PI]}
+              onPointerOver={() => setHover(true)}
+              onPointerOut={() => setHover(false)}
+              onClick={(event) =>
+                onExhibitClick(
+                  event,
+                  new Vector3(-21.776, 1, 14.522),
+                  new THREE.Quaternion().setFromAxisAngle(
+                    new THREE.Vector3(0, 1, 0),
+                    Math.PI
+                  )
+                )
+              }
             >
               <mesh
                 name="Bed_low"
@@ -160,6 +229,15 @@ export function Model(props) {
               name="Exponat_04"
               position={[-0.338, 0.007, -0.79]}
               rotation={[-Math.PI, 0, -Math.PI]}
+              onPointerOver={() => setHover(true)}
+              onPointerOut={() => setHover(false)}
+              onClick={(event) =>
+                onExhibitClick(
+                  event,
+                  new Vector3(-0.338, 1, 3),
+                  new THREE.Quaternion(0, 0, 0, 1)
+                )
+              }
             >
               <mesh
                 name="Kubiki"
@@ -178,6 +256,18 @@ export function Model(props) {
               name="Exponat_05"
               position={[13.882, 1.4, 12.397]}
               rotation={[-Math.PI / 2, 0, 0]}
+              onPointerOver={() => setHover(true)}
+              onPointerOut={() => setHover(false)}
+              onClick={(event) =>
+                onExhibitClick(
+                  event,
+                  new Vector3(13.882, 1.4, 8),
+                  new THREE.Quaternion().setFromAxisAngle(
+                    new THREE.Vector3(0, 1, 0),
+                    Math.PI
+                  )
+                )
+              }
             >
               <mesh
                 name="Child_art"
@@ -196,6 +286,18 @@ export function Model(props) {
               name="Exponat_06"
               position={[25.275, -0.015, -2.434]}
               rotation={[Math.PI / 2, 0, Math.PI / 9]}
+              onPointerOver={() => setHover(true)}
+              onPointerOut={() => setHover(false)}
+              onClick={(event) =>
+                onExhibitClick(
+                  event,
+                  new Vector3(24, 1.8, 2),
+                  new THREE.Quaternion().setFromAxisAngle(
+                    new THREE.Vector3(0, 1, 0),
+                    -Math.PI * 0.11
+                  )
+                )
+              }
             >
               <mesh
                 name="Xilofon"
@@ -214,6 +316,18 @@ export function Model(props) {
               name="Exponat_07"
               position={[46.131, -0.001, 33.496]}
               rotation={[0, -0.295, 0]}
+              onPointerOver={() => setHover(true)}
+              onPointerOut={() => setHover(false)}
+              onClick={(event) =>
+                onExhibitClick(
+                  event,
+                  new Vector3(46.62, 1.5, 32),
+                  new THREE.Quaternion().setFromAxisAngle(
+                    new THREE.Vector3(0, 1, 0),
+                    Math.PI * 0.9
+                  )
+                )
+              }
             >
               <mesh
                 name="Diary"
@@ -233,6 +347,18 @@ export function Model(props) {
               name="Exponat_08"
               position={[66.573, 1.4, 30.021]}
               rotation={[Math.PI / 2, 0, 2.473]}
+              onPointerOver={() => setHover(true)}
+              onPointerOut={() => setHover(false)}
+              onClick={(event) =>
+                onExhibitClick(
+                  event,
+                  new Vector3(65, 1.7, 28),
+                  new THREE.Quaternion().setFromAxisAngle(
+                    new THREE.Vector3(0, 1, 0),
+                    Math.PI * 1.2
+                  )
+                )
+              }
             >
               <mesh
                 name="Kollag"
@@ -251,6 +377,18 @@ export function Model(props) {
               name="Exponat_09"
               position={[58.205, -0.088, 4.855]}
               rotation={[-Math.PI, 0.36, -Math.PI]}
+              onPointerOver={() => setHover(true)}
+              onPointerOut={() => setHover(false)}
+              onClick={(event) =>
+                onExhibitClick(
+                  event,
+                  new Vector3(60.5, 1.4, 4.2),
+                  new THREE.Quaternion().setFromAxisAngle(
+                    new THREE.Vector3(0, 1, 0),
+                    Math.PI * 0.6
+                  )
+                )
+              }
             >
               <mesh
                 name="Christmass_Ball"
@@ -270,6 +408,18 @@ export function Model(props) {
               name="Exponat_10"
               position={[55.58, 0, -12.921]}
               rotation={[0, -0.403, 0]}
+              onPointerOver={() => setHover(true)}
+              onPointerOut={() => setHover(false)}
+              onClick={(event) =>
+                onExhibitClick(
+                  event,
+                  new Vector3(57.5, 1.5, -11.5),
+                  new THREE.Quaternion().setFromAxisAngle(
+                    new THREE.Vector3(0, 1, 0),
+                    Math.PI * 0.28
+                  )
+                )
+              }
             >
               <mesh
                 name="Bow_tie"
@@ -290,6 +440,18 @@ export function Model(props) {
               position={[66.969, 0, -42.586]}
               rotation={[0, -0.215, -Math.PI]}
               scale={[1, -1, 1]}
+              onPointerOver={() => setHover(true)}
+              onPointerOut={() => setHover(false)}
+              onClick={(event) =>
+                onExhibitClick(
+                  event,
+                  new Vector3(63, 1, -40.5),
+                  new THREE.Quaternion().setFromAxisAngle(
+                    new THREE.Vector3(0, 1, 0),
+                    Math.PI * 0.1
+                  )
+                )
+              }
             >
               <mesh
                 name="Ball"
@@ -366,12 +528,24 @@ export function Model(props) {
               name="Exponat_12"
               position={[46.632, 0, -37.835]}
               rotation={[Math.PI, Math.PI / 4, -Math.PI]}
+              onClick={(event) =>
+                onExhibitClick(
+                  event,
+                  new Vector3(47.2, 1, -38.7),
+                  new THREE.Quaternion().setFromAxisAngle(
+                    new THREE.Vector3(0, 1, 0),
+                    Math.PI * 0.8
+                  )
+                )
+              }
             >
               <mesh
                 name="Bear_body"
                 geometry={nodes.Bear_body.geometry}
                 position={[-0.003, 0.947, 0.056]}
                 rotation={[Math.PI, -Math.PI / 4, Math.PI]}
+                onPointerOver={() => setHover(true)}
+                onPointerOut={() => setHover(false)}
               >
                 <meshStandardMaterial
                   color={'#ffffff'}
@@ -385,6 +559,18 @@ export function Model(props) {
               name="Exponat_13"
               position={[48.412, 0, -57.511]}
               rotation={[0, 0.782, 0]}
+              onPointerOver={() => setHover(true)}
+              onPointerOut={() => setHover(false)}
+              onClick={(event) =>
+                onExhibitClick(
+                  event,
+                  new Vector3(50.5, 0.7, -56),
+                  new THREE.Quaternion().setFromAxisAngle(
+                    new THREE.Vector3(0, 1, 0),
+                    Math.PI * 0.25
+                  )
+                )
+              }
             >
               <mesh
                 name="Truck"
@@ -404,6 +590,18 @@ export function Model(props) {
               name="Exponat_14"
               position={[67.651, 0, -57.222]}
               rotation={[0, Math.PI / 4, 0]}
+              onPointerOver={() => setHover(true)}
+              onPointerOut={() => setHover(false)}
+              onClick={(event) =>
+                onExhibitClick(
+                  event,
+                  new Vector3(66.5, 1.1, -56),
+                  new THREE.Quaternion().setFromAxisAngle(
+                    new THREE.Vector3(0, 1, 0),
+                    -Math.PI * 0.25
+                  )
+                )
+              }
             >
               <mesh
                 name="Doll"
