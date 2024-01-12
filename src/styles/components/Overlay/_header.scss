@@ -1,0 +1,19 @@
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5vh;
+}
+
+.header-main-logo {
+  color: #4c4c4c;
+  cursor: pointer;
+  transition: 0.1s;
+  pointer-events: all;
+
+  //stroke: #4c4c4c;
+
+  &:hover {
+    color: #fff;
+  }
+}

@@ -1,0 +1,97 @@
+.sound {
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 58px;
+  height: 28px;
+  background-color: transparent;
+  border: none;
+  transform-origin: bottom;
+  cursor: pointer;
+  animation: down 2s forwards;
+  pointer-events: all;
+
+  & span {
+    width: 2px;
+    height: 100%;
+    background: #4c4c4c;
+    transform: scaleY(0.2);
+    transform-origin: bottom;
+    animation: equalize 3s infinite;
+
+    &:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    &:nth-child(4) {
+      animation-delay: 0.6s;
+    }
+
+    &:nth-child(5) {
+      animation-delay: 0.8s;
+    }
+
+    &:nth-child(6) {
+      animation-delay: 1s;
+    }
+
+    &:nth-child(7) {
+      animation-delay: 1.2s;
+    }
+
+    &:nth-child(8) {
+      animation-delay: 1.4s;
+    }
+
+    &:nth-child(9) {
+      animation-delay: 1.6s;
+    }
+
+    &:nth-child(10) {
+      animation-delay: 1.8s;
+    }
+  }
+
+  &--on {
+    animation: up 2s forwards;
+  }
+}
+
+@keyframes equalize {
+  0% {
+    transform: scaleY(0.2);
+  }
+
+  50% {
+    transform: scaleY(1);
+  }
+
+  100% {
+    transform: scaleY(0.2);
+  }
+}
+
+@keyframes down {
+  0% {
+    transform: scaleY(1);
+  }
+
+  100% {
+    transform: scaleY(0.3);
+  }
+}
+
+@keyframes up {
+  0% {
+    transform: scaleY(0.3);
+  }
+
+  100% {
+    transform: scaleY(1);
+  }
+}

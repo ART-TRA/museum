@@ -1,0 +1,78 @@
+.exhibit-description {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 40%;
+  height: 100%;
+  padding: 17vh 8vw;
+  background-color: #fff;
+  transform: translateX(100%);
+  transition: 0.6s;
+
+  &--visible {
+    transform: translateX(0);
+  }
+
+  h2 {
+    margin: 0;
+    color: #4c4c4c;
+    font-size: 6vw;
+    font-family: $fontFamilyAmaticSC;
+    line-height: 100%;
+  }
+
+  p {
+    margin: 34px 0 0;
+    color: #4c4c4c;
+    font-weight: 400;
+    font-size: 0.9vw;
+    line-height: 130%;
+
+    a {
+      color: #4c4c4c;
+      pointer-events: all;
+    }
+  }
+}
+
+.exhibit-description__close {
+  position: absolute;
+  top: 5vh;
+  right: 5vh;
+  width: 42px;
+  height: 42px;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  border: 0;
+  transition: 0.3s;
+  pointer-events: all;
+
+  & svg {
+    color: #4c4c4c;
+  }
+
+  &:hover {
+    transform: rotate(90deg);
+  }
+}
+
+.exhibit-description__help {
+  margin: 48px 0 0;
+  padding: 14px 40px;
+  color: #fff;
+  font-weight: 400;
+  font-size: 1vw;
+  text-transform: uppercase;
+  background-color: #4c4c4c;
+  border: 1px solid #4c4c4c;
+  border-radius: 82px;
+  transition: 0.2s;
+  pointer-events: all;
+
+  &:hover {
+    color: #4c4c4c;
+    background-color: #fff;
+  }
+}

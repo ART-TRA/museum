@@ -1,15 +1,12 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Stats, Stage } from '@react-three/drei';
+import { OrbitControls, Stats } from '@react-three/drei';
 import { Background } from 'src/components/Background';
-import { OfficeModel } from 'src/components/OfficeModel';
 import * as THREE from 'three';
-import { ModelLast } from 'src/components/LevelVol2';
 import { Model } from 'src/components/Level';
+import { HomeScreen } from 'src/components/HomeScreen';
 
 export const Scene = () => {
-  // const ref = useRef();
-
   return (
     <Canvas
       // shadows
@@ -34,17 +31,8 @@ export const Scene = () => {
       eventPrefix="client"
     >
       {/*<OrbitControls />*/}
-      {/*<Stage*/}
-      {/*  controls={ref}*/}
-      {/*  preset="soft"*/}
-      {/*  intensity={2}*/}
-      {/*  contactShadow={false}*/}
-      {/*  shadows={false}*/}
-      {/*  environment="city"*/}
-      {/*>*/}
+      {/*<HomeScreen />*/}
       <Model />
-      {/*<OfficeModel />*/}
-      {/*</Stage>*/}
       <Background />
       <Stats showPanel={0} className="stats" />
     </Canvas>

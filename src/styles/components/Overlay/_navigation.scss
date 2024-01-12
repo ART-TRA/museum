@@ -1,0 +1,22 @@
+.navigation {
+  width: -webkit-fill-available;
+  max-width: 82px;
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.navigation-path {
+  transition: 0.1s;
+  fill: #4c4c4c;
+  stroke: #4c4c4c;
+
+  &--active {
+    fill: transparent;
+    stroke: #4c4c4c;
+  }
+
+  &:hover {
+    fill: transparent;
+    stroke: #4c4c4c;
+  }
+}

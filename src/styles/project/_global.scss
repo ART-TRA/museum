@@ -1,6 +1,6 @@
 * {
   box-sizing: border-box;
-  font-family: $fontFamily;
+  font-family: $fontFamilyInter;
 }
 
 html,
@@ -11,6 +11,7 @@ body,
   margin: 0;
   padding: 0;
   overflow: hidden;
+  font-size: 10px;
   //background: #cccccc;
 }
 

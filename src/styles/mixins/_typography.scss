@@ -32,7 +32,7 @@
       font-family: '#{$family}';
 
       @if map-has-key($extensions, eot) {
-        src: url('/public/fonts/#{$familyNorm}/#{$filename}-#{$name}.eot');
+        src: url('/fonts/#{$familyNorm}/#{$filename}-#{$name}.eot');
       }
 
       src: font-face-format($extensions, $familyNorm, $filename, $name);
@@ -185,10 +185,10 @@
     }
 
     @if $extension == eot {
-      $result: #{$result}#{$comma}#{url('/public/fonts/#{$familyNorm}/#{$filename}-#{$name}.#{$extension}?#iefix')
+      $result: #{$result}#{$comma}#{url('/fonts/#{$familyNorm}/#{$filename}-#{$name}.#{$extension}?#iefix')
         format('#{$format}')};
     } @else {
-      $result: #{$result}#{$comma}#{url('/public/fonts/#{$familyNorm}/#{$filename}-#{$name}.#{$extension}')
+      $result: #{$result}#{$comma}#{url('/fonts/#{$familyNorm}/#{$filename}-#{$name}.#{$extension}')
         format('#{$format}')};
     }
   }

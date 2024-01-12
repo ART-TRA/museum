@@ -1,0 +1,90 @@
+.wall {
+  position: sticky;
+  z-index: -1;
+  color: #4c4c4c;
+  text-align: center;
+  transition: 0.5s;
+  pointer-events: none;
+
+  h2 {
+    margin: 0;
+    font-family: $fontFamilyAmaticSC;
+    text-transform: uppercase;
+  }
+
+  p {
+    font-weight: 400;
+    opacity: 0.8;
+  }
+
+  &--same {
+    h2 {
+      font-size: 1.7em;
+    }
+
+    p {
+      width: 21.6em;
+      margin: 2em auto 0;
+      font-size: 0.36em;
+      line-height: 1.4em;
+    }
+  }
+
+  &--talents {
+    h2 {
+      font-size: 1.7em;
+    }
+
+    p {
+      width: 24.6em;
+      margin: 2em auto 0;
+      font-size: 0.36em;
+      line-height: 1.4em;
+    }
+  }
+
+  &--dreams {
+    width: 18em;
+
+    h2 {
+      font-size: 2.6em;
+    }
+
+    p {
+      width: 24.6em;
+      margin: 2em auto 0;
+      font-size: 0.57em;
+      line-height: 1.4em;
+    }
+  }
+
+  &--celebrate {
+    width: 10em;
+
+    h2 {
+      font-size: 1.7em;
+    }
+
+    p {
+      width: 24em;
+      margin: 2em auto 0;
+      font-size: 0.36em;
+      line-height: 1.4em;
+    }
+  }
+
+  &--toys {
+    width: 11em;
+
+    h2 {
+      font-size: 1.7em;
+    }
+
+    p {
+      width: 26em;
+      margin: 2em auto 0;
+      font-size: 0.36em;
+      line-height: 1.4em;
+    }
+  }
+}

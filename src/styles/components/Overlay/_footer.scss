@@ -1,0 +1,42 @@
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4vh 5vh;
+
+  p {
+    margin: 0;
+    color: #4c4c4c;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 130%;
+    text-transform: uppercase;
+
+    %overlay-faded & {
+      opacity: 0;
+    }
+  }
+
+  &--title-screen {
+    justify-content: center;
+
+    p {
+      display: none;
+    }
+  }
+}
+
+.footer__start {
+  color: #4c4c4c;
+  font-size: 1.5vw;
+  font-family: $fontFamilyAmaticSC;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+  pointer-events: all;
+
+  &:hover {
+    transform: scale(1.4);
+  }
+}

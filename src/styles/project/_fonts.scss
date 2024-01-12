@@ -1,22 +1,42 @@
-$fontVariants: (
-  300: Ligth,
-  400: Regular,
-  500: Medium,
-  600: SemiBold,
-  700: Bold,
+$fontFamily: 'Inter', sans-serif;
+
+$fontVariantsAmaticSC: (
+  400: regular,
+  700: bold,
 );
 
-$fontFormats: (
+$fontFormatsAmaticSC: (
   woff2: woff2,
 );
 
-$fontFamily: 'SpaceGrotesk', sans-serif;
+$fontFamilyAmaticSC: 'AmaticSC', sans-serif;
 
 @include font-face(
-  'SpaceGrotesk',
-  SpaceGrotesk,
-  $fontVariants,
-  $fontFormats,
+  'AmaticSC',
+  AmaticSC,
+  $fontVariantsAmaticSC,
+  $fontFormatsAmaticSC,
+  true,
+  true
+);
+
+$fontVariantsInter: (
+  400: light,
+  500: regular,
+  600: medium,
+);
+
+$fontFormatsInter: (
+  woff2: woff2,
+);
+
+$fontFamilyInter: 'Inter', sans-serif;
+
+@include font-face(
+  'Inter',
+  Inter,
+  $fontVariantsInter,
+  $fontFormatsInter,
   true,
   true
 );

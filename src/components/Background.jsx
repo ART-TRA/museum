@@ -15,14 +15,14 @@ import { useControls } from 'leva';
 
 const envs = [
   '/environment/env1.hdr',
-  '/environment/env2.hdr',
-  '/environment/env3.hdr',
-  '/environment/env4.hdr',
-  '/environment/env5.hdr',
-  '/environment/env6.hdr',
-  '/environment/env7.hdr',
-  '/environment/env8.hdr',
-  '/environment/env9.hdr',
+  // '/environment/env2.hdr',
+  // '/environment/env3.hdr',
+  // '/environment/env4.hdr',
+  // '/environment/env5.hdr',
+  // '/environment/env6.hdr',
+  // '/environment/env7.hdr',
+  // '/environment/env8.hdr',
+  // '/environment/env9.hdr',
 ];
 
 export const Background = () => {
