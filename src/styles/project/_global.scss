@@ -1,6 +1,7 @@
 * {
   box-sizing: border-box;
   font-family: $fontFamilyInter;
+  cursor: url('/images/handCursor.svg'), auto !important;
 }
 
 html,
@@ -12,7 +13,7 @@ body,
   padding: 0;
   overflow: hidden;
   font-size: 10px;
-  //background: #cccccc;
+  background-color: #d8d7d7;
 }
 
 html {
@@ -28,9 +29,11 @@ html {
   height: 100vh;
   margin: 0;
   padding: 0;
+  cursor: url('/images/hover.webm');
+
   //cursor: grab;
   //touch-action: auto !important;
-  
+
   //&::before {
   //  content: '';
   //  position: absolute;
@@ -53,6 +56,7 @@ html {
 
 .canvas {
   width: 100% !important;
+
   //touch-action: auto !important;
 }
 
@@ -65,7 +69,7 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #ffffff;
+  background-color: #fff;
   border-radius: 10px;
 }
 
@@ -93,31 +97,28 @@ html {
 //}
 
 @keyframes grain {
-  0%, 100% {
-    transform: translate(0,0);
+  0%,
+  100% {
+    transform: translate(0, 0);
   }
-  
+
   10% {
-    transform: translate(-5%,-10%);
+    transform: translate(-5%, -10%);
   }
-  
+
   30% {
-    transform: translate(3%,-15%);
+    transform: translate(3%, -15%);
   }
-  
+
   50% {
-    transform: translate(12%,9%);
+    transform: translate(12%, 9%);
   }
-  
+
   70% {
-    transform: translate(9%,4%);
+    transform: translate(9%, 4%);
   }
-  
+
   90% {
-    transform: translate(-1%,7%);
+    transform: translate(-1%, 7%);
   }
 }
-
-
-
-

@@ -1,20 +1,29 @@
-.sound {
+.sound__wrap {
   z-index: 2;
   display: flex;
   align-items: center;
+  height: 28px;
+  background-color: transparent;
+  border: none;
+  //cursor: pointer;
+  pointer-events: all;
+}
+
+.sound {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  width: 58px;
   height: 28px;
   background-color: transparent;
   border: none;
   transform-origin: bottom;
-  cursor: pointer;
   animation: down 2s forwards;
   pointer-events: all;
 
   & span {
     width: 2px;
     height: 100%;
+    margin: 0 3px 0 0;
     background: #4c4c4c;
     transform: scaleY(0.2);
     transform-origin: bottom;

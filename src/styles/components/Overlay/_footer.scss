@@ -1,4 +1,8 @@
 .footer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -18,11 +22,30 @@
   }
 
   &--title-screen {
+    bottom: 80px;
     justify-content: center;
 
     p {
       display: none;
     }
+  }
+
+  &--figures-screen {
+    p {
+      display: flex;
+      opacity: 0;
+    }
+  }
+
+  &--room-screen {
+    p {
+      display: flex;
+      opacity: 1;
+    }
+  }
+
+  @include media-breakpoint-up(tablet) {
+    position: unset;
   }
 }
 
@@ -32,7 +55,8 @@
   font-family: $fontFamilyAmaticSC;
   background-color: transparent;
   border: none;
-  cursor: pointer;
+
+  //cursor: pointer;
   transition: 0.3s;
   pointer-events: all;
 
