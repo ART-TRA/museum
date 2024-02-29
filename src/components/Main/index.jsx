@@ -5,10 +5,12 @@ import { AtomEffects } from 'src/recoil/effects';
 import { Scene } from 'src/components/Main/Scene';
 import { FadeIn } from 'src/components/Overlay/FadeIn';
 import { Hand } from 'src/icons/Hand';
+import { Cursor } from 'src/components/Main/Cursor';
 
 const SuspenseFallback = () => {
   useEffect(() => {
     return () => {
+      console.log('Suspense return');
       window.dispatchEvent(new CustomEvent('allLoaded'));
     };
   }, []);
@@ -27,9 +29,10 @@ export const Main = () => {
   return (
     <Suspense fallback={<SuspenseFallback />}>
       <RecoilRoot>
+        <Cursor />
         <AtomEffects />
         <Overlay />
-        <div className="grain" />
+        {/*<div className="grain" />*/}
         <div className="scene">
           <Scene />
         </div>

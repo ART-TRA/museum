@@ -1,21 +1,22 @@
 import React from 'react';
 import { Cross } from 'src/icons/Cross';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { activeExhibitAtom } from 'src/recoil/atoms/activeExhibit';
 import cn from 'classnames';
 import { useExhibits } from 'src/hooks/useExhibits';
+import { activeScreenAtom } from 'src/recoil/atoms/activeScreen';
 
-export const ExhibitDescription = () => {
+const ExhibitDescriptionInner = () => {
   const [exhibitActive, setExhibitActive] = useRecoilState(activeExhibitAtom);
   const exhibits = useExhibits();
   const classNames = cn('exhibit-description', {
     'exhibit-description--visible': exhibitActive,
+    'exhibit-description--hand': exhibitActive === 'hand',
   });
 
   const onExitFromDescription = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    console.log('EXIT');
     setExhibitActive(null);
     window.dispatchEvent(new CustomEvent('onExitFromDescription'));
   };
@@ -28,11 +29,20 @@ export const ExhibitDescription = () => {
     <div className={classNames}>
       <button
         type="button"
-        className="exhibit-description__close"
+        className="exhibit-description__close-field"
         onClick={(event) => onExitFromDescription(event)}
       >
-        <Cross />
+        <p>closer</p>
       </button>
+      {exhibitActive !== 'hand' && (
+        <button
+          type="button"
+          className="exhibit-description__close"
+          onClick={(event) => onExitFromDescription(event)}
+        >
+          <Cross />
+        </button>
+      )}
       <h2>{exhibits?.[exhibitActive]?.title}</h2>
       <p
         dangerouslySetInnerHTML={{
@@ -50,14 +60,18 @@ export const ExhibitDescription = () => {
               Помочь сиротам
             </button>
           </div>
-          <p>
-            Сделано в{' '}
-            <a href="https://ruport.ru" target="_blank" rel="noreferrer">
-              RUPORT
-            </a>
-          </p>
         </div>
       )}
     </div>
   );
+};
+
+export const ExhibitDescription = () => {
+  const activeScreen = useRecoilValue(activeScreenAtom);
+
+  if (activeScreen === 'room') {
+    return <ExhibitDescriptionInner />;
+  }
+
+  return null;
 };

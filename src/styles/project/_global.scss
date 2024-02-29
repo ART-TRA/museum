@@ -1,7 +1,7 @@
 * {
   box-sizing: border-box;
   font-family: $fontFamilyInter;
-  cursor: url('/images/handCursor.svg'), auto !important;
+  //cursor: url('/images/handCursor.svg'), auto !important;
 }
 
 html,
@@ -13,7 +13,8 @@ body,
   padding: 0;
   overflow: hidden;
   font-size: 10px;
-  background-color: #d8d7d7;
+  background-color: #fff;
+  //background-color: #d8d7d7;
 }
 
 html {

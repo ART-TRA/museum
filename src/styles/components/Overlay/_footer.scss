@@ -3,16 +3,18 @@
   right: 0;
   bottom: 0;
   left: 0;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 4vh 5vh;
 
   p {
+    max-width: 204px;
     margin: 0;
     color: #4c4c4c;
-    font-weight: 400;
-    font-size: 18px;
+    font-weight: 500;
+    font-size: 20px;
     line-height: 130%;
     text-transform: uppercase;
 
@@ -23,24 +25,22 @@
 
   &--title-screen {
     bottom: 80px;
-    justify-content: center;
-
-    p {
-      display: none;
-    }
+    justify-content: flex-start;
   }
 
   &--figures-screen {
     p {
       display: flex;
-      opacity: 0;
     }
   }
 
   &--room-screen {
     p {
-      display: flex;
       opacity: 1;
+
+      a {
+        color: #4c4c4c;
+      }
     }
   }
 
@@ -62,5 +62,39 @@
 
   &:hover {
     transform: scale(1.4);
+  }
+}
+
+.scroll-animated-icon {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  height: 70px;
+  overflow: hidden;
+  background-color: #c7c7c7;
+  transform: translateX(-50%);
+
+  &::after {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    background-color: #4c4c4c;
+    animation: toggle-color 2s normal infinite;
+    content: '';
+  }
+}
+
+@keyframes toggle-color {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  50% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(100%);
   }
 }

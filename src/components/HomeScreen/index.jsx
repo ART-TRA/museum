@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
-import { PerspectiveCamera } from '@react-three/drei';
+import React, { useRef } from 'react';
 import * as THREE from 'three';
-import { useFrame, useThree } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import { Background } from 'src/components/HomeScreen/Background';
 import { Pyramid } from 'src/components/HomeScreen/Pyramid';
 import { CubeLong } from 'src/components/HomeScreen/CubeLong';
@@ -10,7 +9,11 @@ import { Cube } from 'src/components/HomeScreen/Cube';
 import { Sphere } from 'src/components/HomeScreen/Sphere';
 import gsap from 'gsap';
 import { activeScreenAtom } from 'src/recoil/atoms/activeScreen';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { StartTitle } from 'src/components/HomeScreen/StartTitle';
+import { BackPlane } from 'src/components/HomeScreen/BackPlane';
+import { useFigures } from 'src/components/HomeScreen/useFigures';
+import { activeRoomKeys } from 'src/recoil/atoms/activeRoom';
 
 export const changeScale = (mesh) => {
   gsap.from(mesh?.scale, {
@@ -27,47 +30,49 @@ export const changeScale = (mesh) => {
 };
 
 export const HomeScreen = ({ model }) => {
-  const activeScreen = useRecoilValue(activeScreenAtom);
-  const { camera } = useThree();
-  useFrame((state) => {
-    state.camera.position.lerp(
-      new THREE.Vector3(-state.mouse.x * 1.6, -state.mouse.y * 1.6, 18),
-      0.05
-    );
+  const [activeScreen, setActiveScreen] = useRecoilState(activeScreenAtom);
+  const scrollLimit = useRef(4);
+  const { onFigureClick } = useFigures();
 
-    state.camera.lookAt(new THREE.Vector3(0, 0, 0));
-  });
-
-  useEffect(() => {
+  const slideToRoom = () => {
+    console.log('slideToRoom0', activeScreen);
     if (activeScreen === 'figures') {
-      gsap.fromTo(
-        camera.position,
-        {
-          z: 0,
-        },
-        {
-          duration: 2,
-          z: camera.position.z,
-        }
-      );
+      console.log('slideToRoom', scrollLimit.current);
+      scrollLimit.current -= 1;
+
+      if (scrollLimit.current <= 0) {
+        console.log('onFigureClick');
+        onFigureClick(activeRoomKeys[0]);
+      }
     }
-  }, [activeScreen]);
+  };
+
+  useFrame((state) => {
+    if (activeScreen !== 'room') {
+      state.camera.position.lerp(
+        new THREE.Vector3(-state.mouse.x * 1.6, -state.mouse.y * 1.6, 18),
+        0.05
+      );
+
+      state.camera.lookAt(new THREE.Vector3(0, 0, 0));
+    }
+  });
 
   return (
     <group dispose={null} rotation={[0, 0, 0]}>
-      <PerspectiveCamera
-        makeDefault={false}
-        far={10000000000}
-        near={0.01}
-        fov={0.773}
-        position={[0, 0, 715.188]}
+      <StartTitle
+        activeScreen={activeScreen}
+        setActiveScreen={setActiveScreen}
       />
-      <Background />
-      <Pyramid nodes={model?.nodes} />
-      <CubeLong nodes={model?.nodes} />
-      <HalfTorus nodes={model?.nodes} />
-      <Sphere nodes={model?.nodes} />
-      <Cube nodes={model?.nodes} />
+      {activeScreen !== 'room' && <Background />}
+      <group onWheel={(event) => slideToRoom(event)}>
+        <Pyramid nodes={model?.nodes} />
+        <CubeLong nodes={model?.nodes} />
+        <HalfTorus nodes={model?.nodes} />
+        <Sphere nodes={model?.nodes} />
+        <Cube nodes={model?.nodes} />
+        <BackPlane />
+      </group>
     </group>
   );
 };

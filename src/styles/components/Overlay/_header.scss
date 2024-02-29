@@ -15,13 +15,7 @@ header {
 
 .header-main-logo {
   color: #4c4c4c;
-  //cursor: pointer;
+  transform: scale(1.15);
+  cursor: pointer;
   transition: 0.1s;
-  pointer-events: all;
-
-  //stroke: #4c4c4c;
-
-  &:hover {
-    color: #fff;
-  }
 }

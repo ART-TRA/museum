@@ -14,10 +14,10 @@ export const SoundSwitch = ({ ambient }) => {
     gsap.timeline().fromTo(
       ambient.current,
       {
-        volume: sound ? 0.0 : 1.0,
+        volume: sound ? 0.0 : 0.65,
       },
       {
-        volume: sound ? 1.0 : 0.0,
+        volume: sound ? 0.65 : 0.0,
         duration: 1,
       },
       1
@@ -33,6 +33,7 @@ export const SoundSwitch = ({ ambient }) => {
   };
 
   useEffect(() => {
+    console.log('playAmbientSound');
     playAmbientSound();
   }, [sound]);
 

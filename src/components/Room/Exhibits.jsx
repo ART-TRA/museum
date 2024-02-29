@@ -6,7 +6,7 @@ import { useGLTF } from '@react-three/drei';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { activeExhibitAtom } from 'src/recoil/atoms/activeExhibit';
 import { useThree } from '@react-three/fiber';
-import { activeMuseumAtom } from 'src/recoil/atoms/activeMuseum';
+// import { activeMuseumAtom } from 'src/recoil/atoms/activeMuseum';
 import { roomDurationAtom } from 'src/recoil/atoms/roomDuration';
 import { useTextures } from 'src/hooks/useTextures';
 
@@ -14,26 +14,25 @@ export const Exhibits = ({ exhibitOnObserve }) => {
   const { viewport } = useThree();
   const { nodes } = useGLTF('models/model.glb');
   const textures = useTextures();
-  const roomDuration = useRecoilValue(roomDurationAtom);
-  const isActiveMuseum = useRecoilValue(activeMuseumAtom);
+  // const isActiveMuseum = useRecoilValue(activeMuseumAtom);
   const [isExhibitActive, setExhibitActive] = useRecoilState(activeExhibitAtom);
 
   const onExhibitClick = (name, position, quaternion) => {
-    if (isActiveMuseum) {
-      setExhibitActive(name);
-      exhibitOnObserve.current = {
-        position,
-        quaternion,
-      };
-    }
+    // if (isActiveMuseum) {
+    setExhibitActive(name);
+    exhibitOnObserve.current = {
+      position,
+      quaternion,
+    };
+    // }
   };
-  console.log('roomDuration', roomDuration);
+
   return (
     <group name="Exhibits">
       <LevelItem
         name="boots"
         position={[-26.923, 0.293, -7.992]}
-        limits={[1.8, 5.7]}
+        limits={[1.5, 5.7]}
         clickAreaPosition={[0, 0.6, 0]}
         onExhibitClick={() => {
           if (!isExhibitActive) {
@@ -79,7 +78,7 @@ export const Exhibits = ({ exhibitOnObserve }) => {
         name="cups"
         position={[-36.012, 0.297, 7.955]}
         rotation={[-0.01, -0.005, -0.001]}
-        limits={[7.5, 11]}
+        limits={[7.1, 11]}
         clickAreaPosition={[0, 0.65, 0]}
         onExhibitClick={() => {
           if (!isExhibitActive) {
@@ -112,7 +111,7 @@ export const Exhibits = ({ exhibitOnObserve }) => {
         position={[-21.776, 0, 19.522]}
         rotation={[Math.PI, -0.96, Math.PI]}
         clickAreaPosition={[0, 0.65, 0]}
-        limits={[12.5, 15.8]}
+        limits={[12.3, 15.8]}
         clickAreaSize={1.3}
         onExhibitClick={() => {
           if (!isExhibitActive) {
@@ -144,7 +143,7 @@ export const Exhibits = ({ exhibitOnObserve }) => {
         name="cubes"
         position={[-0.338, 0.007, -0.79]}
         rotation={[-Math.PI, 0, -Math.PI]}
-        limits={[21.8, 24.65]}
+        limits={[21.5, 24.7]}
         clickAreaSize={0.8}
         clickAreaPosition={[0, 0.5, 0]}
         onExhibitClick={() => {
@@ -207,7 +206,7 @@ export const Exhibits = ({ exhibitOnObserve }) => {
         name="xylophone"
         position={[25.275, -0.015, -2.434]}
         rotation={[Math.PI / 2, 0, Math.PI / 9]}
-        limits={[31.4, 34.22]}
+        limits={[31.3, 34.22]}
         clickAreaSize={0.9}
         clickAreaPosition={[0, 0, -1.8]}
         onExhibitClick={() => {
@@ -240,7 +239,7 @@ export const Exhibits = ({ exhibitOnObserve }) => {
         name="diary"
         position={[46.131, -0.001, 33.496]}
         rotation={[0, -0.295, 0]}
-        limits={[39.8, 42.72]}
+        limits={[39.5, 42.72]}
         clickAreaSize={0.8}
         clickAreaPosition={[0, 1.5, 0]}
         onExhibitClick={() => {
@@ -307,7 +306,7 @@ export const Exhibits = ({ exhibitOnObserve }) => {
         name="bauble"
         position={[58.205, -0.088, 4.855]}
         rotation={[-Math.PI, 0.36, -Math.PI]}
-        limits={[53.4, 56.4]}
+        limits={[53.3, 56.4]}
         clickAreaSize={0.7}
         clickAreaPosition={[0, 1.5, 0]}
         onExhibitClick={() => {
@@ -341,7 +340,7 @@ export const Exhibits = ({ exhibitOnObserve }) => {
         name="bowTie"
         position={[55.58, 0, -12.921]}
         rotation={[0, -0.403, 0]}
-        limits={[57.8, 60.3]}
+        limits={[57.7, 60.3]}
         clickAreaSize={0.7}
         clickAreaPosition={[0, 1.5, 0]}
         onExhibitClick={() => {
@@ -467,7 +466,7 @@ export const Exhibits = ({ exhibitOnObserve }) => {
         name="bear"
         position={[46.632, 0, -37.835]}
         rotation={[Math.PI, Math.PI / 4, -Math.PI]}
-        limits={[69.7, 73]}
+        limits={[69.5, 73]}
         clickAreaSize={0.6}
         clickAreaPosition={[0, 1, 0]}
         onExhibitClick={() => {
@@ -501,7 +500,7 @@ export const Exhibits = ({ exhibitOnObserve }) => {
         name="car"
         position={[48.412, 0, -57.511]}
         rotation={[0, 0.782, 0]}
-        limits={[74.2, 77.8]}
+        limits={[74.0, 77.8]}
         clickAreaSize={0.6}
         clickAreaPosition={[0, 0.3, 0]}
         onExhibitClick={() => {

@@ -1,7 +1,8 @@
 import React from 'react';
 import cn from 'classnames';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { activeRoomAtom, activeRoomKeys } from 'src/recoil/atoms/activeRoom';
+import { activeExhibitAtom } from 'src/recoil/atoms/activeExhibit';
 
 const PATHS = [
   {
@@ -28,23 +29,26 @@ const PATHS = [
 
 const NavItem = ({ data, setFadeTransition }) => {
   const [activeRoom, setActiveRoom] = useRecoilState(activeRoomAtom);
+  const exhibitActive = useRecoilValue(activeExhibitAtom);
   const pathClassNames = cn('navigation-path', {
     'navigation-path--active': activeRoom === data.key,
   });
 
   const onChangeActivePath = () => {
-    setActiveRoom(data.key);
-    setFadeTransition();
-    setTimeout(() => {
-      window.dispatchEvent(
-        new CustomEvent('onChangeActiveRoom', {
-          detail: data.key,
-        })
-      );
-    }, 200);
-    setTimeout(() => {
+    if (!exhibitActive) {
+      setActiveRoom(data.key);
       setFadeTransition();
-    }, 1000);
+      setTimeout(() => {
+        window.dispatchEvent(
+          new CustomEvent('onChangeActiveRoom', {
+            detail: data.key,
+          })
+        );
+      }, 200);
+      setTimeout(() => {
+        setFadeTransition();
+      }, 1500);
+    }
   };
 
   return (

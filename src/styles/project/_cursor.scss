@@ -1,0 +1,43 @@
+.cursor {
+  position: fixed;
+  z-index: 100;
+  width: 40px;
+  height: 40px;
+  background-color: #fff;
+  border: 1px solid #fff;
+  border-radius: 100%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  filter: blur(2px);
+  pointer-events: none;
+
+  &--clicked {
+    opacity: 1;
+    animation: clicked 0.3s forwards;
+  }
+}
+
+@keyframes clicked {
+  0% {
+    background-color: #fff;
+    transform: translate(-50%, -50%) scale(0.5);
+    transition: 0.2s;
+  }
+
+  30% {
+    background-color: transparent;
+    filter: blur(2px);
+  }
+
+  60% {
+    opacity: 1;
+    filter: blur(3px);
+  }
+
+  100% {
+    background-color: transparent;
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+    filter: blur(7px);
+  }
+}

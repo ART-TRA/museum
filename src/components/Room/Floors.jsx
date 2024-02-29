@@ -1,15 +1,21 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { MeshReflectorMaterial, useGLTF } from '@react-three/drei';
 import { useControls } from 'leva';
 import { useTextures } from 'src/hooks/useTextures';
+import { useRecoilValue } from 'recoil';
+import { activeScreenAtom } from 'src/recoil/atoms/activeScreen';
 
 export const Floors = () => {
   const { nodes } = useGLTF('models/model.glb');
   const textures = useTextures();
-  const { floorMirrorStrength, reflectorVisible } = useControls({
+  const activeScreen = useRecoilValue(activeScreenAtom);
+  const { floorMirrorStrength } = useControls({
     floorMirrorStrength: { value: 0.3, min: 0, max: 1, step: 0.01 },
-    reflectorVisible: true,
+    // reflectorVisible: true,
   });
+  const reflectorVisible = useMemo(() => {
+    return activeScreen === 'room';
+  }, [activeScreen]);
 
   return (
     <group name="Floors">

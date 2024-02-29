@@ -25,7 +25,7 @@ const envs = [
   // '/environment/env9.hdr',
 ];
 
-export const Background = () => {
+export const Background = ({ activeScreen }) => {
   const { gl, scene } = useThree();
   const lightHelper = useRef();
   const shadowCameraRef = useRef();
@@ -68,11 +68,11 @@ export const Background = () => {
     dirLight.current.position.set(2, 50, 2);
     dirLight.current.color = new THREE.Color('#ffffff');
     dirLight.current.target.position.set(0, 0, 0);
-    dirLight.current.shadow.mapSize.set(2048, 2048);
+    // dirLight.current.shadow.mapSize.set(2048, 2048);
     // dirLight.current.shadow.radius = 7;
     // dirLight.current.shadow.blurSamples = 20;
-    dirLight.current.shadow.camera.top = 30;
-    dirLight.current.shadow.camera.bottom = -30;
+    // dirLight.current.shadow.camera.top = 30;
+    // dirLight.current.shadow.camera.bottom = -30;
     // dirLight.current.shadow.camera.left = -30000;
     // dirLight.current.shadow.camera.right = 30000;
     // dirLight.current.castShadow = true;
@@ -88,21 +88,27 @@ export const Background = () => {
       scene.remove(dirLight.current);
     }
     // scene.add(helper);
-  }, [ambientLight, directionalLight, ambientLightON, directionalLightON]);
+  }, [
+    ambientLight,
+    directionalLight,
+    ambientLightON,
+    directionalLightON,
+    activeScreen,
+  ]);
   // -------------------------------------------------------------------------
 
   return (
     <>
       {/*<ambientLight intensity={0.2} />*/}
       {/*<Environment preset="sunset" background blur={0.5} />*/}
-
-      <Environment files={envs[envMaps]} background blur={0.5}>
-        <Lightformer
-          intensity={0.5}
-          rotation-x={Math.PI / 2}
-          position={[0, 4, -9]}
-          scale={[10, 1, 1]}
-        />
+      {/*<color attach="background" args={['#ffffff']} />*/}
+      <Environment files={envs[0]} background blur={1.0}>
+        {/*<Lightformer*/}
+        {/*  intensity={0.5}*/}
+        {/*  rotation-x={Math.PI / 2}*/}
+        {/*  position={[0, 4, -9]}*/}
+        {/*  scale={[10, 1, 1]}*/}
+        {/*/>*/}
 
         {/*<Lightformer*/}
         {/*  intensity={1}*/}

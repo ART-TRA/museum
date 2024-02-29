@@ -12,12 +12,15 @@ button {
   justify-content: center;
   width: 100%;
   height: 100vh;
-  background-color: #d8d7d7;
+  //background-color: #ffffff99;
+  //background: radial-gradient(transparent 0%, rgb(255, 255, 255) 45%);
+  //backdrop-filter: blur(40px);
+  //background-color: #d8d7d7;
   scroll-behavior: smooth;
 
   //cursor: grab;
   transition: 0.3s;
-  pointer-events: none;
+  //pointer-events: none;
 
   &--loader {
     display: flex;
@@ -25,7 +28,8 @@ button {
     justify-content: center;
     width: 100%;
     height: 100%;
-    background-color: #d8d7d7;
+    background-color: #fff;
+    //background-color: #d8d7d7;
     cursor: default;
     pointer-events: all;
 
@@ -38,11 +42,12 @@ button {
 
   &--started {
     background-color: transparent;
+    backdrop-filter: none;
   }
 
   &--faded {
     @extend %overlay-faded;
-    background-color: #d8d7d7;
+    background-color: #fff;
   }
 
   & h1 {

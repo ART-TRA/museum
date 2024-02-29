@@ -1,69 +1,62 @@
-import React, { useEffect, useRef } from 'react';
-import { Float, MeshTransmissionMaterial } from '@react-three/drei';
+import React from 'react';
 import * as THREE from 'three';
-import { changeScale } from 'src/components/HomeScreen';
 import { activeRoomKeys } from 'src/recoil/atoms/activeRoom';
-import { useRecoilValue } from 'recoil';
-import { activeScreenAtom } from 'src/recoil/atoms/activeScreen';
-import { useFiguresTextures } from 'src/hooks/useFiguresTextures';
-import { FlakesTexture } from 'src/utils/FlakesTexture';
 import { useFigures } from 'src/components/HomeScreen/useFigures';
+import { FigureWrap } from 'src/components/HomeScreen/FigureWrap';
 
 export const Pyramid = ({ nodes }) => {
-  const meshRef = useRef();
-  const textures = useFiguresTextures();
-  const hovered = useRef(false);
-  const activeScreen = useRecoilValue(activeScreenAtom);
-  const { onFigureClick } = useFigures();
-
-  const onHover = (event) => {
-    if (activeScreen === 'figures') {
-      event.stopPropagation();
-      if (!hovered.current) {
-        hovered.current = true;
-        changeScale(meshRef.current);
-        setTimeout(() => {
-          hovered.current = false;
-        }, 500);
-      }
-    }
-  };
-
-  useEffect(() => {
-    changeScale(meshRef.current);
-  }, [nodes]);
+  const { onFigureClick, onFigureHover } = useFigures();
 
   return (
-    <Float
-      speed={0.7} // Animation speed, defaults to 1
-      rotationIntensity={1} // XYZ rotation intensity, defaults to 1
-      floatIntensity={1} // Up/down float intensity, works like a multiplier with floatingRange,defaults to 1
-      floatingRange={[-0.2, 0.2]}
-    >
-      <mesh
-        ref={meshRef}
-        castShadow
-        receiveShadow
-        geometry={nodes.Pyramid.geometry}
-        // material={nodes.Pyramid.material}
-        position={[-3.882, 0.741, 2.0]}
-        rotation={[0.629, 0.208, 0.241]}
-        onPointerOver={(event) => onHover(event)}
-        onClick={() => onFigureClick(activeRoomKeys[0])}
+    <>
+      <FigureWrap
+        floatParams={{
+          speed: 0.7,
+          rotationIntensity: 1.0,
+          floatIntensity: 1.0,
+          floatingRange: [-0.2, 0.2],
+        }}
       >
-        <MeshTransmissionMaterial
-          clearcoat={0.1}
-          thickness={0.1}
-          anisotropicBlur={0.6}
-          chromaticAberration={0.6}
-          samples={4}
-          resolution={512}
-          roughness={0.8}
-          roughnessMap={textures.noise}
-          map={textures.noise}
-          normalMap={new THREE.CanvasTexture(new FlakesTexture())}
-        />
-      </mesh>
-    </Float>
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={nodes.Pyramid.geometry}
+          position={[-3.6, 0.741, 2.0]}
+          rotation={[0.629, 0.9, 0.241]}
+          onPointerOver={onFigureHover}
+          onClick={(event) =>
+            onFigureClick(activeRoomKeys[0], event?.object?.scale)
+          }
+        >
+          <meshPhysicalMaterial
+            // transparent
+            // opacity={0.6}
+            transmission={0.99}
+            color={'#d3d3d3'}
+            roughness={0.012}
+            metalness={0.1}
+            ior={1.5}
+            // envMap={textures.env}
+            envMapIntensity={1}
+            // toneMapped={false}
+          />
+          <mesh position={[0.94, -1.18, 0]}>
+            <boxGeometry args={[0.004, 0.004, 1.72]} />
+            <meshStandardMaterial color={'#fff'} side={THREE.DoubleSide} />
+          </mesh>
+          <mesh position={[0, -1.18, -0.88]} rotation={[0, Math.PI * 0.5, 0]}>
+            <boxGeometry args={[0.004, 0.004, 1.8]} />
+            <meshStandardMaterial color={'#fff'} side={THREE.DoubleSide} />
+          </mesh>
+          <mesh
+            position={[0.48, -0.07, -0.45]}
+            rotation={[-Math.PI * 0.38, -Math.PI * 0.118, 0]}
+          >
+            <boxGeometry args={[0.007, 0.007, 2.5]} />
+            <meshStandardMaterial color={'#ffffff'} side={THREE.DoubleSide} />
+          </mesh>
+        </mesh>
+      </FigureWrap>
+    </>
   );
 };

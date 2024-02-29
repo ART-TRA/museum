@@ -5,23 +5,21 @@
   height: 28px;
   background-color: transparent;
   border: none;
-  //cursor: pointer;
-  pointer-events: all;
+  cursor: pointer;
 }
 
 .sound {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 28px;
+  height: 32px;
   background-color: transparent;
   border: none;
   transform-origin: bottom;
   animation: down 2s forwards;
-  pointer-events: all;
 
   & span {
-    width: 2px;
+    width: 3px;
     height: 100%;
     margin: 0 3px 0 0;
     background: #4c4c4c;

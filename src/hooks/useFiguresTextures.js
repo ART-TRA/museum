@@ -3,40 +3,56 @@ import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
 export const useFiguresTextures = () => {
+  const [torusAO, torusArm, torusDiff, torusDisp, torusNormal, torusRough] =
+    useTexture([
+      '/textures/figures/halfTorus/ao.jpg',
+      '/textures/figures/halfTorus/arm.jpg',
+      '/textures/figures/halfTorus/diff.jpg',
+      '/textures/figures/halfTorus/disp.jpg',
+      '/textures/figures/halfTorus/normal.jpg',
+      '/textures/figures/halfTorus/rough.jpg',
+    ]);
   const [
-    colored,
-    normal,
-    reflection,
-    gloss,
-    matcap,
-    matcap4,
-    matcap5,
-    rough,
-    env,
-    noise,
+    longCubeAO,
+    longCubeArm,
+    longCubeDisp,
+    longCubeDiff,
+    longCubeNormal,
+    longCubeRough,
   ] = useTexture([
-    '/textures/figures/color.jpg',
-    '/textures/figures/normal.jpg',
-    '/textures/figures/reflection.jpg',
-    '/textures/figures/gloss.jpg',
+    '/textures/figures/longCube/ao.png',
+    '/textures/figures/longCube/arm.png',
+    '/textures/figures/longCube/disp.png',
+    '/textures/figures/longCube/diff.png',
+    '/textures/figures/longCube/nor.png',
+    '/textures/figures/longCube/rough.png',
+  ]);
+  const [matcap, matcap4, matcap5, rough, env, noise] = useTexture([
     '/textures/figures/2.png',
-    '/textures/figures/matcap4.jpg',
-    '/textures/figures/matcap6.png',
+    '/textures/figures/matcap8.jpg',
+    '/textures/figures/matcap5.jpg',
     '/textures/figures/roughness.jpg',
     '/textures/figures/env3.jpg',
     '/textures/figures/noise.png',
   ]);
 
-  normal.flipY = reflection.flipY = gloss.flipY = true;
-  colored.repeat.set(0.2, 0.5);
-  colored.offset.set(0, 20);
-  colored.wrapS = colored.wrapT = THREE.RepeatWrapping;
-
   return {
-    colored,
-    normal,
-    reflection,
-    gloss,
+    torus: {
+      ao: torusAO,
+      arm: torusArm,
+      diff: torusDiff,
+      disp: torusDisp,
+      normal: torusNormal,
+      rough: torusRough,
+    },
+    longCube: {
+      ao: longCubeAO,
+      arm: longCubeArm,
+      disp: longCubeDisp,
+      diff: longCubeDiff,
+      normal: longCubeNormal,
+      rough: longCubeRough,
+    },
     matcap,
     matcap5,
     matcap4,

@@ -15,8 +15,11 @@ import {
   activeRoomTimes,
 } from 'src/recoil/atoms/activeRoom';
 import { Vector3 } from 'three';
-import { activeMuseumAtom } from 'src/recoil/atoms/activeMuseum';
 import { roomDurationAtom } from 'src/recoil/atoms/roomDuration';
+import { Background } from 'src/components/Main/Background';
+import { activeScreenAtom } from 'src/recoil/atoms/activeScreen';
+
+const scrollKoef = 0.04;
 
 export function Level({ model, textures }) {
   const group = useRef();
@@ -27,18 +30,17 @@ export function Level({ model, textures }) {
   const setActiveRoom = useSetRecoilState(activeRoomAtom);
   action.current.setLoop(THREE.LoopOnce, 0);
   action.current.play();
-  const isActiveMuseum = useRecoilValue(activeMuseumAtom);
   const setRoomDuration = useSetRecoilState(roomDurationAtom);
+  const activeScreen = useRecoilValue(activeScreenAtom);
+  const frameDelta = useRef(0);
 
   const {
     exhibitsVisible,
-    wallsVisible,
     touchPadSpeed,
     scrollSpeed,
     superSlowTouchPadSpeed,
   } = useControls({
     exhibitsVisible: true,
-    wallsVisible: true,
     touchPadSpeed: { value: 0.01, min: 0.01, max: 0.1, step: 0.01 },
     scrollSpeed: { value: 0.12, min: 0.005, max: 0.5 },
     superSlowTouchPadSpeed: false,
@@ -82,44 +84,51 @@ export function Level({ model, textures }) {
 
   const onObserveRoom = useCallback(
     (event) => {
-      if (exhibitOnObserve.current) exhibitOnObserve.current = null;
-      if (mixer.current.time < 0) mixer.current.update(0);
-      if (mixer.current.time >= 0) {
-        if (detectTrackpad(event)) {
-          if (event.deltaY > 0) {
-            if (superSlowTouchPadSpeed) {
-              console.log('superSlowTouchPadSpeed', touchPadSpeed * 0.1);
-              mixer.current.update(touchPadSpeed * 0.1);
+      if (activeScreen === 'room' && frameDelta.current >= 170) {
+        if (exhibitOnObserve.current) exhibitOnObserve.current = null;
+        if (mixer.current.time < 0) mixer.current.update(0);
+        if (mixer.current.time >= 0) {
+          if (detectTrackpad(event)) {
+            console.log('detectTrackpad', event.deltaY);
+            if (event.deltaY > 0) {
+              if (superSlowTouchPadSpeed) {
+                console.log('superSlowTouchPadSpeed', touchPadSpeed * 0.1);
+                mixer.current.update(touchPadSpeed * 0.1);
+              } else {
+                mixer.current.update(touchPadSpeed);
+              }
             } else {
-              mixer.current.update(touchPadSpeed);
+              if (superSlowTouchPadSpeed) {
+                console.log('superSlowTouchPadSpeed', -touchPadSpeed * 0.1);
+                mixer.current.update(-touchPadSpeed * 0.1);
+              } else {
+                if (mixer.current?.time >= touchPadSpeed) {
+                  mixer.current.update(-touchPadSpeed);
+                }
+              }
             }
           } else {
-            if (superSlowTouchPadSpeed) {
-              console.log('superSlowTouchPadSpeed', -touchPadSpeed * 0.1);
-              mixer.current.update(-touchPadSpeed * 0.1);
+            let speedKoef = 1;
+            if (Math.abs(event.deltaY) <= 30) {
+              speedKoef = 0.25;
+            }
+            console.log('NOT detectTrackpad', scrollSpeed * speedKoef);
+            if (event.deltaY > 0) {
+              if (mixer.current.time <= 85 - scrollSpeed) {
+                showLastDescription();
+                mixer.current.update(scrollSpeed * speedKoef);
+              }
             } else {
-              if (mixer.current?.time >= touchPadSpeed) {
-                mixer.current.update(-touchPadSpeed);
+              if (mixer.current?.time >= scrollSpeed) {
+                mixer.current.update(-scrollSpeed * speedKoef);
               }
             }
           }
-        } else {
-          // console.log('scroll', scrollSpeed);
-          if (event.deltaY > 0) {
-            if (mixer.current.time <= 85 - scrollSpeed) {
-              showLastDescription();
-              mixer.current.update(scrollSpeed);
-            }
-          } else {
-            if (mixer.current?.time >= scrollSpeed) {
-              mixer.current.update(-scrollSpeed);
-            }
-          }
+          updateActiveRoom();
         }
-        updateActiveRoom();
       }
     },
-    [scrollSpeed, touchPadSpeed, superSlowTouchPadSpeed]
+    [scrollSpeed, touchPadSpeed, superSlowTouchPadSpeed, activeScreen]
   );
 
   const changeActiveRoom = (event) => {
@@ -128,7 +137,7 @@ export function Level({ model, textures }) {
   };
 
   useEffect(() => {
-    if (!exhibitActive && isActiveMuseum) {
+    if (!exhibitActive) {
       document.addEventListener('wheel', onObserveRoom);
     }
 
@@ -137,10 +146,10 @@ export function Level({ model, textures }) {
     };
   }, [
     exhibitActive,
-    isActiveMuseum,
     scrollSpeed,
     touchPadSpeed,
     superSlowTouchPadSpeed,
+    activeScreen,
   ]);
 
   useLayoutEffect(() => {
@@ -150,32 +159,50 @@ export function Level({ model, textures }) {
       window.removeEventListener('onChangeActiveRoom', changeActiveRoom);
       window.removeEventListener('onExitFromDescription', onObserveRoom);
     };
-  }, []);
+  }, [activeScreen]);
 
   useFrame((state) => {
-    if (exhibitOnObserve.current) {
-      // easing.damp3(
-      //   state.camera.position,
-      //   exhibitOnObserve.current?.position,
-      //   0.4,
-      //   0.08
-      // );
-      // easing.dampQ(
-      //   state.camera.quaternion,
-      //   exhibitOnObserve.current?.quaternion,
-      //   0.4,
-      //   0.08
-      // );
+    if (activeScreen === 'room') {
+      if (frameDelta.current <= 190) {
+        frameDelta.current += 1;
+      }
 
-      state.camera.position.lerp(exhibitOnObserve.current?.position, 0.08);
-      state.camera.quaternion.slerp(exhibitOnObserve.current?.quaternion, 0.08);
-    } else {
-      state.camera.position.lerp(model?.cameras[0].parent.position, 0.08);
-      state.camera.quaternion.slerp(model?.cameras[0].parent.quaternion, 0.08);
-      state.camera.scale.lerp(model?.cameras[0].parent.scale, 0.08);
+      if (exhibitOnObserve.current) {
+        // easing.damp3(
+        //   state.camera.position,
+        //   exhibitOnObserve.current?.position,
+        //   0.4,
+        //   0.08
+        // );
+        // easing.dampQ(
+        //   state.camera.quaternion,
+        //   exhibitOnObserve.current?.quaternion,
+        //   0.4,
+        //   0.08
+        // );
+
+        state.camera.position.lerp(
+          exhibitOnObserve.current?.position,
+          scrollKoef + 0.02
+        );
+        state.camera.quaternion.slerp(
+          exhibitOnObserve.current?.quaternion,
+          scrollKoef + 0.02
+        );
+      } else {
+        state.camera.position.lerp(
+          model?.cameras[0].parent.position,
+          scrollKoef
+        );
+        state.camera.quaternion.slerp(
+          model?.cameras[0].parent.quaternion,
+          scrollKoef
+        );
+        state.camera.scale.lerp(model?.cameras[0].parent.scale, scrollKoef);
+      }
+      state.camera.updateProjectionMatrix();
+      state.camera.updateMatrixWorld();
     }
-    state.camera.updateProjectionMatrix();
-    state.camera.updateMatrixWorld();
   });
 
   return (
@@ -184,7 +211,7 @@ export function Level({ model, textures }) {
         {exhibitsVisible && <Exhibits exhibitOnObserve={exhibitOnObserve} />}
         <Podiums />
         <Floors />
-        {wallsVisible && <Walls />}
+        <Walls />
         <group
           name="Camera_Null"
           position={[-17, 1.4, -1.6]}
@@ -193,12 +220,13 @@ export function Level({ model, textures }) {
           <PerspectiveCamera
             name="OctaneCamera"
             makeDefault={false}
-            far={10000000000}
+            far={100000}
             near={0.01}
             fov={32.269}
           />
         </group>
       </group>
+      {activeScreen === 'room' && <Background activeScreen={activeScreen} />}
     </group>
   );
 }

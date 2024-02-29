@@ -11,11 +11,11 @@ class FlakesTexture {
     for (let i = 0; i < 20000; i++) {
       const x = Math.random() * width;
       const y = Math.random() * height;
-      const r = Math.random() * 3 + 3;
+      const r = Math.random() * 0.8;
 
-      let nx = Math.random() * 2 - 1;
-      let ny = Math.random() * 2 - 1;
-      let nz = 1.5;
+      let nx = Math.random() * 0.1;
+      let ny = Math.random() * 0.1;
+      let nz = 0.2;
 
       const l = Math.sqrt(nx * nx + ny * ny + nz * nz);
 
