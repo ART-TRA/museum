@@ -1,0 +1,23 @@
+import React, { Suspense } from 'react';
+import { Scene } from 'src/components/Scene';
+import { RecoilRoot } from 'recoil';
+import { Cursor } from 'src/components/Cursor';
+import { Overlay } from 'src/components/Overlay';
+import { useResize } from 'src/hooks/useResize';
+import { SuspenseFallback } from 'src/components/SuspenseFallback';
+
+export const Main = () => {
+  const { isDesktop } = useResize();
+
+  return (
+    <Suspense fallback={<SuspenseFallback />}>
+      <RecoilRoot>
+        {isDesktop && <Cursor />}
+        <Overlay />
+        <div className="scene">
+          <Scene />
+        </div>
+      </RecoilRoot>
+    </Suspense>
+  );
+};

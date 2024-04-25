@@ -12,14 +12,19 @@ export default defineConfig({
     eslint(),
     liveReload('my-file', { alwaysReload: true }),
   ],
+  server: {
+    host: true,
+    port: 3000,
+    watch: {
+      usePolling: true,
+    },
+  },
   resolve: {
     alias: {
       src: '/src',
     },
   },
-  base: '/',
-  server: {
-    host: true,
-    port: 3000,
+  optimizeDeps: {
+    exclude: ['@monogrid/gainmap-js/libultrahdr'],
   },
 });

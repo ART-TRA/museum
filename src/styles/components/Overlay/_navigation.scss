@@ -1,9 +1,20 @@
 .navigation {
   width: -webkit-fill-available;
   max-width: 82px;
-  transform: scale(1.15);
+  max-height: 54px;
   cursor: pointer;
-  pointer-events: all;
+  pointer-events: none;
+  opacity: 0;
+  
+  %header-room & {
+    pointer-events: all;
+    opacity: 1;
+  }
+  
+  @include media-breakpoint-up(tablet) {
+    max-height: unset;
+    transform: scale(1.15);
+  }
 }
 
 .navigation-path {
@@ -15,9 +26,11 @@
     fill: transparent;
     stroke: #4c4c4c;
   }
-
-  &:hover {
-    fill: transparent;
-    stroke: #4c4c4c;
+  
+  @include media-breakpoint-up(desktop) {
+    &:hover {
+      fill: transparent;
+      stroke: #4c4c4c;
+    }
   }
 }

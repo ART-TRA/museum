@@ -1,20 +1,20 @@
 .footer {
-  position: absolute;
+  position: fixed;
   right: 0;
   bottom: 0;
   left: 0;
   z-index: 3;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  padding: 4vh 5vh;
+  padding: 4.5vh 3.6vh;
 
   p {
-    max-width: 204px;
+    max-width: 160px;
     margin: 0;
     color: #4c4c4c;
     font-weight: 500;
-    font-size: 20px;
+    font-size: 14px;
     line-height: 130%;
     text-transform: uppercase;
 
@@ -23,29 +23,69 @@
     }
   }
 
-  &--title-screen {
+  &--title {
     bottom: 80px;
-    justify-content: flex-start;
-  }
+    justify-content: center;
 
-  &--figures-screen {
-    p {
+    button {
       display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 48px;
+      margin: -40px 0 0;
+      padding: 0 36px;
+      color: $white;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 19px;
+      text-transform: uppercase;
+      background-color: #4c4c4c;
+      border: none;
+      border-radius: 82px;
+      cursor: pointer;
+      transition: 0.2s;
     }
   }
 
-  &--room-screen {
+  &--figures {
+    p {
+      display: flex;
+      max-width: 160px;
+    }
+  }
+
+  &--room {
     p {
       opacity: 1;
 
       a {
         color: #4c4c4c;
+        pointer-events: all;
       }
+    }
+  }
+  
+  &--room-end {
+    @extend %footer-room-end;
+    p {
+      display: none;
     }
   }
 
   @include media-breakpoint-up(tablet) {
     position: unset;
+    padding: 4vh 5vh;
+    
+    p {
+      max-width: 204px;
+      font-size: 20px;
+    }
+  
+    &--figures {
+      p {
+        max-width: 300px;
+      }
+    }
   }
 }
 
@@ -55,8 +95,6 @@
   font-family: $fontFamilyAmaticSC;
   background-color: transparent;
   border: none;
-
-  //cursor: pointer;
   transition: 0.3s;
   pointer-events: all;
 
@@ -82,6 +120,33 @@
     background-color: #4c4c4c;
     animation: toggle-color 2s normal infinite;
     content: '';
+  }
+}
+
+.title-screen__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 21px;
+  margin: 0;
+  padding: 0 16px;
+  color: $white;
+  font-weight: 500;
+  font-size: 6px;
+  line-height: 19px;
+  text-transform: uppercase;
+  background-color: #4c4c4c;
+  border: none;
+  border-radius: 82px;
+  cursor: pointer;
+  transition: 0.3s;
+
+  &--faded {
+    opacity: 0;
+  }
+
+  &:hover {
+    transform: scale(1.1);
   }
 }
 

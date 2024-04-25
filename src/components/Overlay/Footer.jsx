@@ -1,41 +1,36 @@
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import React, { useLayoutEffect, useRef } from 'react';
+import { useRecoilValue } from 'recoil';
+import React, { useRef } from 'react';
 import cn from 'classnames';
 import { AnimationDurationLine } from 'src/components/Overlay/DurationLine';
 import { SoundSwitch } from 'src/components/Overlay/SoundSwitch';
 import { activeExhibitAtom } from 'src/recoil/atoms/activeExhibit';
 import { activeRoomAtom, activeRoomNames } from 'src/recoil/atoms/activeRoom';
-import { soundAtom } from 'src/recoil/atoms/sound';
 import theme from '/sounds/ambient.mp3';
+import { useResize } from 'src/hooks/useResize';
+import { lastHoveredFigureValueAtom } from 'src/recoil/atoms/lastHoveredFigureValue';
 
-export const OverlayFooter = ({ screen, setScreen }) => {
+export const OverlayFooter = ({ screen }) => {
+  const { isDesktop } = useResize();
   const exhibitActive = useRecoilValue(activeExhibitAtom);
-  const ambient = useRef(new Audio(theme));
+  const lastHoveredFigureValue = useRecoilValue(lastHoveredFigureValueAtom);
   const roomActive = useRecoilValue(activeRoomAtom);
-  const setSoundOn = useSetRecoilState(soundAtom);
   const footerClassNames = cn('footer', {
-    'footer--title-screen': screen === 'title',
-    'footer--figures-screen': screen === 'figures',
-    'footer--room-screen': screen === 'room',
+    'footer--title': screen === 'title',
+    'footer--figures': screen === 'figures',
+    'footer--room': screen === 'room',
+    'footer--room-end':
+      screen === 'room' && exhibitActive === 'hand' && !isDesktop,
   });
-
-  const onFiguresScreenOpen = () => {
-    console.log('onFiguresScreenOpen');
-    setScreen('figures');
-    setSoundOn(true);
-  };
-
-  useLayoutEffect(() => {
-    window.addEventListener('onFiguresScreenOpen', onFiguresScreenOpen);
-  }, [screen]);
 
   return (
     <footer className={footerClassNames}>
-      {screen !== 'room' && (
+      {screen === 'figures' && (
         <>
-          <p>
-            начните <br /> скролить
-          </p>
+          <p
+            dangerouslySetInnerHTML={{
+              __html: lastHoveredFigureValue,
+            }}
+          />
           <div className="scroll-animated-icon" />
         </>
       )}
@@ -50,7 +45,7 @@ export const OverlayFooter = ({ screen, setScreen }) => {
           </a>
         </p>
       )}
-      {screen !== 'title' && <SoundSwitch ambient={ambient} />}
+      {screen !== 'title' && <SoundSwitch />}
       {screen === 'room' && <AnimationDurationLine />}
     </footer>
   );

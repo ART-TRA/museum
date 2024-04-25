@@ -2,11 +2,11 @@
   0% {
     opacity: 1;
   }
-
+  
   80% {
     opacity: 1;
   }
-
+  
   100% {
     opacity: 0;
   }
@@ -22,12 +22,13 @@
   //background-color: #d8d7d7;
   animation: fade 2s normal forwards;
   pointer-events: none;
-
+  
   &--4 {
     animation: fade 4s normal forwards;
   }
-
+  
   &--5 {
     animation: fade 5s normal forwards;
   }
 }
+

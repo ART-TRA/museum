@@ -3,7 +3,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  height: 8px;
+  height: 6px;
   background-color: #4c4c4c20;
   transition: 0.3s;
   pointer-events: none;
@@ -11,5 +11,9 @@
   div {
     height: 100%;
     background-color: #4c4c4c;
+  }
+  
+  @include media-breakpoint-up(tablet) {
+    height: 8px;
   }
 }

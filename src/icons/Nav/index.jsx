@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import cn from 'classnames';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { activeRoomAtom, activeRoomKeys } from 'src/recoil/atoms/activeRoom';
 import { activeExhibitAtom } from 'src/recoil/atoms/activeExhibit';
 
@@ -29,15 +29,22 @@ const PATHS = [
 
 const NavItem = ({ data, setFadeTransition }) => {
   const [activeRoom, setActiveRoom] = useRecoilState(activeRoomAtom);
-  const exhibitActive = useRecoilValue(activeExhibitAtom);
+  const setExhibitActive = useSetRecoilState(activeExhibitAtom);
   const pathClassNames = cn('navigation-path', {
     'navigation-path--active': activeRoom === data.key,
   });
+  const oneClickLimit = useRef(true);
 
   const onChangeActivePath = () => {
-    if (!exhibitActive) {
-      setActiveRoom(data.key);
+    if (oneClickLimit.current) {
       setFadeTransition();
+      setExhibitActive(null);
+      setTimeout(() => {
+        if (activeRoom !== data.key) {
+          setActiveRoom(data.key);
+        }
+        window.dispatchEvent(new CustomEvent('onExitFromDescription'));
+      }, 200);
       setTimeout(() => {
         window.dispatchEvent(
           new CustomEvent('onChangeActiveRoom', {
@@ -48,7 +55,11 @@ const NavItem = ({ data, setFadeTransition }) => {
       setTimeout(() => {
         setFadeTransition();
       }, 1500);
+      setTimeout(() => {
+        oneClickLimit.current = true;
+      }, 3000);
     }
+    oneClickLimit.current = false;
   };
 
   return (
