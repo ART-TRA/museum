@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export const useTouch = () => {
-  const tempTouchStart = useRef();
-  const tempTouchEnd = useRef();
+  const tempTouchStart = useRef([]);
+  const tempTouchEnd = useRef([]);
   const deviceType = useRef('');
   const [swipeDirection, setSwipeDirection] = useState('');
 
@@ -25,15 +25,32 @@ export const useTouch = () => {
 
   const defineTouchDirection = useCallback(
     (event) => {
+      const minValue = 10;
       if (event.type === 'touchstart') {
-        tempTouchStart.current = event.changedTouches[0].clientY;
+        tempTouchStart.current = [
+          event.changedTouches[0].clientX,
+          event.changedTouches[0].clientY,
+        ];
       } else if (event.type === 'touchmove') {
-        tempTouchEnd.current = event.changedTouches[0].clientY;
+        tempTouchEnd.current = [
+          event.changedTouches[0].clientX,
+          event.changedTouches[0].clientY,
+        ];
+
+        // const deltaX = event.touches[0].clientX - tempTouchStart.current[0];
+        // if (Math.abs(deltaX) > minValue) {
+        //   console.log('PREVENT', Math.abs(deltaX));
+        //   event.preventDefault();
+        //   event.returnValue = false;
+        //   return false;
+        // }
+
         // swipeDirection.current =
         //   tempTouchEnd.current > tempTouchStart.current ? 'left' : 'right';
-        if (tempTouchEnd.current > tempTouchStart.current) {
+        if (tempTouchEnd.current[1] > tempTouchStart.current[1]) {
           // if (swipeDirection !== 'left')
           setSwipeDirection('up');
+          console.log('UP');
         } else {
           // if (swipeDirection !== 'right')
           setSwipeDirection('down');

@@ -4,15 +4,15 @@
   bottom: 0;
   left: 0;
   height: 6px;
-  background-color: #4c4c4c20;
+  background-color: #4e535c20;
   transition: 0.3s;
   pointer-events: none;
 
   div {
     height: 100%;
-    background-color: #4c4c4c;
+    background-color: #4e535c;
   }
-  
+
   @include media-breakpoint-up(tablet) {
     height: 8px;
   }

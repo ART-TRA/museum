@@ -8,17 +8,18 @@
   align-items: center;
   justify-content: space-between;
   padding: 3.6vh;
-  
+
   &--room {
     @extend %header-room;
   }
-  
+
   %overlay-fallback & {
     display: none;
   }
 
   @include media-breakpoint-up(tablet) {
     position: unset;
+
     //padding: 5vh;
     padding: 48px;
   }
@@ -27,11 +28,11 @@
 .header-main-logo {
   max-width: 56px;
   max-height: 40px;
-  color: #4c4c4c;
+  color: #4e535c;
   cursor: pointer;
   transition: 0.1s;
   pointer-events: all;
-  
+
   @include media-breakpoint-up(tablet) {
     max-width: unset;
     max-height: unset;

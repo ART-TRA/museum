@@ -109,11 +109,13 @@ export const Title = () => {
               });
             }
           });
+          setTimeout(() => {
+            setActiveScreen('figures');
+          }, 600);
         },
         onComplete: () => {
           setTimeout(() => {
             titleRef.current.position.set(0, 0, 20);
-            setActiveScreen('figures');
           }, 1400);
         },
       });
@@ -216,7 +218,7 @@ export const Title = () => {
           color={'#fff'}
           map={startTitleMap}
           transparent
-          opacity={1}
+          opacity={0.6}
           toneMapped={false}
         />
       </mesh>

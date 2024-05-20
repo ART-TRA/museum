@@ -3,14 +3,14 @@
   max-width: 82px;
   max-height: 54px;
   cursor: pointer;
-  pointer-events: none;
   opacity: 0;
-  
+  pointer-events: none;
+
   %header-room & {
-    pointer-events: all;
     opacity: 1;
+    pointer-events: all;
   }
-  
+
   @include media-breakpoint-up(tablet) {
     max-height: unset;
     transform: scale(1.15);
@@ -19,18 +19,18 @@
 
 .navigation-path {
   transition: 0.1s;
-  fill: #4c4c4c;
-  stroke: #4c4c4c;
+  fill: #4e535c;
+  stroke: #4e535c;
 
   &--active {
     fill: transparent;
-    stroke: #4c4c4c;
+    stroke: #4e535c;
   }
-  
+
   @include media-breakpoint-up(desktop) {
     &:hover {
       fill: transparent;
-      stroke: #4c4c4c;
+      stroke: #4e535c;
     }
   }
 }

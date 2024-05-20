@@ -6,11 +6,11 @@
   border: none;
   cursor: pointer;
   pointer-events: all;
-  
+
   %footer-room-end & {
     display: none;
   }
-  
+
   @include media-breakpoint-up(tablet) {
     height: 28px;
   }
@@ -30,7 +30,7 @@
     width: 2px;
     height: 100%;
     margin: 0 3px 0 0;
-    background: #4c4c4c;
+    background: #4e535c;
     transform: scaleY(0.2);
     transform-origin: bottom;
     animation: equalize 3s infinite;

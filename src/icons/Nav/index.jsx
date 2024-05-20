@@ -3,6 +3,7 @@ import cn from 'classnames';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { activeRoomAtom, activeRoomKeys } from 'src/recoil/atoms/activeRoom';
 import { activeExhibitAtom } from 'src/recoil/atoms/activeExhibit';
+import { clickTransition } from 'src/recoil/atoms/clickTransition';
 
 const PATHS = [
   {
@@ -28,6 +29,7 @@ const PATHS = [
 ];
 
 const NavItem = ({ data, setFadeTransition }) => {
+  const setClickedTransition = useSetRecoilState(clickTransition);
   const [activeRoom, setActiveRoom] = useRecoilState(activeRoomAtom);
   const setExhibitActive = useSetRecoilState(activeExhibitAtom);
   const pathClassNames = cn('navigation-path', {
@@ -37,6 +39,7 @@ const NavItem = ({ data, setFadeTransition }) => {
 
   const onChangeActivePath = () => {
     if (oneClickLimit.current) {
+      setClickedTransition(true);
       setFadeTransition();
       setExhibitActive(null);
       setTimeout(() => {
@@ -53,8 +56,9 @@ const NavItem = ({ data, setFadeTransition }) => {
         );
       }, 200);
       setTimeout(() => {
+        setClickedTransition(false);
         setFadeTransition();
-      }, 1500);
+      }, 500);
       setTimeout(() => {
         oneClickLimit.current = true;
       }, 3000);

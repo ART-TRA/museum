@@ -68,7 +68,7 @@ export const Background = () => {
     <>
       {/*<ambientLight intensity={0.5} />*/}
       {/*<directionalLight intensity={0.9} position={[5, 5, 5]} />*/}
-      <Environment files={'/environment/env2.hdr'} background blur={1.0} />
+      <Environment files={'/environment/env.hdr'} blur={1.0} />
       {/*<Environment preset="sunset" blur={0.4} background resolution={256} />*/}
       {/*  <group rotation={[-Math.PI / 3, 0, 1]}>*/}
       {/*    <Lightformer*/}
@@ -108,7 +108,7 @@ export const Background = () => {
       {/*  intensity={1}*/}
       {/*  castShadow*/}
       {/*/>*/}
-      <color attach="background" args={['#141622']} />
+      <color attach="background" args={['#c5cad3']} />
       {/*<fog attach="fog" args={['#ff8a16', 28, 50]} />*/}
     </>
   );

@@ -12,7 +12,7 @@ export const BackPlane = () => {
       position={[0, 0, -10]}
       onPointerEnter={(event) => onFigureHover(event, hoveredKeys.empty)}
     >
-      <planeGeometry args={isDesktop ? [45, 25] : [20, 30]} />
+      <planeGeometry args={isDesktop ? [45, 25] : [20, 40]} />
       <meshBasicMaterial color={'#fff'} toneMapped={false} />
     </mesh>
   );

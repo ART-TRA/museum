@@ -14,7 +14,7 @@ export const Home = () => {
   const [activeScreen, setActiveScreen] = useRecoilState(activeScreenAtom);
 
   useFrame((state) => {
-    if (activeScreen !== 'room' && isDesktop) {
+    if (activeScreen === 'figures' && isDesktop) {
       stateCameraPosition.current.set(
         -17.6,
         -state.pointer.y * 1.6 + 2.5,

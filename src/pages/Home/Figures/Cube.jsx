@@ -1,75 +1,11 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { FloatWrap } from 'src/pages/Home/Figures/FloatWrap';
 import { useFigures } from 'src/hooks/useFigures';
 import { activeRoomKeys } from 'src/recoil/atoms/activeRoom';
-import * as THREE from 'three';
-
-const settings = {
-  radius: { value: 0.25 },
-};
+import { RoundedBox } from '@react-three/drei';
 
 export const Cube = () => {
   const { onFigureClick, onFigureHover } = useFigures();
-  const cubeGeometry = useRef(new THREE.BoxGeometry(2.5, 2.5, 2.5, 40, 40, 40));
-  const cubeMaterial = useRef(
-    new THREE.MeshStandardMaterial({ color: '#fff' })
-  );
-
-  cubeMaterial.current.onBeforeCompile = (shader) => {
-    shader.uniforms.boxSize = {
-      value: new THREE.Vector3(
-        cubeGeometry.current.parameters.width,
-        cubeGeometry.current.parameters.height,
-        cubeGeometry.current.parameters.depth
-      ).multiplyScalar(0.5),
-    };
-    shader.uniforms.radius = settings.radius;
-    shader.vertexShader =
-      `
-  uniform vec3 boxSize;
-  uniform float radius;
-  ` + shader.vertexShader;
-    shader.vertexShader = shader.vertexShader.replace(
-      `#include <begin_vertex>`,
-      `#include <begin_vertex>
-    
-    float maxRadius = clamp(radius, 0.0, min(boxSize.x, min(boxSize.y, boxSize.z)));
-    vec3 signs = sign(position);
-    
-    vec3 subBox = boxSize - vec3(maxRadius);
-    
-    vec3 absPos = abs(transformed); 
-    // xy
-    vec2 sub = absPos.xy - subBox.xy;
-    if (absPos.x > subBox.x && absPos.y > subBox.y && absPos.z <= subBox.z) {
-      transformed.xy = normalize(sub) * maxRadius + subBox.xy;
-      transformed.xy *= signs.xy;
-    }
-    // xz
-    sub = absPos.xz - subBox.xz;
-    if (absPos.x > subBox.x && absPos.z > subBox.z && absPos.y <= subBox.y) {
-      transformed.xz = normalize(sub) * maxRadius + subBox.xz;
-      transformed.xz *= signs.xz;
-    }
-    // yz
-    sub = absPos.yz - subBox.yz;
-    if (absPos.y > subBox.y && absPos.z > subBox.z && absPos.x <= subBox.x) {
-      transformed.yz = normalize(sub) * maxRadius + subBox.yz;
-      transformed.yz *= signs.yz;
-    }
-    
-    // corner
-    if (all(greaterThan(absPos, subBox))){
-      vec3 sub3 = absPos - subBox;
-      transformed = (normalize(sub3) * maxRadius + subBox) * signs;
-    }
-    
-    // re-compute normals for correct shadows and reflections
-    objectNormal = all(equal(position, transformed)) ? normal : normalize(position - transformed); 
-    transformedNormal = normalMatrix * objectNormal;
-    `
-    );
-  };
 
   return (
     <FloatWrap
@@ -80,11 +16,12 @@ export const Cube = () => {
         floatingRange: [0.9, 0.5],
       }}
     >
-      <mesh
+      <RoundedBox
         name="cube"
-        // geometry={nodes.Connect.geometry}
-        geometry={cubeGeometry.current}
-        material={cubeMaterial.current}
+        // castShadow
+        // receiveShadow
+        args={[2.5, 2.5, 2.5]}
+        radius={0.2}
         position={[3.172, -0.634, -0.5]}
         rotation={[0.66, 0.36, 0.191]}
         onPointerEnter={(event) => onFigureHover(event, activeRoomKeys[4])}
@@ -93,14 +30,22 @@ export const Cube = () => {
           onFigureClick(activeRoomKeys[4], event?.object?.scale, 3000)
         }
       >
-        {/*<meshPhysicalMaterial*/}
-        {/*  color={'#fff'}*/}
-        {/*  transmission={0.2}*/}
-        {/*  roughness={0.0}*/}
-        {/*  metalness={0.13}*/}
-        {/*  // aoMap={textures.matcap4}*/}
-        {/*/>*/}
-      </mesh>
+        <meshPhysicalMaterial
+          // aoMap={textures.env}
+          envMapIntensity={1.3}
+          clearcoat={0.1}
+          // clearcoatRoughness={0.6}
+          color={'#ffffff'}
+          // transmission={0.2}
+          roughness={0.17}
+          metalness={0.03}
+          reflectivity={0.9}
+          ior={2.5}
+          iridescence={0.3}
+          // map={textures.env}
+          aoMapIntensity={0.3}
+        />
+      </RoundedBox>
     </FloatWrap>
   );
 };

@@ -19,6 +19,7 @@ import { useResize } from 'src/hooks/useResize';
 import { useTouch } from 'src/hooks/useTouch';
 import { useKTX2Loader } from 'src/hooks/useKTX2Loader';
 import { Effects } from 'src/components/Effects';
+import { clickTransition } from 'src/recoil/atoms/clickTransition';
 
 const SCROLL_MODIFIER = 0.04;
 const SCROLL_SPEED = 0.04;
@@ -89,6 +90,7 @@ export const Room = () => {
   const activeScreen = useRecoilValue(activeScreenAtom);
   const [roomDuration, setRoomDuration] = useRecoilState(roomDurationAtom);
   const [exhibitActive, setExhibitActive] = useRecoilState(activeExhibitAtom);
+  const isClickedTransition = useRecoilValue(clickTransition);
 
   const mixer = useRef(new THREE.AnimationMixer(model?.scene));
   const action = useRef(mixer.current.clipAction(model?.animations[0]));
@@ -105,7 +107,9 @@ export const Room = () => {
         console.log('showLastDescription', type, roomDuration);
         setExhibitActive('hand');
         exhibitOnObserve.current = {
-          position: new THREE.Vector3(76.289, 2.963, -41.2),
+          position: isDesktop
+            ? new THREE.Vector3(76.289, 2.963, -41.2)
+            : new THREE.Vector3(76.5, 2.963, -43.1),
           quaternion: new THREE.Quaternion().setFromAxisAngle(
             new THREE.Vector3(0, 1, 0),
             -Math.PI * 0.8
@@ -155,7 +159,7 @@ export const Room = () => {
       if (
         activeScreen === 'room' &&
         !exhibitActive &&
-        frameDelta.current >= 170
+        frameDelta.current >= 60
       ) {
         if (exhibitOnObserve.current) exhibitOnObserve.current = null;
         if (mixer.current.time < 0) mixer.current.update(0);
@@ -232,11 +236,23 @@ export const Room = () => {
       ) {
         loadTexture(`/textures/room/${child.name}.ktx2`, (texture) => {
           gl.initTexture(texture);
-          child.material = new THREE.MeshStandardMaterial({
-            color: '#fff',
-            toneMapped: false,
-            map: texture,
-          });
+          if (child.name === 'Hand') {
+            child.material = new THREE.MeshStandardMaterial({
+              color: '#efefff',
+              // toneMapped: false,
+              // map: texture,
+              aoMap: texture,
+              // envMap: texture,
+              aoMapIntensity: 0.3,
+              envMapIntensity: 0.2,
+            });
+          } else {
+            child.material = new THREE.MeshStandardMaterial({
+              color: '#fff',
+              toneMapped: false,
+              map: texture,
+            });
+          }
         });
       }
     });
@@ -250,12 +266,12 @@ export const Room = () => {
         loadTexture(`/textures/room/AO_${child.name}.ktx2`, (texture) => {
           gl.initTexture(texture);
           child.material = new THREE.MeshStandardMaterial({
-            color: '#fff',
+            color: '#fcfcff',
             toneMapped: false,
             aoMap: texture,
             roughness: 0.5,
             metalness: 0.01,
-            aoMapIntensity: 0.6,
+            aoMapIntensity: 0.4,
           });
         });
       }
@@ -269,7 +285,7 @@ export const Room = () => {
       ) {
         loadTexture(`/textures/room/AO_${child.name}.ktx2`, (texture) => {
           child.material = new THREE.MeshStandardMaterial({
-            color: '#fff',
+            color: '#fcfcff',
             toneMapped: false,
             aoMap: texture,
             roughness: 0.1,
@@ -288,12 +304,12 @@ export const Room = () => {
       ) {
         loadTexture(`/textures/room/AO_${child.name}.ktx2`, (texture) => {
           child.material = new THREE.MeshStandardMaterial({
-            color: '#fff',
+            color: '#fcfcff',
             toneMapped: false,
             aoMap: texture,
             roughness: 0.5,
             metalness: 0.01,
-            aoMapIntensity: 0.9,
+            aoMapIntensity: 0.6,
           });
         });
       }
@@ -336,11 +352,11 @@ export const Room = () => {
       } else {
         state.camera.position.lerp(
           model?.cameras[0].parent.position,
-          SCROLL_MODIFIER
+          isClickedTransition ? SCROLL_MODIFIER * 20 : SCROLL_MODIFIER
         );
         state.camera.quaternion.slerp(
           model?.cameras[0].parent.quaternion,
-          SCROLL_MODIFIER
+          isClickedTransition ? SCROLL_MODIFIER * 20 : SCROLL_MODIFIER
         );
       }
     }

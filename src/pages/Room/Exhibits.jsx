@@ -4,11 +4,13 @@ import { useRecoilState } from 'recoil';
 import { activeExhibitAtom } from 'src/recoil/atoms/activeExhibit';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
+import { useResize } from 'src/hooks/useResize';
 
 export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
   const { viewport } = useThree();
   const [isExhibitActive, setExhibitActive] = useRecoilState(activeExhibitAtom);
   const oneClickLimit = useRef(true);
+  const { isDesktop } = useResize();
 
   const onExhibitClick = (name, position, quaternion) => {
     if (oneClickLimit.current) {
@@ -36,7 +38,9 @@ export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
           if (!isExhibitActive) {
             onExhibitClick(
               'boots',
-              new THREE.Vector3(-26.983 + viewport.width * 0.003, 0.89, -6),
+              isDesktop
+                ? new THREE.Vector3(-26.983 + viewport.width * 0.003, 0.89, -6)
+                : new THREE.Vector3(-27.6 + viewport.width * 0.003, 0.89, -5),
               new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0, 0.15, 0),
                 -Math.PI * 0.4
@@ -70,7 +74,9 @@ export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
           if (!isExhibitActive) {
             onExhibitClick(
               'cups',
-              new THREE.Vector3(-34, 0.93, 7.955),
+              isDesktop
+                ? new THREE.Vector3(-34, 0.93, 7.955)
+                : new THREE.Vector3(-33.5, 0.93, 8.4),
               new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0, 1, 0),
                 Math.PI * 0.445 - viewport.width * 0.002
@@ -105,7 +111,9 @@ export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
           if (!isExhibitActive) {
             onExhibitClick(
               'bed',
-              new THREE.Vector3(-23.25, 0.7, 13.3),
+              isDesktop
+                ? new THREE.Vector3(-23.25, 0.7, 13.3)
+                : new THREE.Vector3(-21.8, 1.2, 10.3),
               new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0, 1, 0),
                 Math.PI
@@ -140,7 +148,9 @@ export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
           if (!isExhibitActive) {
             onExhibitClick(
               'cubes',
-              new THREE.Vector3(-0.338 + viewport.width * 0.053, 0.8, 4),
+              isDesktop
+                ? new THREE.Vector3(-0.338 + viewport.width * 0.053, 0.8, 4)
+                : new THREE.Vector3(-0.35, 0.8, 4),
               new THREE.Quaternion(0, 0, 0, 1)
             );
           }
@@ -172,7 +182,9 @@ export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
           if (!isExhibitActive) {
             onExhibitClick(
               'art',
-              new THREE.Vector3(13.8 - viewport.width * 0.051, 1.6, 8),
+              isDesktop
+                ? new THREE.Vector3(13.8 - viewport.width * 0.051, 1.6, 8)
+                : new THREE.Vector3(14.2 - viewport.width * 0.051, 1.6, 7),
               new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0, 1, 0),
                 Math.PI
@@ -207,7 +219,9 @@ export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
           if (!isExhibitActive) {
             onExhibitClick(
               'xylophone',
-              new THREE.Vector3(24.43 + viewport.width * 0.0015, 1.8, 2),
+              isDesktop
+                ? new THREE.Vector3(24.43 + viewport.width * 0.0015, 1.8, 2)
+                : new THREE.Vector3(23.36 + viewport.width * 0.0015, 1.8, 2),
               new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0, 1, 0),
                 -Math.PI * 0.13
@@ -242,7 +256,13 @@ export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
           if (!isExhibitActive) {
             onExhibitClick(
               'diary',
-              new THREE.Vector3(46.665 - viewport.width * 0.0045, 1.45, 31.6),
+              isDesktop
+                ? new THREE.Vector3(
+                    46.665 - viewport.width * 0.0045,
+                    1.45,
+                    31.6
+                  )
+                : new THREE.Vector3(47.2 - viewport.width * 0.0045, 1.45, 31.3),
               new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0, 1, 0),
                 Math.PI * 0.86
@@ -278,7 +298,9 @@ export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
           if (!isExhibitActive) {
             onExhibitClick(
               'collage',
-              new THREE.Vector3(64, 1.7, 27.6),
+              isDesktop
+                ? new THREE.Vector3(64, 1.7, 27.6)
+                : new THREE.Vector3(64, 1.7, 26.2),
               new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0, 1, 0),
                 Math.PI * 1.19
@@ -313,7 +335,9 @@ export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
           if (!isExhibitActive) {
             onExhibitClick(
               'bauble',
-              new THREE.Vector3(59.6, 1.45, 4.2),
+              isDesktop
+                ? new THREE.Vector3(59.6, 1.45, 4.2)
+                : new THREE.Vector3(60.3, 1.45, 4.2),
               new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0, 1, 0),
                 Math.PI * 0.6
@@ -349,7 +373,9 @@ export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
           if (!isExhibitActive) {
             onExhibitClick(
               'bowTie',
-              new THREE.Vector3(56.7, 1.6, -12.14),
+              isDesktop
+                ? new THREE.Vector3(56.7, 1.6, -12.14)
+                : new THREE.Vector3(57.1, 1.6, -11.3),
               new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0, 1, 0),
                 Math.PI * 0.24
@@ -387,7 +413,9 @@ export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
           if (!isExhibitActive) {
             onExhibitClick(
               'storageRoom',
-              new THREE.Vector3(62.2, 0.56, -41.8),
+              isDesktop
+                ? new THREE.Vector3(62.2, 0.56, -41.8)
+                : new THREE.Vector3(61.5, 0.56, -41.8),
               new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0, 1, 0),
                 Math.PI * 0.1
@@ -480,7 +508,9 @@ export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
           if (!isExhibitActive) {
             onExhibitClick(
               'bear',
-              new THREE.Vector3(47.7, 0.96, -39),
+              isDesktop
+                ? new THREE.Vector3(47.7, 0.96, -39)
+                : new THREE.Vector3(47.9, 0.96, -38.77),
               new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0, 1, 0),
                 Math.PI * 0.7
@@ -516,7 +546,9 @@ export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
           if (!isExhibitActive) {
             onExhibitClick(
               'car',
-              new THREE.Vector3(49.95, 0.5, -56.4),
+              isDesktop
+                ? new THREE.Vector3(49.95, 0.5, -56.4)
+                : new THREE.Vector3(49.95, 0.5, -55.85),
               new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0, 1, 0),
                 Math.PI * 0.23
@@ -552,7 +584,9 @@ export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
           if (!isExhibitActive) {
             onExhibitClick(
               'doll',
-              new THREE.Vector3(66.9, 1.02, -56.4),
+              isDesktop
+                ? new THREE.Vector3(66.9, 1.02, -56.4)
+                : new THREE.Vector3(66.6, 1.02, -56.45),
               new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0, 1, 0),
                 -Math.PI * 0.3
@@ -587,10 +621,10 @@ export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
           rotation={[0, -0.01, 1.544]}
         >
           <meshStandardMaterial
-            color={'#ffffff'}
+            color={'#e8e9ee'}
             // map={textures.exhibits.aoHand}
             // aoMap={textures.exhibits.hand} !hidden
-            toneMapped={false}
+            // toneMapped={false}
           />
         </mesh>
       </Exhibit>

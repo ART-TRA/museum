@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 import { useGLTF } from '@react-three/drei';
 import { Cube } from 'src/pages/Home/Figures/Cube';
 import { Pyramid } from 'src/pages/Home/Figures/Pyramid';

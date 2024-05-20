@@ -4,6 +4,7 @@ import { Nav } from 'src/icons/Nav';
 import { useRecoilValue } from 'recoil';
 import { activeScreenAtom } from 'src/recoil/atoms/activeScreen';
 import cn from 'classnames';
+import { FadeIn } from 'src/components/Overlay/FadeIn';
 
 export const OverlayHeader = () => {
   const activeScreen = useRecoilValue(activeScreenAtom);
@@ -25,6 +26,10 @@ export const OverlayHeader = () => {
         <Nav setFadeTransition={setFadeTransition} />
       </header>
     );
+  }
+
+  if (activeScreen === 'title') {
+    return <FadeIn />;
   }
 
   return null;

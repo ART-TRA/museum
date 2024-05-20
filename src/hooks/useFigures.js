@@ -10,9 +10,11 @@ import {
   lastHoveredFigureValueAtom,
 } from 'src/recoil/atoms/lastHoveredFigureValue';
 import { useFrame } from '@react-three/fiber';
+import { clickTransition } from 'src/recoil/atoms/clickTransition';
 
 export const useFigures = () => {
   const hoverDeltaTime = useRef(new Date());
+  const setClickedTransition = useSetRecoilState(clickTransition);
   const [lastHoveredFigureValue, setLastHoveredFigureValue] = useRecoilState(
     lastHoveredFigureValueAtom
   );
@@ -64,6 +66,7 @@ export const useFigures = () => {
 
   const onFigureClick = (activeRoomName, scale, delayTime = 1000) => {
     if (activeScreen === 'figures') {
+      setClickedTransition(true);
       document.body.style.cursor = 'auto';
       if (scale) {
         if (oneClickLimit.current) {
@@ -73,10 +76,9 @@ export const useFigures = () => {
             z: 11.0,
             duration: 1,
             onStart: () => {
-              setFadeTransition();
-              // setTimeout(() => {
-              //   setFadeTransition();
-              // }, 100);
+              setTimeout(() => {
+                setFadeTransition();
+              }, 100);
             },
             onComplete: () => {
               setActiveRoom(activeRoomName);
@@ -87,8 +89,9 @@ export const useFigures = () => {
                 })
               );
               setTimeout(() => {
+                setClickedTransition(false);
                 setFadeTransition();
-              }, delayTime);
+              }, 700);
             },
           });
         }
@@ -103,10 +106,9 @@ export const useFigures = () => {
               detail: activeRoomName,
             })
           );
-        }, 1000);
-        setTimeout(() => {
+          setClickedTransition(false);
           setFadeTransition();
-        }, 1000);
+        }, 500);
       }
     }
   };

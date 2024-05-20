@@ -4,7 +4,7 @@ import { RecoilRoot } from 'recoil';
 import { Cursor } from 'src/components/Cursor';
 import { Overlay } from 'src/components/Overlay';
 import { useResize } from 'src/hooks/useResize';
-import { SuspenseFallback } from 'src/components/SuspenseFallback';
+import { SuspenseFallback } from 'src/components/Suspense/SuspenseFallback';
 
 export const Main = () => {
   const { isDesktop } = useResize();

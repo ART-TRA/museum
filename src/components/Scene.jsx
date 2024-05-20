@@ -19,7 +19,7 @@ export const Scene = () => {
       dpr={[1, 1.5]}
       // style={{ pointerEvents: 'none' }}
       camera={{
-        fov: 32,
+        fov: isDesktop ? 32 : 40,
         position: [-17.6, 2.5, -2.7],
         near: 0.01,
         far: 1000,
