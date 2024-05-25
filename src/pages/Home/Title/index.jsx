@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { Text, useTexture } from '@react-three/drei';
+import React, { useEffect, useRef } from 'react';
+import { Text, useProgress, useTexture } from '@react-three/drei';
 import gsap from 'gsap';
 import { useRecoilState } from 'recoil';
 import * as THREE from 'three';
@@ -50,12 +50,14 @@ const RectangleRoundedGeometry = (w, h, r, s) => {
 
 export const Title = () => {
   const [activeScreen, setActiveScreen] = useRecoilState(activeScreenAtom);
+  const { progress } = useProgress();
   const { isDesktop } = useResize();
   const titleRef = useRef();
   const titleWrapRef = useRef();
   const texturePlaneRef = useRef();
   const texturePlaneBackRef = useRef();
   const buttonRef = useRef();
+  const buttonTextRef = useRef();
   const startTitleMap = useTexture('/images/startTitle.jpg');
   const hovered = useRef(false);
   const buttonMaterial = useRef(
@@ -67,10 +69,39 @@ export const Title = () => {
     event.stopPropagation();
     if (!hovered.current && type === 'over') {
       hovered.current = true;
+      gsap.from(buttonRef.current?.scale, {
+        x: 0.7,
+        y: 0.7,
+        z: 0.7,
+        duration: 1.3,
+        ease: 'elastic.out(1.2, 0.3)',
+        stagger: {
+          grid: [20, 20],
+          amount: 0.8,
+        },
+      });
+      gsap.to(buttonTextRef.current, {
+        letterSpacing: 0.4,
+        duration: 0.4,
+        ease: 'elastic.out(0.8, 0.7)',
+        stagger: {
+          grid: [20, 20],
+          amount: 0.8,
+        },
+      });
       document.body.style.cursor = 'pointer';
     } else if (hovered.current && type === 'out') {
       hovered.current = false;
       document.body.style.cursor = 'auto';
+      gsap.to(buttonTextRef.current, {
+        letterSpacing: 0.0,
+        duration: 0.4,
+        ease: 'elastic.out(0.8, 0.0)',
+        stagger: {
+          grid: [20, 20],
+          amount: 0.8,
+        },
+      });
     }
   };
 
@@ -115,25 +146,45 @@ export const Title = () => {
         },
         onComplete: () => {
           setTimeout(() => {
-            titleRef.current.position.set(0, 0, 20);
+            titleRef.current?.position.set(0, 0, 20);
           }, 1400);
         },
       });
     }
   };
 
-  useFrame(() => {
+  useEffect(() => {
+    if (titleRef.current && progress >= 100) {
+      console.log('start');
+      gsap.delayedCall(1.1, () => {
+        gsap.to(titleRef.current.position, {
+          y: 0.6,
+          z: 4,
+          duration: 2.0,
+          ease: 'power4.inOut',
+        });
+      });
+    }
+  }, [progress]);
+
+  useFrame((state, delta) => {
     titleWrapRef.current.visible = activeScreen !== 'room';
+
+    // texturePlaneRef.current.rotation.set(
+    //   -Math.PI * state.pointer.y * 0.1,
+    //   Math.PI * state.pointer.x * 0.2,
+    //   0
+    // );
   });
 
   return (
     <group
       position={[0, 0.5, 0]}
       ref={titleWrapRef}
-      onPointerOver={(event) => event.stopPropagation()}
+      onPointerEnter={(event) => event.stopPropagation()}
       onClick={(event) => event.stopPropagation()}
     >
-      <mesh ref={titleRef} position={[0, 0.6, 4]}>
+      <mesh ref={titleRef} position={[0, 1, 14]}>
         <Text
           maxWidth={isDesktop ? 6 : 4}
           textAlign="center"
@@ -166,24 +217,35 @@ export const Title = () => {
             'Добро пожаловать в будущее, где все детские дома исчезли, а дети вернулись в родную семью или нашли приёмных родителей.'
           }
         />
-        <group
-          ref={buttonRef}
-          name="button-enter-to-figures"
-          position={[0, -2.1, 0.2]}
+        <mesh
+          position={[0, -2.076, 0.3]}
+          geometry={RectangleRoundedGeometry(1.44, 0.51, 0.25, 10)}
+          material={
+            new THREE.MeshBasicMaterial({
+              color: '#fff',
+              transparent: true,
+              opacity: 0,
+            })
+          }
           onPointerEnter={(event) => onButtonHover(event, 'over')}
           onPointerOut={(event) => onButtonHover(event, 'out')}
           onClick={onEnterFigures}
+        />
+        <mesh
+          ref={buttonRef}
+          name="button-enter-to-figures"
+          position={[0, -2.1, 0.2]}
+          geometry={RectangleRoundedGeometry(1.44, 0.51, 0.25, 10)}
+          material={buttonMaterial.current}
+          // onPointerEnter={(event) => onButtonHover(event, 'over')}
+          // onPointerOut={(event) => onButtonHover(event, 'out')}
+          // onClick={onEnterFigures}
         >
-          <mesh position={[-0.465, 0, 0]} material={buttonMaterial.current}>
-            <circleGeometry args={[0.255, 64]} />
-          </mesh>
-          <mesh position={[0, 0, 0]} material={buttonMaterial.current}>
-            <planeGeometry args={[0.98, 0.51]} />
-          </mesh>
-          <mesh position={[0.465, 0, 0]} material={buttonMaterial.current}>
-            <circleGeometry args={[0.255, 64]} />
-          </mesh>
           <Text
+            ref={buttonTextRef}
+            onPointerEnter={(event) => {
+              event.stopPropagation();
+            }}
             maxWidth={2.4}
             textAlign="center"
             // whiteSpace="overflowWrap"
@@ -191,13 +253,18 @@ export const Title = () => {
             // rotation={item.rotation}
             anchorX="center"
             anchorY="middle"
-            color="#fff"
-            font={'/fonts/Inter/Inter-Regular.woff'}
-            fontSize={0.17}
+            // color="#fff"
+            font={'/fonts/AmaticSC/AmaticSCBold.woff'}
+            // font={'/fonts/Inter/Inter-Regular.woff'}
+            fontSize={0.25}
+            // letterSpacing={0.03}
             lineHeight={1}
             children={'НАЧАТЬ'}
+            material={
+              new THREE.MeshBasicMaterial({ color: '#fff', toneMapped: false })
+            }
           />
-        </group>
+        </mesh>
       </mesh>
       <mesh ref={texturePlaneBackRef} position={[0, 0, 3.2]}>
         <planeGeometry args={[18, 14]} />

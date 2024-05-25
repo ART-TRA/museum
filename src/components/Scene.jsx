@@ -1,6 +1,6 @@
 import React from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Stats } from '@react-three/drei';
+import { OrbitControls, Preload, Stats } from '@react-three/drei';
 import { Background } from 'src/components/Background';
 import { Experience } from 'src/components/Experience';
 import * as THREE from 'three';
@@ -42,6 +42,7 @@ export const Scene = () => {
       <Experience />
       <Background />
       <Stats showPanel={0} className="stats" />
+      <Preload all />
     </Canvas>
   );
 };

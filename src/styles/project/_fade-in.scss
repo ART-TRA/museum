@@ -24,6 +24,10 @@
   animation: fade 2s normal forwards;
   pointer-events: none;
 
+  &--1 {
+    animation: fade 0.4s normal forwards;
+  }
+
   &--4 {
     animation: fade 4s normal forwards;
   }
