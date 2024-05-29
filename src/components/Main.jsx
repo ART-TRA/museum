@@ -10,7 +10,9 @@ export const Main = () => {
   const { isDesktop } = useResize();
 
   return (
-    <Suspense fallback={<SuspenseFallback />}>
+    <>
+      <SuspenseFallback />
+      {/*<Suspense fallback={<SuspenseFallback />}>*/}
       <RecoilRoot>
         {isDesktop && <Cursor />}
         <Overlay />
@@ -18,6 +20,7 @@ export const Main = () => {
           <Scene />
         </div>
       </RecoilRoot>
-    </Suspense>
+      {/*</Suspense>*/}
+    </>
   );
 };

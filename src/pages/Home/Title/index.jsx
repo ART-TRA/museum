@@ -1,12 +1,13 @@
 import React, { useEffect, useRef } from 'react';
-import { Text, useProgress, useTexture } from '@react-three/drei';
+import { Text, useProgress } from '@react-three/drei';
 import gsap from 'gsap';
 import { useRecoilState } from 'recoil';
 import * as THREE from 'three';
 import { useResize } from 'src/hooks/useResize';
 import { useAudio } from 'src/hooks/useAudio';
 import { activeScreenAtom } from 'src/recoil/atoms/activeScreen';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
+import { useKTX2Loader } from 'src/hooks/useKTX2Loader';
 
 const RectangleRoundedGeometry = (w, h, r, s) => {
   // width, height, radiusCorner, smoothness
@@ -58,7 +59,8 @@ export const Title = () => {
   const texturePlaneBackRef = useRef();
   const buttonRef = useRef();
   const buttonTextRef = useRef();
-  const startTitleMap = useTexture('/images/startTitle.jpg');
+  const { loadTexture } = useKTX2Loader();
+  const { gl } = useThree();
   const hovered = useRef(false);
   const buttonMaterial = useRef(
     new THREE.MeshBasicMaterial({ color: '#4c4c4c' })
@@ -167,6 +169,21 @@ export const Title = () => {
     }
   }, [progress]);
 
+  useEffect(() => {
+    loadTexture('/textures/title/startTitle.ktx2', (texture) => {
+      gl.initTexture(texture);
+      console.log('TEXTURE START', texture);
+      texturePlaneRef.current.material = new THREE.MeshBasicMaterial({
+        color: '#fff',
+        map: texture,
+        transparent: true,
+        opacity: 0.6,
+        toneMapped: false,
+        side: THREE.BackSide,
+      });
+    });
+  }, []);
+
   useFrame((state, delta) => {
     titleWrapRef.current.visible = activeScreen !== 'room';
 
@@ -183,6 +200,7 @@ export const Title = () => {
       ref={titleWrapRef}
       onPointerEnter={(event) => event.stopPropagation()}
       onClick={(event) => event.stopPropagation()}
+      dispose={null}
     >
       <mesh ref={titleRef} position={[0, 1, 14]}>
         <Text
@@ -219,7 +237,7 @@ export const Title = () => {
         />
         <mesh
           position={[0, -2.076, 0.3]}
-          geometry={RectangleRoundedGeometry(1.44, 0.51, 0.25, 10)}
+          geometry={new THREE.PlaneGeometry(1.44, 0.51)}
           material={
             new THREE.MeshBasicMaterial({
               color: '#fff',
@@ -235,12 +253,18 @@ export const Title = () => {
           ref={buttonRef}
           name="button-enter-to-figures"
           position={[0, -2.1, 0.2]}
-          geometry={RectangleRoundedGeometry(1.44, 0.51, 0.25, 10)}
-          material={buttonMaterial.current}
-          // onPointerEnter={(event) => onButtonHover(event, 'over')}
-          // onPointerOut={(event) => onButtonHover(event, 'out')}
-          // onClick={onEnterFigures}
+          // geometry={RectangleRoundedGeometry(1.44, 0.51, 0.25, 10)}
+          // material={buttonMaterial.current}
         >
+          <mesh position={[-0.465, 0, 0]} material={buttonMaterial.current}>
+            <circleGeometry args={[0.255, 64]} />
+          </mesh>
+          <mesh position={[0, 0, 0]} material={buttonMaterial.current}>
+            <planeGeometry args={[0.98, 0.51]} />
+          </mesh>
+          <mesh position={[0.465, 0, 0]} material={buttonMaterial.current}>
+            <circleGeometry args={[0.255, 64]} />
+          </mesh>
           <Text
             ref={buttonTextRef}
             onPointerEnter={(event) => {
@@ -277,17 +301,11 @@ export const Title = () => {
       </mesh>
       <mesh
         ref={texturePlaneRef}
+        rotation={[Math.PI, 0, 0]}
         position={isDesktop ? [0, 0, 3.3] : [0, 0.7, 3.3]}
         name="blur_figures"
       >
         <planeGeometry args={isDesktop ? [11, 7] : [6.2, 4]} />
-        <meshBasicMaterial
-          color={'#fff'}
-          map={startTitleMap}
-          transparent
-          opacity={0.6}
-          toneMapped={false}
-        />
       </mesh>
     </group>
   );

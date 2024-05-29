@@ -31,19 +31,20 @@ export const Cube = () => {
         }
       >
         <meshPhysicalMaterial
-          // aoMap={textures.env}
-          envMapIntensity={1.3}
-          clearcoat={0.1}
+          clearcoat={0.3}
           // clearcoatRoughness={0.6}
           color={'#ffffff'}
-          // transmission={0.2}
+          // transmission={0.9}
           roughness={0.17}
-          metalness={0.03}
+          metalness={0.15}
           reflectivity={0.9}
-          ior={2.5}
-          iridescence={0.3}
-          // map={textures.env}
+          ior={0.5}
+          iridescence={0.03}
+          // envMap={textures.env}
+          envMapIntensity={1.3}
+          // aoMap={textures.env}
           aoMapIntensity={0.3}
+          toneMapped={false}
         />
       </RoundedBox>
     </FloatWrap>

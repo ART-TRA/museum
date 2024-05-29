@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
-import { useGLTF } from '@react-three/drei';
+import { useGLTF, useHelper } from '@react-three/drei';
 import { Cube } from 'src/pages/Home/Figures/Cube';
 import { Pyramid } from 'src/pages/Home/Figures/Pyramid';
 import { HalfTorus } from 'src/pages/Home/Figures/HalfTorus';
@@ -12,8 +12,11 @@ import { useResize } from 'src/hooks/useResize';
 import { useFigures } from 'src/hooks/useFigures';
 import { useTouch } from 'src/hooks/useTouch';
 import { activeRoomKeys } from 'src/recoil/atoms/activeRoom';
+import { DirectionalLightHelper } from 'three';
 
 export const Figures = () => {
+  const dirLight = useRef(null);
+  // useHelper(dirLight, DirectionalLightHelper, 1, 'red');
   const { isDesktop } = useResize();
   const renderFigures = useRef();
   const homeModel = useGLTF('models/figures.glb');
@@ -59,6 +62,13 @@ export const Figures = () => {
       rotation={[-Math.PI * 0.05, 0, 0]}
       dispose={null}
     >
+      <directionalLight
+        ref={dirLight}
+        intensity={2.0}
+        position={[7, 4, 18]}
+        castShadow={false}
+        dispose
+      />
       <BackPlane />
       <group>
         <Pyramid nodes={homeModel?.nodes} />

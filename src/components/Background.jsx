@@ -67,7 +67,6 @@ export const Background = () => {
   return (
     <>
       {/*<ambientLight intensity={0.5} />*/}
-      {/*<directionalLight intensity={0.9} position={[5, 5, 5]} />*/}
       <Environment files={'/environment/env.hdr'} blur={1.0} />
       {/*<Environment preset="sunset" blur={0.4} background resolution={256} />*/}
       {/*  <group rotation={[-Math.PI / 3, 0, 1]}>*/}
