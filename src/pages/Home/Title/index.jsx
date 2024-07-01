@@ -157,7 +157,6 @@ export const Title = () => {
 
   useEffect(() => {
     if (titleRef.current && progress >= 100) {
-      console.log('start');
       gsap.delayedCall(1.1, () => {
         gsap.to(titleRef.current.position, {
           y: 0.6,
@@ -172,7 +171,6 @@ export const Title = () => {
   useEffect(() => {
     loadTexture('/textures/title/startTitle.ktx2', (texture) => {
       gl.initTexture(texture);
-      console.log('TEXTURE START', texture);
       texturePlaneRef.current.material = new THREE.MeshBasicMaterial({
         color: '#fff',
         map: texture,

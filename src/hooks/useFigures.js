@@ -33,7 +33,7 @@ export const useFigures = () => {
     event.stopPropagation();
     if (activeScreen === 'figures') {
       // console.log('onFigureHover', hoverDeltaTime.current);
-      if (!scaled.current) {
+      if (!scaled.current && activeRoomName !== 'empty') {
         scaled.current = true;
         changeScale(event?.object);
         setTimeout(() => {

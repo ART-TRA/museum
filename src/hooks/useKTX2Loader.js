@@ -1,7 +1,8 @@
 import { useThree } from '@react-three/fiber';
 import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 import { REVISION } from 'three';
-import { useRef } from 'react';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { MeshoptDecoder } from 'three-stdlib';
 
 const THREE_PATH = `https://unpkg.com/three@0.${REVISION}.x`;
 
@@ -14,10 +15,17 @@ export const useKTX2Loader = () => {
   const loadTexture = (textureUrl, callback) => {
     ktx2Loader.load(textureUrl, (texture) => {
       callback?.(texture);
-
-      // return texture;
     });
   };
 
-  return { ktx2Loader, loadTexture };
+  const loadModel = (callback) => {
+    const loader = new GLTFLoader();
+    loader.setKTX2Loader(ktx2Loader);
+    loader.setMeshoptDecoder(MeshoptDecoder);
+    loader.load('models/shapes.gltf', (model) => {
+      callback?.(model);
+    });
+  };
+
+  return { ktx2Loader, loadTexture, loadModel };
 };

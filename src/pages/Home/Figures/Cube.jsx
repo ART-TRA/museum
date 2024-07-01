@@ -1,10 +1,8 @@
-import React from 'react';
+import { activeRoomKeys } from 'src/recoil/atoms/activeRoom';
 import { FloatWrap } from 'src/pages/Home/Figures/FloatWrap';
 import { useFigures } from 'src/hooks/useFigures';
-import { activeRoomKeys } from 'src/recoil/atoms/activeRoom';
-import { RoundedBox } from '@react-three/drei';
 
-export const Cube = () => {
+export const Cube = ({ model }) => {
   const { onFigureClick, onFigureHover } = useFigures();
 
   return (
@@ -16,37 +14,14 @@ export const Cube = () => {
         floatingRange: [0.9, 0.5],
       }}
     >
-      <RoundedBox
+      <mesh
         name="cube"
-        // castShadow
-        // receiveShadow
-        args={[2.5, 2.5, 2.5]}
-        radius={0.2}
-        position={[3.172, -0.634, -0.5]}
-        rotation={[0.66, 0.36, 0.191]}
+        {...model}
         onPointerEnter={(event) => onFigureHover(event, activeRoomKeys[4])}
-        // onPointerOut={(event) => onFigureHover(event, 'out')}
         onClick={(event) =>
           onFigureClick(activeRoomKeys[4], event?.object?.scale, 3000)
         }
-      >
-        <meshPhysicalMaterial
-          clearcoat={0.3}
-          // clearcoatRoughness={0.6}
-          color={'#ffffff'}
-          // transmission={0.9}
-          roughness={0.17}
-          metalness={0.15}
-          reflectivity={0.9}
-          ior={0.5}
-          iridescence={0.03}
-          // envMap={textures.env}
-          envMapIntensity={1.3}
-          // aoMap={textures.env}
-          aoMapIntensity={0.3}
-          toneMapped={false}
-        />
-      </RoundedBox>
+      />
     </FloatWrap>
   );
 };

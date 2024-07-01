@@ -1,5 +1,10 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
-import { useGLTF, useHelper } from '@react-three/drei';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Cube } from 'src/pages/Home/Figures/Cube';
 import { Pyramid } from 'src/pages/Home/Figures/Pyramid';
 import { HalfTorus } from 'src/pages/Home/Figures/HalfTorus';
@@ -12,14 +17,19 @@ import { useResize } from 'src/hooks/useResize';
 import { useFigures } from 'src/hooks/useFigures';
 import { useTouch } from 'src/hooks/useTouch';
 import { activeRoomKeys } from 'src/recoil/atoms/activeRoom';
+import { useHelper } from '@react-three/drei';
 import { DirectionalLightHelper } from 'three';
+import { useKTX2Loader } from 'src/hooks/useKTX2Loader';
 
 export const Figures = () => {
   const dirLight = useRef(null);
   // useHelper(dirLight, DirectionalLightHelper, 1, 'red');
+
   const { isDesktop } = useResize();
   const renderFigures = useRef();
-  const homeModel = useGLTF('models/figures.glb');
+  const { loadModel } = useKTX2Loader();
+  const [homeModel, setHomeModel] = useState(null);
+
   const { onFigureClick } = useFigures();
   const activeScreen = useRecoilValue(activeScreenAtom);
   const { swipeDirection } = useTouch();
@@ -44,6 +54,13 @@ export const Figures = () => {
       firstMount.current = false;
     }
   };
+
+  useEffect(() => {
+    loadModel((model) => {
+      setHomeModel(model);
+      // renderFigures.current.add(model.scene);
+    });
+  }, []);
 
   useLayoutEffect(() => {
     window.addEventListener('touchmove', slideToRoom);
@@ -70,15 +87,15 @@ export const Figures = () => {
         dispose
       />
       <BackPlane />
-      <group>
-        <Pyramid nodes={homeModel?.nodes} />
-        <Rectangle />
-        <HalfTorus nodes={homeModel?.nodes} />
-        <Sphere />
-        <Cube />
-      </group>
+      {homeModel && (
+        <group>
+          <Pyramid model={homeModel.scene.children[4]} />
+          <Rectangle model={homeModel.scene.children[3]} />
+          <HalfTorus model={homeModel.scene.children[1]} />
+          <Sphere model={homeModel.scene.children[5]} />
+          <Cube model={homeModel.scene.children[2]} />
+        </group>
+      )}
     </group>
   );
 };
-
-useGLTF.preload('models/figures.glb');
