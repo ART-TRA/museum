@@ -133,6 +133,58 @@
 
     &::after {
       opacity: 0;
+      pointer-events: none;
+    }
+  }
+
+  @include media-breakpoint-up(desktop) {
+    &::after {
+      display: none;
+    }
+  }
+}
+
+.exhibit-description__share {
+  display: flex;
+  align-items: center;
+  margin: 48px 0 0;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+
+  svg {
+    margin: 0 14px 0 0;
+    color: $blue-500;
+    transition: 0.2s;
+  }
+
+  p {
+    margin: 0;
+    color: $blue-300;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 19px;
+    text-align: left;
+    text-transform: uppercase;
+  }
+
+  &:active {
+    svg {
+      color: $blue-300;
+    }
+  }
+
+  @include media-breakpoint-up(desktop) {
+    p {
+      font-size: 1vw;
+      line-height: 1.3vw;
+    }
+
+    &:hover {
+      svg {
+        color: $blue-300;
+      }
     }
   }
 }
@@ -179,6 +231,7 @@
 
     &:disabled {
       background-color: transparent;
+      cursor: default;
       opacity: 0.2;
     }
   }
@@ -195,6 +248,20 @@
 
           path {
             color: $white;
+          }
+        }
+      }
+
+      &:disabled {
+        background-color: transparent;
+
+        svg {
+          rect {
+            color: $blue-500;
+          }
+
+          path {
+            color: $blue-500;
           }
         }
       }

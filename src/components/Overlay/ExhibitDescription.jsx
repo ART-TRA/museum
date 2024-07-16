@@ -9,6 +9,7 @@ import { useTouch } from 'src/hooks/useTouch';
 import { Share } from 'src/icons/Share';
 import { Arrow } from 'src/icons/Arrow';
 import { useState } from 'react';
+import { Share2 } from 'src/icons/Share2';
 
 const ExhibitDescriptionInner = () => {
   const { isDesktop, isPhone } = useResize();
@@ -29,6 +30,11 @@ const ExhibitDescriptionInner = () => {
     }
   };
 
+  const onShareExperience = (event) => {
+    event?.stopPropagation();
+    console.log('share', exhibitActive);
+  };
+
   const onExitFromDescription = (event) => {
     if (event?.type !== 'wheel' && exhibitActive !== 'hand') {
       event?.preventDefault();
@@ -43,15 +49,18 @@ const ExhibitDescriptionInner = () => {
           detail: exhibitActive,
         })
       );
+      setExpanded(false);
       setExhibitActive(null);
     }, 200);
   };
 
-  const onHelpClick = () => {
+  const onHelpClick = (event) => {
+    event.stopPropagation();
     console.log('help');
   };
 
-  const onShareClick = () => {
+  const onShareClick = (event) => {
+    event.stopPropagation();
     console.log('share');
   };
 
@@ -126,6 +135,19 @@ const ExhibitDescriptionInner = () => {
               __html: exhibits?.[exhibitActive]?.description,
             }}
           />
+          {exhibitActive && exhibitActive !== 'hand' && (
+            <button
+              type="button"
+              className="exhibit-description__share"
+              onClick={onShareExperience}
+            >
+              <Share2 />
+              <p>
+                Поделиться <br />
+                сайтом
+              </p>
+            </button>
+          )}
         </div>
       </div>
       {exhibitActive && exhibitActive !== 'hand' && (
