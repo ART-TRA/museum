@@ -39,7 +39,7 @@ export const OverlayFooter = ({ screen }) => {
       )}
       {screen === 'room' && exhibitActive === 'hand' && (
         <p>
-          Сделано <br />в{' '}
+          Сделано&nbsp;в&nbsp;
           <a href="https://ruport.ru" target="_blank" rel="noreferrer">
             RUPORT
           </a>

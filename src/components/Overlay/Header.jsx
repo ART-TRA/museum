@@ -12,18 +12,13 @@ export const OverlayHeader = () => {
     'header--room': activeScreen === 'room',
   });
 
-  const setFadeTransition = () => {
-    const overlay = document.querySelector('.overlay');
-    overlay?.classList.toggle('overlay--faded');
-  };
-
   if (['figures', 'room'].includes(activeScreen)) {
     return (
       <header className={headerClassNames}>
         <a href="/">
           <Hand />
         </a>
-        <Nav setFadeTransition={setFadeTransition} />
+        <Nav />
       </header>
     );
   }

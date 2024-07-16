@@ -66,48 +66,25 @@ export const Background = () => {
 
   return (
     <>
+      <color attach="background" args={['#a3a5a9']} />
       {/*<ambientLight intensity={0.5} />*/}
-      <Environment files={'/environment/env.hdr'} blur={1.0} />
-      {/*<Environment preset="sunset" blur={0.4} background resolution={256} />*/}
-      {/*  <group rotation={[-Math.PI / 3, 0, 1]}>*/}
-      {/*    <Lightformer*/}
-      {/*      form="circle"*/}
-      {/*      intensity={4}*/}
-      {/*      rotation-x={Math.PI / 2}*/}
-      {/*      position={[0, 5, -9]}*/}
-      {/*      scale={2}*/}
-      {/*    />*/}
-      {/*    <Lightformer*/}
-      {/*      form="circle"*/}
-      {/*      intensity={2}*/}
-      {/*      rotation-y={Math.PI / 2}*/}
-      {/*      position={[-5, 1, -1]}*/}
-      {/*      scale={2}*/}
-      {/*    />*/}
-      {/*    <Lightformer*/}
-      {/*      form="circle"*/}
-      {/*      intensity={2}*/}
-      {/*      rotation-y={Math.PI / 2}*/}
-      {/*      position={[-5, -1, -1]}*/}
-      {/*      scale={2}*/}
-      {/*    />*/}
-      {/*    <Lightformer*/}
-      {/*      form="circle"*/}
-      {/*      intensity={2}*/}
-      {/*      rotation-y={-Math.PI / 2}*/}
-      {/*      position={[10, 1, 0]}*/}
-      {/*      scale={8}*/}
-      {/*    />*/}
-      {/*  </group>*/}
-      {/*</Environment>*/}
-      {/*<spotLight*/}
-      {/*  position={[10, 10, 10]}*/}
-      {/*  angle={0.15}*/}
-      {/*  penumbra={1}*/}
-      {/*  intensity={1}*/}
-      {/*  castShadow*/}
-      {/*/>*/}
-      <color attach="background" args={['#c5cad3']} />
+      <Environment
+        files={'/environment/env.hdr'}
+        blur={1.0}
+        // backgroundIntensity={5}
+        environmentIntensity={1.1}
+      >
+        {/*<Environment preset="sunset" blur={0.4} background resolution={256} />*/}
+        {/*  <group rotation={[-Math.PI / 3, 0, 1]}>*/}
+        {/*<Lightformer*/}
+        {/*  form="circle"*/}
+        {/*  intensity={20}*/}
+        {/*  rotation-x={Math.PI / 2}*/}
+        {/*  position={[7, 25, 0]}*/}
+        {/*  scale={3}*/}
+        {/*  color={'#738bff'}*/}
+        {/*/>*/}
+      </Environment>
       {/*<fog attach="fog" args={['#ff8a16', 28, 50]} />*/}
     </>
   );

@@ -1,18 +1,18 @@
-import React from 'react';
 import { Cross } from 'src/icons/Cross';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { activeExhibitAtom } from 'src/recoil/atoms/activeExhibit';
 import cn from 'classnames';
-import { useExhibits } from 'src/hooks/useExhibits';
+import { useExhibitsDescriptions } from 'src/hooks/useExhibitsDescriptions';
 import { activeScreenAtom } from 'src/recoil/atoms/activeScreen';
 import { useResize } from 'src/hooks/useResize';
 import { useTouch } from 'src/hooks/useTouch';
 import { Share } from 'src/icons/Share';
+import { Arrow } from 'src/icons/Arrow';
 
 const ExhibitDescriptionInner = () => {
   const { isDesktop } = useResize();
   const { swipeDirection } = useTouch();
-  const exhibits = useExhibits();
+  const exhibits = useExhibitsDescriptions();
   const [exhibitActive, setExhibitActive] = useRecoilState(activeExhibitAtom);
   const classNames = cn('exhibit-description', {
     'exhibit-description--visible': exhibitActive,
@@ -21,14 +21,19 @@ const ExhibitDescriptionInner = () => {
 
   const onExitFromDescription = (event) => {
     if (event?.type !== 'wheel' && exhibitActive !== 'hand') {
-      console.log('preventDefault', exhibitActive);
       event?.preventDefault();
       event?.stopPropagation();
     }
-    // console.log('onExitFromDescription', exhibitActive);
-    setExhibitActive(null);
+    if (exhibitActive === 'hand') {
+      setExhibitActive(null);
+    }
     setTimeout(() => {
-      window.dispatchEvent(new CustomEvent('onExitFromDescription'));
+      window.dispatchEvent(
+        new CustomEvent('onExitFromDescription', {
+          detail: exhibitActive,
+        })
+      );
+      setExhibitActive(null);
     }, 200);
   };
 
@@ -40,18 +45,26 @@ const ExhibitDescriptionInner = () => {
     console.log('share');
   };
 
-  // useEffect(() => {
-  //   if (!isDesktop && swipeDirection === 'down' && exhibitActive === 'hand') {
-  //     // console.log('swipeDirection', swipeDirection);
-  //     onExitFromDescription();
-  //   }
-  // }, [swipeDirection, exhibitActive]);
+  const onDirectionClick = (direction) => {
+    if (direction) {
+      window.dispatchEvent(
+        new CustomEvent('onChangeActiveExhibit', {
+          detail: { name: exhibitActive, direction: 'next' },
+        })
+      );
+    } else {
+      window.dispatchEvent(
+        new CustomEvent('onChangeActiveExhibit', {
+          detail: { name: exhibitActive, direction: 'prev' },
+        })
+      );
+    }
+  };
 
   return (
     <div
       className={classNames}
       onWheel={(event) => {
-        console.log('VOL1', exhibitActive, event.deltaY);
         if (exhibitActive === 'hand' && event.deltaY < 0) {
           onExitFromDescription(event);
         }
@@ -86,12 +99,37 @@ const ExhibitDescriptionInner = () => {
           <Cross />
         </button>
       )}
-      <h2>{exhibits?.[exhibitActive]?.title}</h2>
-      <p
-        dangerouslySetInnerHTML={{
-          __html: exhibits?.[exhibitActive]?.description,
-        }}
-      />
+      <div>
+        <h2>{exhibits?.[exhibitActive]?.title}</h2>
+        {exhibits?.[exhibitActive]?.owner && (
+          <h3>
+            ВЛАДЕЛЬЦЫ: <span>{exhibits?.[exhibitActive]?.owner}</span>
+          </h3>
+        )}
+        <p
+          dangerouslySetInnerHTML={{
+            __html: exhibits?.[exhibitActive]?.description,
+          }}
+        />
+      </div>
+      {exhibitActive && exhibitActive !== 'hand' && (
+        <div className="exhibit-description__buttons">
+          <button
+            type="button"
+            onClick={() => onDirectionClick(true)}
+            disabled={exhibitActive === 'doll'}
+          >
+            <Arrow />
+          </button>
+          <button
+            type="button"
+            onClick={() => onDirectionClick(false)}
+            disabled={exhibitActive === 'boots'}
+          >
+            <Arrow />
+          </button>
+        </div>
+      )}
       {exhibitActive === 'hand' && (
         <div className="exhibit-description__help-wrap">
           <button

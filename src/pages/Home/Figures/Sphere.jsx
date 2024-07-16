@@ -1,8 +1,9 @@
 import { activeRoomKeys } from 'src/recoil/atoms/activeRoom';
 import { FloatWrap } from 'src/pages/Home/Figures/FloatWrap';
 import { useFigures } from 'src/hooks/useFigures';
+import * as THREE from 'three';
 
-export const Sphere = ({ model }) => {
+export const Sphere = ({ model, groupRef }) => {
   const { onFigureClick, onFigureHover } = useFigures();
 
   return (
@@ -18,16 +19,22 @@ export const Sphere = ({ model }) => {
       <mesh
         name="sphere"
         {...model}
-        onPointerEnter={(event) => onFigureHover(event, activeRoomKeys[3])}
-        // onPointerOut={(event) => onFigureHover(event, 'out')}
+        onPointerEnter={(event) =>
+          onFigureHover(event, activeRoomKeys[3], 'over', groupRef)
+        }
+        onPointerOut={(event) =>
+          onFigureHover(event, activeRoomKeys[3], 'out', groupRef)
+        }
         onClick={(event) =>
           onFigureClick(activeRoomKeys[3], event?.object?.scale, 2000)
         }
       >
         <meshPhysicalMaterial
           {...model.material}
+          transparent={true}
           roughnessMap={null}
           roughness={0.2}
+          toneMapped={THREE.NeutralToneMapping}
         />
       </mesh>
     </FloatWrap>

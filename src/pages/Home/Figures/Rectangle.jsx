@@ -2,7 +2,7 @@ import { activeRoomKeys } from 'src/recoil/atoms/activeRoom';
 import { FloatWrap } from 'src/pages/Home/Figures/FloatWrap';
 import { useFigures } from 'src/hooks/useFigures';
 
-export const Rectangle = ({ model }) => {
+export const Rectangle = ({ model, groupRef }) => {
   const { onFigureClick, onFigureHover } = useFigures();
 
   return (
@@ -17,8 +17,13 @@ export const Rectangle = ({ model }) => {
       <mesh
         name="rectangle"
         {...model}
-        onPointerEnter={(event) => onFigureHover(event, activeRoomKeys[1])}
-        // onPointerOut={(event) => onFigureHover(event, 'out')}
+        // position-z={-0.9}
+        onPointerEnter={(event) =>
+          onFigureHover(event, activeRoomKeys[1], 'over', groupRef)
+        }
+        onPointerOut={(event) =>
+          onFigureHover(event, activeRoomKeys[1], 'out', groupRef)
+        }
         onClick={(event) =>
           onFigureClick(activeRoomKeys[1], event?.object?.scale, 1200)
         }

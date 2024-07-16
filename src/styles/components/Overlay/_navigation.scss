@@ -19,18 +19,18 @@
 
 .navigation-path {
   transition: 0.1s;
-  fill: #4e535c;
-  stroke: #4e535c;
+  fill: $blue-500;
+  stroke: $blue-500;
 
   &--active {
     fill: transparent;
-    stroke: #4e535c;
+    stroke: $blue-500;
   }
 
   @include media-breakpoint-up(desktop) {
     &:hover {
       fill: transparent;
-      stroke: #4e535c;
+      stroke: $blue-500;
     }
   }
 }

@@ -3,65 +3,50 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { activeScreenAtom } from 'src/recoil/atoms/activeScreen';
 import gsap from 'gsap';
 import { useEffect, useRef, useState } from 'react';
-import { changeScale } from 'src/utils/changeScale';
+import { changeScaleDown, changeScaleUp } from 'src/utils/changeScale';
 import {
   hoveredKeys,
   hoveredValues,
   lastHoveredFigureValueAtom,
 } from 'src/recoil/atoms/lastHoveredFigureValue';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { clickTransition } from 'src/recoil/atoms/clickTransition';
+import { setFadeTransition } from 'src/utils/setFadeTransition';
 
 export const useFigures = () => {
-  const hoverDeltaTime = useRef(new Date());
   const setClickedTransition = useSetRecoilState(clickTransition);
-  const [lastHoveredFigureValue, setLastHoveredFigureValue] = useRecoilState(
-    lastHoveredFigureValueAtom
-  );
-  const scaled = useRef(false);
   const [activeScreen, setActiveScreen] = useRecoilState(activeScreenAtom);
   const setActiveRoom = useSetRecoilState(activeRoomAtom);
   const oneClickLimit = useRef(true);
+  const { scene } = useThree();
 
-  const setFadeTransition = () => {
-    const overlay = document.querySelector('.overlay');
-    overlay?.classList.toggle('overlay--faded');
-  };
-
-  const onFigureHover = (event, activeRoomName) => {
-    // const tempTime = new Date();
+  const onFigureHover = (event, activeRoomName, action, groupRef) => {
+    const figures = [];
+    groupRef.current.traverse((child) => {
+      if (child.isMesh && child.name !== event.object.name) {
+        figures.push(child);
+        // console.log(child);
+      }
+    });
+    console.log('FIGURES', figures);
     event.stopPropagation();
     if (activeScreen === 'figures') {
-      // console.log('onFigureHover', hoverDeltaTime.current);
-      if (!scaled.current && activeRoomName !== 'empty') {
-        scaled.current = true;
-        changeScale(event?.object);
-        setTimeout(() => {
-          scaled.current = false;
-        }, 500);
-      }
-
-      setTimeout(() => {
-        setLastHoveredFigureValue(hoveredValues[activeRoomName]);
-      }, 400);
-
-      if (activeRoomName === hoveredKeys.empty) {
-        // if (tempTime - hoverDeltaTime.current > 2000) {
-        //   setTimeout(() => {
-        //     setLastHoveredFigureValue(hoveredValues[activeRoomName]);
-        //   }, 400);
-        // }
-        document.body.style.cursor = 'auto';
+      if (action === 'out') {
+        if (activeRoomName !== 'empty') {
+          changeScaleDown(event?.object, figures);
+        }
       } else {
-        // if (lastHoveredFigureValue !== hoveredValues[activeRoomName]) {
-        //   setTimeout(() => {
-        //     setLastHoveredFigureValue(hoveredValues[activeRoomName]);
-        //   }, 400);
-        // }
-        document.body.style.cursor = 'pointer';
+        if (activeRoomName !== 'empty') {
+          changeScaleUp(event?.object, figures);
+        }
+
+        if (activeRoomName === hoveredKeys.empty) {
+          document.body.style.cursor = 'auto';
+        } else {
+          document.body.style.cursor = 'pointer';
+        }
       }
     }
-    // hoverDeltaTime.current = tempTime;
   };
 
   const onFigureClick = (activeRoomName, scale, delayTime = 1000) => {

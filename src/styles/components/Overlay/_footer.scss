@@ -3,7 +3,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 3;
+  z-index: 1;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -12,7 +12,7 @@
   p {
     max-width: 160px;
     margin: 0;
-    color: #4e535c;
+    color: $blue-500;
     font-weight: 500;
     font-size: 14px;
     line-height: 130%;
@@ -39,7 +39,7 @@
       font-size: 14px;
       line-height: 19px;
       text-transform: uppercase;
-      background-color: #4e535c;
+      background-color: $blue-500;
       border: none;
       border-radius: 82px;
       cursor: pointer;
@@ -59,7 +59,7 @@
       opacity: 1;
 
       a {
-        color: #4e535c;
+        color: $blue-500;
         pointer-events: all;
       }
     }
@@ -79,7 +79,7 @@
 
     p {
       max-width: 204px;
-      font-size: 20px;
+      font-size: 18px;
     }
 
     &--figures {
@@ -91,7 +91,7 @@
 }
 
 .footer__start {
-  color: #4c4c4c;
+  color: $blue-500;
   font-size: 1.5vw;
   font-family: $fontFamilyAmaticSC;
   background-color: transparent;
@@ -111,14 +111,14 @@
   width: 2px;
   height: 70px;
   overflow: hidden;
-  background-color: #c7c7c7;
+  background-color: $blue-50;
   transform: translateX(-50%);
 
   &::after {
     position: absolute;
     inset: 0;
     height: 100%;
-    background-color: #4c4c4c;
+    background-color: $blue-500;
     animation: toggle-color 2s normal infinite;
     content: '';
   }
@@ -136,7 +136,7 @@
   font-size: 6px;
   line-height: 19px;
   text-transform: uppercase;
-  background-color: #4c4c4c;
+  background-color: $blue-500;
   border: none;
   border-radius: 82px;
   cursor: pointer;

@@ -11,8 +11,8 @@ export const Main = () => {
 
   return (
     <>
-      <SuspenseFallback />
-      {/*<Suspense fallback={<SuspenseFallback />}>*/}
+      {/*<SuspenseFallback />*/}
+      {/*<Suspense fallback={null}>*/}
       <RecoilRoot>
         {isDesktop && <Cursor />}
         <Overlay />

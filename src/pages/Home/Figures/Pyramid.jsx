@@ -2,7 +2,7 @@ import { activeRoomKeys } from 'src/recoil/atoms/activeRoom';
 import { FloatWrap } from 'src/pages/Home/Figures/FloatWrap';
 import { useFigures } from 'src/hooks/useFigures';
 
-export const Pyramid = ({ model }) => {
+export const Pyramid = ({ model, groupRef }) => {
   const { onFigureClick, onFigureHover } = useFigures();
 
   return (
@@ -18,8 +18,13 @@ export const Pyramid = ({ model }) => {
         <mesh
           name="pyramid"
           {...model}
-          onPointerEnter={(event) => onFigureHover(event, activeRoomKeys[0])}
-          // onPointerOut={(event) => onFigureHover(event, 'out')}
+          position-z={1}
+          onPointerEnter={(event) =>
+            onFigureHover(event, activeRoomKeys[0], 'over', groupRef)
+          }
+          onPointerOut={(event) =>
+            onFigureHover(event, activeRoomKeys[0], 'out', groupRef)
+          }
           onClick={(event) =>
             onFigureClick(activeRoomKeys[0], event?.object?.scale)
           }

@@ -14,7 +14,7 @@ export const Home = () => {
   const [activeScreen, setActiveScreen] = useRecoilState(activeScreenAtom);
 
   useFrame((state) => {
-    if (activeScreen === 'figures' && isDesktop) {
+    if (activeScreen !== 'room' && isDesktop) {
       stateCameraPosition.current.set(
         -17.6,
         -state.pointer.y * 1.6 + 2.5,
@@ -32,7 +32,7 @@ export const Home = () => {
       ref={renderFigures}
       rotation={isDesktop ? [0, -Math.PI * 0.539, 0] : [0, -Math.PI * 0.55, 0]}
     >
-      {activeScreen === 'title' && <Title />}
+      {/*{activeScreen === 'title' && <Title />}*/}
       {activeScreen !== 'room' && <Figures />}
     </group>
   );

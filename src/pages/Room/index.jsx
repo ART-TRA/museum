@@ -20,61 +20,18 @@ import { useTouch } from 'src/hooks/useTouch';
 import { useKTX2Loader } from 'src/hooks/useKTX2Loader';
 import { Effects } from 'src/components/Effects';
 import { clickTransition } from 'src/recoil/atoms/clickTransition';
-
-const SCROLL_MODIFIER = 0.04;
-const SCROLL_SPEED = 0.04;
-const TOUCH_SPEED = 0.01;
-const TOUCH_SPEED_X10 = 0.08;
-const ALLOWED_NAMES_EXHIBITS = [
-  'Shoes_L',
-  'Shoes_R',
-  'Cups',
-  'Bed',
-  'Cubes',
-  'Child_art',
-  'Xylophone',
-  'Diary',
-  'Collage',
-  'Christmas_Ball',
-  'Bow_tie',
-  'Toy_boxes',
-  'Ball',
-  'Hare',
-  'Bear',
-  'Skies',
-  'Bear_body',
-  'Truck',
-  'Doll',
-  'Hand',
-];
-const ALLOWED_NAMES_WALLS = [
-  'WALL_11',
-  'WALL_12',
-  'WALL_13',
-  'WALL_14',
-  'WALL_15',
-  'WALL_16',
-  'WALL_17',
-  'WALL_18',
-  'WALL_19',
-  'WALL_110',
-  'WALL_111',
-  'WALL_112',
-  'WALL_113',
-];
-const ALLOWED_NAMES_FLOORS = [
-  'FLOOR_11',
-  'FLOOR_12',
-  'FLOOR_13',
-  'FLOOR_14',
-  'FLOOR_15',
-];
-const ALLOWED_NAMES_PODIUMS = [
-  'Elements_11',
-  'Elements_12',
-  'Elements_13',
-  'Elements_14',
-];
+import {
+  ALLOWED_NAMES_EXHIBITS,
+  ALLOWED_NAMES_FLOORS,
+  ALLOWED_NAMES_PODIUMS,
+  ALLOWED_NAMES_WALLS,
+  SCROLL_MODIFIER,
+  SCROLL_SPEED,
+  TOUCH_SPEED,
+  TOUCH_SPEED_X10,
+} from 'src/pages/Room/constants';
+import { setFadeTransition } from 'src/utils/setFadeTransition';
+import { useExhibits } from 'src/hooks/useExhibits';
 
 export const Room = () => {
   const renderRoom = useRef();
@@ -91,11 +48,49 @@ export const Room = () => {
   const [roomDuration, setRoomDuration] = useRecoilState(roomDurationAtom);
   const [exhibitActive, setExhibitActive] = useRecoilState(activeExhibitAtom);
   const isClickedTransition = useRecoilValue(clickTransition);
+  const { exhibits, exhibitsDirections } = useExhibits();
+
+  const exhibitsRef = useRef();
+  const walls = useRef();
+  const floors = useRef();
+  const podiums = useRef();
 
   const mixer = useRef(new THREE.AnimationMixer(model?.scene));
   const action = useRef(mixer.current.clipAction(model?.animations[0]));
   action.current.setLoop(THREE.LoopOnce, 0);
   action.current.play();
+
+  const onChangeActiveExhibit = useCallback(
+    ({ detail }) => {
+      setFadeTransition();
+      setTimeout(() => {
+        if (
+          detail.direction === 'next' &&
+          exhibitsDirections[detail.name].next
+        ) {
+          setExhibitActive(exhibitsDirections[detail.name].next.name);
+          exhibitOnObserve.current = {
+            position: exhibitsDirections[detail.name].next.position,
+            quaternion: exhibitsDirections[detail.name].next.quaternion,
+          };
+        } else if (
+          detail.direction === 'prev' &&
+          exhibitsDirections[detail.name].prev
+        ) {
+          setExhibitActive(exhibitsDirections[detail.name].prev.name);
+          exhibitOnObserve.current = {
+            position: exhibitsDirections[detail.name].prev.position,
+            quaternion: exhibitsDirections[detail.name].prev.quaternion,
+          };
+        }
+      }, 300);
+
+      setTimeout(() => {
+        setFadeTransition();
+      }, 1000);
+    },
+    [exhibitsDirections, setExhibitActive]
+  );
 
   const showLastDescription = useCallback(
     (maxTime, minTime, type) => {
@@ -125,8 +120,14 @@ export const Room = () => {
     setRoomDuration(mixer.current?.time);
   };
 
+  const onExitFromDescription = ({ detail }) => {
+    if (exhibitOnObserve.current) exhibitOnObserve.current = null;
+    mixer.current.setTime(exhibits[detail].cameraTime);
+    console.log('TIME', mixer.current?.time);
+    setRoomDuration(mixer.current?.time);
+  };
+
   const updateActiveRoom = useCallback(() => {
-    // console.log('updateActiveRoom', mixer.current.time, roomDuration);
     if (mixer.current.time < 18 && activeRoom !== activeRoomKeys[0]) {
       setActiveRoom(activeRoomKeys[0]);
     } else if (
@@ -134,7 +135,6 @@ export const Room = () => {
       mixer.current.time < 36 &&
       activeRoom !== activeRoomKeys[1]
     ) {
-      console.log('updateActiveRoom');
       setActiveRoom(activeRoomKeys[1]);
     } else if (
       mixer.current.time >= 36 &&
@@ -161,6 +161,7 @@ export const Room = () => {
         !exhibitActive &&
         frameDelta.current >= 60
       ) {
+        console.log('WHEEL', event.deltaMode);
         if (exhibitOnObserve.current) exhibitOnObserve.current = null;
         if (mixer.current.time < 0) mixer.current.update(0);
         if (mixer.current.time >= 0) {
@@ -222,13 +223,8 @@ export const Room = () => {
     [activeScreen, activeRoom, swipeDirection, exhibitActive, roomDuration]
   );
 
-  const exhibits = useRef();
-  const walls = useRef();
-  const floors = useRef();
-  const podiums = useRef();
-
   useEffect(() => {
-    exhibits.current.traverse((child) => {
+    exhibitsRef.current.traverse((child) => {
       if (
         child.isMesh &&
         child.name &&
@@ -238,7 +234,7 @@ export const Room = () => {
           gl.initTexture(texture);
           if (child.name === 'Hand') {
             child.material = new THREE.MeshStandardMaterial({
-              color: '#efefff',
+              color: '#eeeef5',
               // toneMapped: false,
               // map: texture,
               aoMap: texture,
@@ -264,14 +260,16 @@ export const Room = () => {
         ALLOWED_NAMES_WALLS.includes(child.name)
       ) {
         loadTexture(`/textures/room/AO_${child.name}.ktx2`, (texture) => {
-          gl.initTexture(texture);
-          child.material = new THREE.MeshStandardMaterial({
-            color: '#fcfcff',
+          // gl.initTexture(texture);
+          child.material = new THREE.MeshPhysicalMaterial({
+            color: '#fff',
             toneMapped: false,
             aoMap: texture,
-            roughness: 0.5,
+            roughness: 0.9,
             metalness: 0.01,
-            aoMapIntensity: 0.4,
+            aoMapIntensity: 0.5,
+            envMapIntensity: 0.1,
+            // emissiveIntensity: 0.1,
           });
         });
       }
@@ -285,12 +283,13 @@ export const Room = () => {
       ) {
         loadTexture(`/textures/room/AO_${child.name}.ktx2`, (texture) => {
           child.material = new THREE.MeshStandardMaterial({
-            color: '#fcfcff',
+            color: '#fff',
             toneMapped: false,
             aoMap: texture,
             roughness: 0.1,
             metalness: 0.01,
             aoMapIntensity: 0.8,
+            envMapIntensity: 0.1,
           });
         });
       }
@@ -304,12 +303,13 @@ export const Room = () => {
       ) {
         loadTexture(`/textures/room/AO_${child.name}.ktx2`, (texture) => {
           child.material = new THREE.MeshStandardMaterial({
-            color: '#fcfcff',
+            color: '#fff',
             toneMapped: false,
             aoMap: texture,
-            roughness: 0.5,
+            roughness: 0.9,
             metalness: 0.01,
-            aoMapIntensity: 0.6,
+            aoMapIntensity: 0.8,
+            envMapIntensity: 0.9,
           });
         });
       }
@@ -318,14 +318,22 @@ export const Room = () => {
 
   useLayoutEffect(() => {
     window.addEventListener('onChangeActiveRoom', changeActiveRoom);
-    window.addEventListener('onExitFromDescription', onRoomObserve);
+    window.addEventListener('onExitFromDescription', onExitFromDescription);
+    window.addEventListener('onChangeActiveExhibit', onChangeActiveExhibit);
     if (!isDesktop) {
       window.addEventListener('touchmove', onRoomObserve);
     }
 
     return () => {
       window.removeEventListener('onChangeActiveRoom', changeActiveRoom);
-      window.removeEventListener('onExitFromDescription', onRoomObserve);
+      window.removeEventListener(
+        'onExitFromDescription',
+        onExitFromDescription
+      );
+      window.removeEventListener(
+        'onChangeActiveExhibit',
+        onChangeActiveExhibit
+      );
       if (!isDesktop) {
         window.removeEventListener('touchmove', onRoomObserve);
       }
@@ -373,7 +381,7 @@ export const Room = () => {
       <Exhibits
         nodes={model.nodes}
         exhibitOnObserve={exhibitOnObserve}
-        rootRef={exhibits}
+        rootRef={exhibitsRef}
       />
       <Podiums nodes={model.nodes} rootRef={podiums} />
       <Floors nodes={model.nodes} rootRef={floors} />

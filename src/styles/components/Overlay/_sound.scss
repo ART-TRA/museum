@@ -2,6 +2,7 @@
   z-index: 2;
   display: flex;
   align-items: center;
+  padding: 0;
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -24,15 +25,16 @@
   background-color: transparent;
   border: none;
   transform-origin: bottom;
-  animation: down 2s forwards;
+  animation: down 1s forwards;
 
   & span {
     width: 2px;
     height: 100%;
     margin: 0 3px 0 0;
-    background: #4e535c;
+    background: $blue-500;
     transform: scaleY(0.2);
     transform-origin: bottom;
+    transition: 0.4s;
     animation: equalize 3s infinite;
 
     &:nth-child(2) {
@@ -73,7 +75,7 @@
   }
 
   &--on {
-    animation: up 2s forwards;
+    animation: up 1s forwards;
   }
 }
 

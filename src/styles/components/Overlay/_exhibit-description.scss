@@ -3,9 +3,12 @@
   right: 0;
   bottom: 0;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   width: 100%;
   height: 83%;
-  padding: 80px 30px;
+  padding: 80px 30px 30px;
   border-radius: 40px 40px 0 0;
   transform: translateY(100%);
   opacity: 0;
@@ -13,7 +16,7 @@
 
   &--visible {
     @extend %desc-visible;
-    background-color: #fff;
+    background-color: $blue-100;
     transform: translateY(0);
     opacity: 1;
     pointer-events: all;
@@ -21,22 +24,38 @@
 
   h2 {
     margin: 0;
-    color: #4c4c4c;
+    color: $blue-500;
     font-weight: 700;
     font-size: 58px;
     font-family: $fontFamilyAmaticSC;
     line-height: 58px;
-    text-align: center;
+    text-align: left;
+  }
+
+  h3 {
+    margin: 24px 0 0;
+    padding: 0 0 14px;
+    color: $blue-500;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 19px;
+    text-align: left;
+    text-transform: uppercase;
+    border-bottom: 1px solid #e8eaf0;
+
+    span {
+      color: $blue-300;
+    }
   }
 
   p {
     max-width: 324px;
-    margin: 34px 0 0;
-    color: #4c4c4c;
+    margin: 24px 0 0;
+    color: $blue-500;
     font-weight: 500;
     font-size: 16px;
     line-height: 24px;
-    text-align: center;
+    text-align: left;
     transition: 0.6s;
 
     a {
@@ -46,18 +65,13 @@
 
   &--hand {
     padding: 50px 30px;
-
-    h2,
-    p {
-      text-align: left;
-    }
   }
 
   @include media-breakpoint-up(desktop) {
     top: 0;
     width: 40%;
     height: 100%;
-    padding: 17vh 8vw;
+    padding: 17vh 8vw 30px;
     border-radius: 0;
     transform: translateX(100%);
 
@@ -81,11 +95,80 @@
       text-align: left;
     }
 
+    h3 {
+      font-size: 1vw;
+      line-height: 1.3vw;
+    }
+
     p {
       max-width: unset;
       font-size: 1.1vw;
       line-height: 150%;
-      text-align: left;
+    }
+  }
+}
+
+.exhibit-description__buttons {
+  display: flex;
+  align-items: center;
+  margin: auto 0 0;
+
+  button {
+    width: 52px;
+    height: 52px;
+    margin: 0;
+    padding: 0;
+    color: $blue-500;
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.2s;
+
+    svg {
+      transition: 0.2s;
+    }
+
+    &:nth-child(2) {
+      margin: 0 0 0 20px;
+      transform: rotate(180deg);
+    }
+
+    &:active {
+      background-color: $blue-300;
+
+      svg {
+        rect {
+          color: $blue-300;
+        }
+
+        path {
+          color: $white;
+        }
+      }
+    }
+
+    &:disabled {
+      opacity: 0.2;
+      pointer-events: none;
+    }
+  }
+
+  @include media-breakpoint-up(desktop) {
+    button {
+      &:hover {
+        background-color: $blue-300;
+
+        svg {
+          rect {
+            color: $blue-300;
+          }
+
+          path {
+            color: $white;
+          }
+        }
+      }
     }
   }
 }
@@ -105,12 +188,8 @@
   transition: 0.3s;
   pointer-events: all;
 
-  & svg {
-    color: #4c4c4c;
-  }
-
-  &:hover {
-    transform: rotate(90deg);
+  svg {
+    color: $blue-500;
   }
 
   %desc-visible & {
@@ -120,6 +199,14 @@
   @include media-breakpoint-up(desktop) {
     top: calc(5vh + (62px - 42px) / 2);
     right: 5vh;
+
+    &:hover {
+      transform: rotate(90deg);
+
+      svg {
+        color: $blue-300;
+      }
+    }
   }
 }
 
@@ -148,31 +235,30 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 48px;
-  padding: 0 36px;
+  height: 52px;
+  padding: 0 34px;
   color: #fff;
   font-weight: 500;
   font-size: 14px;
   line-height: 20px;
   text-transform: uppercase;
-  background-color: #4c4c4c;
-  border: 1px solid #4c4c4c;
+  background-color: #4a5468;
+  border: 1px solid #4a5468;
   border-radius: 82px;
   cursor: pointer;
   transition: 0.2s;
 
   &:active {
-    color: #4c4c4c;
+    color: #4a5468;
     background-color: transparent;
   }
 
   @include media-breakpoint-up(desktop) {
-    padding: 0 48px;
-    font-size: 1vw;
+    font-size: 16px;
 
     &:hover {
-      color: #4c4c4c;
-      background-color: transparent;
+      background-color: #8c99b0;
+      border-color: #8c99b0;
     }
   }
 }
@@ -184,11 +270,11 @@
 
   button {
     &:nth-child(2) {
-      width: 48px;
-      max-height: 48px;
+      width: 52px;
+      max-height: 52px;
       margin: 0 0 0 20px;
       padding: 0;
-      color: #4c4c4c;
+      color: #4a5468;
       background-color: transparent;
       border: none;
       border-radius: 50px;
@@ -198,6 +284,12 @@
       svg {
         width: 100%;
         height: 100%;
+        transition: 0.2s;
+
+        circle,
+        path {
+          transition: 0.2s;
+        }
       }
     }
   }
@@ -208,8 +300,17 @@
     button {
       &:nth-child(2) {
         &:hover {
-          color: $white;
-          background-color: #4c4c4c;
+          background-color: $blue-300;
+
+          svg {
+            circle {
+              color: $blue-300;
+            }
+
+            path {
+              color: $white;
+            }
+          }
         }
       }
     }

@@ -4,6 +4,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { activeRoomAtom, activeRoomKeys } from 'src/recoil/atoms/activeRoom';
 import { activeExhibitAtom } from 'src/recoil/atoms/activeExhibit';
 import { clickTransition } from 'src/recoil/atoms/clickTransition';
+import { setFadeTransition } from 'src/utils/setFadeTransition';
 
 const PATHS = [
   {
@@ -28,7 +29,7 @@ const PATHS = [
   },
 ];
 
-const NavItem = ({ data, setFadeTransition }) => {
+const NavItem = ({ data }) => {
   const setClickedTransition = useSetRecoilState(clickTransition);
   const [activeRoom, setActiveRoom] = useRecoilState(activeRoomAtom);
   const setExhibitActive = useSetRecoilState(activeExhibitAtom);
@@ -70,8 +71,8 @@ const NavItem = ({ data, setFadeTransition }) => {
     <path
       key={data.key}
       d={data.d}
-      fill="#4c4c4c"
-      stroke="#4c4c4c"
+      fill="#4a5468"
+      stroke="#4a5468"
       strokeWidth="2"
       className={pathClassNames}
       onClick={onChangeActivePath}
@@ -79,7 +80,7 @@ const NavItem = ({ data, setFadeTransition }) => {
   );
 };
 
-export const Nav = ({ setFadeTransition }) => {
+export const Nav = () => {
   return (
     <svg
       width="80"
@@ -90,11 +91,7 @@ export const Nav = ({ setFadeTransition }) => {
       className="navigation"
     >
       {PATHS.map((data) => (
-        <NavItem
-          key={data.key}
-          data={data}
-          setFadeTransition={setFadeTransition}
-        />
+        <NavItem key={data.key} data={data} />
       ))}
     </svg>
   );

@@ -63,46 +63,33 @@ export const Title = () => {
   const { gl } = useThree();
   const hovered = useRef(false);
   const buttonMaterial = useRef(
-    new THREE.MeshBasicMaterial({ color: '#4c4c4c' })
+    new THREE.MeshBasicMaterial({ color: '#4a5468' })
   );
   const { playAmbientAudio } = useAudio();
 
   const onButtonHover = (event, type) => {
     event.stopPropagation();
-    if (!hovered.current && type === 'over') {
-      hovered.current = true;
-      gsap.from(buttonRef.current?.scale, {
-        x: 0.7,
-        y: 0.7,
-        z: 0.7,
-        duration: 1.3,
-        ease: 'elastic.out(1.2, 0.3)',
-        stagger: {
-          grid: [20, 20],
-          amount: 0.8,
-        },
-      });
-      gsap.to(buttonTextRef.current, {
-        letterSpacing: 0.4,
-        duration: 0.4,
-        ease: 'elastic.out(0.8, 0.7)',
-        stagger: {
-          grid: [20, 20],
-          amount: 0.8,
-        },
+    if (type === 'over') {
+      console.log('over', buttonRef.current?.scale);
+      gsap.to(buttonRef.current?.scale, {
+        x: 1.12,
+        y: 1.12,
+        duration: 0.5,
+        // ease: 'elastic.out(0.3, 0.1)',
+        ease: 'power4.out',
       });
       document.body.style.cursor = 'pointer';
-    } else if (hovered.current && type === 'out') {
+    } else if (type === 'out') {
+      console.log('out');
       hovered.current = false;
       document.body.style.cursor = 'auto';
-      gsap.to(buttonTextRef.current, {
-        letterSpacing: 0.0,
-        duration: 0.4,
-        ease: 'elastic.out(0.8, 0.0)',
-        stagger: {
-          grid: [20, 20],
-          amount: 0.8,
-        },
+      gsap.to(buttonRef.current?.scale, {
+        x: 1.0,
+        y: 1.0,
+        z: 1.0,
+        duration: 0.5,
+        // ease: 'elastic.out(0.3, 0.1)',
+        ease: 'power4.out',
       });
     }
   };
@@ -209,7 +196,7 @@ export const Title = () => {
           // rotation={item.rotation}
           anchorX="center"
           anchorY="middle"
-          color="#4c4c4c"
+          color="#4a5468"
           // key={item.key}
           font={'/fonts/AmaticSC/AmaticSCBold.woff'}
           fontSize={isDesktop ? 0.9 : 0.6}
@@ -220,11 +207,11 @@ export const Title = () => {
           maxWidth={isDesktop ? 4.5 : 3.5}
           textAlign="center"
           // whiteSpace="overflowWrap"
-          position={isDesktop ? [0, -1, 0.2] : [0, -0.8, 0.2]}
+          position={[0, -0.8, 0.2]}
           // rotation={item.rotation}
           anchorX="center"
           anchorY="middle"
-          color="#4c4c4c"
+          color="#4a5468"
           // key={item.key}
           font={'/fonts/Inter/Inter-Regular.woff'}
           fontSize={0.17}
@@ -234,11 +221,11 @@ export const Title = () => {
           }
         />
         <mesh
-          position={[0, -2.076, 0.3]}
-          geometry={new THREE.PlaneGeometry(1.44, 0.51)}
+          position={[0, -1.875, 0.3]}
+          geometry={new THREE.PlaneGeometry(1.3, 0.51)}
           material={
             new THREE.MeshBasicMaterial({
-              color: '#fff',
+              color: '#1ff1ff',
               transparent: true,
               opacity: 0,
             })
@@ -250,17 +237,35 @@ export const Title = () => {
         <mesh
           ref={buttonRef}
           name="button-enter-to-figures"
-          position={[0, -2.1, 0.2]}
+          position={[0, -1.9, 0.2]}
           // geometry={RectangleRoundedGeometry(1.44, 0.51, 0.25, 10)}
           // material={buttonMaterial.current}
         >
-          <mesh position={[-0.465, 0, 0]} material={buttonMaterial.current}>
+          <mesh
+            onPointerEnter={(event) => {
+              event.stopPropagation();
+            }}
+            position={[-0.4, 0, 0]}
+            material={buttonMaterial.current}
+          >
             <circleGeometry args={[0.255, 64]} />
           </mesh>
-          <mesh position={[0, 0, 0]} material={buttonMaterial.current}>
-            <planeGeometry args={[0.98, 0.51]} />
+          <mesh
+            onPointerEnter={(event) => {
+              event.stopPropagation();
+            }}
+            position={[0, 0, 0]}
+            material={buttonMaterial.current}
+          >
+            <planeGeometry args={[0.8, 0.51]} />
           </mesh>
-          <mesh position={[0.465, 0, 0]} material={buttonMaterial.current}>
+          <mesh
+            onPointerEnter={(event) => {
+              event.stopPropagation();
+            }}
+            position={[0.4, 0, 0]}
+            material={buttonMaterial.current}
+          >
             <circleGeometry args={[0.255, 64]} />
           </mesh>
           <Text
@@ -276,9 +281,8 @@ export const Title = () => {
             anchorX="center"
             anchorY="middle"
             // color="#fff"
-            font={'/fonts/AmaticSC/AmaticSCBold.woff'}
-            // font={'/fonts/Inter/Inter-Regular.woff'}
-            fontSize={0.25}
+            font={'/fonts/Inter/Inter-Regular.woff'}
+            fontSize={0.15}
             // letterSpacing={0.03}
             lineHeight={1}
             children={'НАЧАТЬ'}

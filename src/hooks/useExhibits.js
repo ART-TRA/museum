@@ -1,79 +1,233 @@
+import { useThree } from '@react-three/fiber';
+import * as THREE from 'three';
+import { useResize } from 'src/hooks/useResize';
+
 export const useExhibits = () => {
-  return {
+  const { viewport } = useThree();
+  const { isDesktop } = useResize();
+
+  const exhibits = {
     boots: {
-      title: 'Ботинки',
-      description:
-        'В&nbsp;этих ботинках не&nbsp;гуляли с&nbsp;мамой и&nbsp;папой по&nbsp;парку. Они оставляли свои следы только во&nbsp;дворе детского дома, который знали наизусть.',
+      name: 'boots',
+      cameraTime: 2.8,
+      position: isDesktop
+        ? new THREE.Vector3(-26.983 + viewport.width * 0.003, 0.89, -6)
+        : new THREE.Vector3(-27.6 + viewport.width * 0.003, 0.89, -5),
+      quaternion: new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 0.15, 0),
+        -Math.PI * 0.4
+      ),
     },
     cups: {
-      title: 'Кружки',
-      description:
-        'Эти кружки никогда не&nbsp;были любимыми, но&nbsp;других в&nbsp;детдоме не&nbsp;было. Они не&nbsp;участвовали в&nbsp;семейных посиделках и&nbsp;в&nbsp;них не&nbsp;приносили тёплый чай, когда ребёнок болел.',
+      name: 'cups',
+      cameraTime: 8.3,
+      position: isDesktop
+        ? new THREE.Vector3(-34, 0.93, 7.955)
+        : new THREE.Vector3(-33.5, 0.93, 8.4),
+      quaternion: new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        Math.PI * 0.445 - viewport.width * 0.002
+      ),
     },
     bed: {
-      title: 'Кровать',
-      description:
-        'Ребятам, которые засыпали в&nbsp;этой кровати, не&nbsp;читали сказки. Несмотря на&nbsp;это, многие из&nbsp;них видели сны, в&nbsp;которых они живут в&nbsp;семье. Хорошо, что сны становятся явью!',
+      name: 'bed',
+      cameraTime: 13.5,
+      position: isDesktop
+        ? new THREE.Vector3(-23.25, 0.7, 13.3)
+        : new THREE.Vector3(-21.8, 1.2, 10.3),
+      quaternion: new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        Math.PI
+      ),
     },
     cubes: {
-      title: 'Кубики',
-      description:
-        'Из&nbsp;них дети строили домики, где по&nbsp;замыслу должна жить большая и&nbsp;любящая семья. Домики разрушились, а&nbsp;фантазии стали реальностью&nbsp;&mdash; теперь дети дома.',
+      name: 'cubes',
+      cameraTime: 23,
+      position: isDesktop
+        ? new THREE.Vector3(-0.338 + viewport.width * 0.053, 0.8, 4)
+        : new THREE.Vector3(-0.35, 0.8, 4),
+      quaternion: new THREE.Quaternion(0, 0, 0, 1),
     },
     art: {
-      title: 'Детский рисунок',
-      description:
-        'Тема урока, на&nbsp;котором нарисован этот рисунок, называлась &laquo;Твоя мечта&raquo;. Автор вряд&nbsp;ли верил, что она действительно исполнится. Но&nbsp;теперь рисунок&nbsp;&mdash; достояние музея, а&nbsp;изображенное на&nbsp;нём&nbsp;&mdash; реальность.',
+      name: 'art',
+      cameraTime: 27.3,
+      position: isDesktop
+        ? new THREE.Vector3(13.8 - viewport.width * 0.051, 1.6, 8)
+        : new THREE.Vector3(14.2 - viewport.width * 0.051, 1.6, 7),
+      quaternion: new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        Math.PI
+      ),
     },
     xylophone: {
-      title: 'Ксилофон',
-      description:
-        'На&nbsp;этом ксилофоне не&nbsp;устраивали концерты для родных и&nbsp;близких людей, потому что их&nbsp;не&nbsp;было рядом. Ребёнку приходилось играть для игрушек, которые не&nbsp;могли похлопать или похвалить.',
+      name: 'xylophone',
+      cameraTime: 32.7,
+      position: isDesktop
+        ? new THREE.Vector3(24.43 + viewport.width * 0.0015, 1.8, 2)
+        : new THREE.Vector3(23.36 + viewport.width * 0.0015, 1.8, 2),
+      quaternion: new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        -Math.PI * 0.13
+      ),
     },
     diary: {
-      title: 'Тетрадки с детскими текстами',
-      description:
-        'В&nbsp;тетрадях обычно пишут сочинения, например, на&nbsp;тему &laquo;Моя семья&raquo;, но&nbsp;тут такого нет. Вы&nbsp;можете заглянуть в&nbsp;тетрадку и&nbsp;узнать о&nbsp;чём писали дети, лишённые любви и&nbsp;поддержки близких людей.',
+      name: 'diary',
+      cameraTime: 40.5,
+      position: isDesktop
+        ? new THREE.Vector3(46.665 - viewport.width * 0.0045, 1.45, 31.6)
+        : new THREE.Vector3(47.2 - viewport.width * 0.0045, 1.45, 31.3),
+      quaternion: new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        Math.PI * 0.86
+      ),
     },
     collage: {
-      title: 'Коллаж с мечтами',
-      description:
-        'Дети мечтают о&nbsp;разном, но&nbsp;в&nbsp;детдоме все хотели не&nbsp;просто тёплый свитер, но&nbsp;и&nbsp;объятия, не&nbsp;просто машину, а&nbsp;путешествия, не&nbsp;просто дом, но&nbsp;и&nbsp;большую семью в&nbsp;нём.',
+      name: 'collage',
+      cameraTime: 44.8,
+      position: isDesktop
+        ? new THREE.Vector3(64, 1.7, 27.6)
+        : new THREE.Vector3(64, 1.7, 26.2),
+      quaternion: new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        Math.PI * 1.19
+      ),
     },
     bauble: {
-      title: 'Новогодняя игрушка',
-      description:
-        'В&nbsp;этой игрушке никогда, даже в&nbsp;самый главный праздник в&nbsp;году, не&nbsp;отражались радостные лица счастливой семьи.',
+      name: 'bauble',
+      cameraTime: 54.7,
+      position: isDesktop
+        ? new THREE.Vector3(59.6, 1.45, 4.2)
+        : new THREE.Vector3(60.3, 1.45, 4.2),
+      quaternion: new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        Math.PI * 0.6
+      ),
     },
     bowTie: {
-      title: 'Галстук-бабочка',
-      description:
-        'Бабочка была обязательным атрибутом на&nbsp;любом празднике в&nbsp;детдоме. Перед выходом на&nbsp;сцену её&nbsp;поправлял воспитатель, а&nbsp;не&nbsp;заботливые мамины руки.',
+      name: 'bowTie',
+      cameraTime: 58.5,
+      position: isDesktop
+        ? new THREE.Vector3(56.7, 1.6, -12.14)
+        : new THREE.Vector3(57.1, 1.6, -11.3),
+      quaternion: new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        Math.PI * 0.24
+      ),
     },
     storageRoom: {
-      title: 'Кладовая с игрушками',
-      description:
-        'Тут хранятся игрушки, которые так и&nbsp;не&nbsp;стали любимыми, потому что их&nbsp;подарили чужие неравнодушные люди, а&nbsp;не&nbsp;родные мама и&nbsp;папа.',
+      name: 'storageRoom',
+      cameraTime: 68,
+      position: isDesktop
+        ? new THREE.Vector3(62.2, 0.56, -41.8)
+        : new THREE.Vector3(61.5, 0.56, -41.8),
+      quaternion: new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        Math.PI * 0.1
+      ),
     },
     bear: {
-      title: 'Мишка',
-      description:
-        'Этот мишка когда-то был лучшим другом для ребят в&nbsp;детдоме. Многие, засыпая с&nbsp;ним, мечтали проснуться уже в&nbsp;своём доме в&nbsp;окружении любящей семьи.',
+      name: 'bear',
+      cameraTime: 71.8,
+      position: isDesktop
+        ? new THREE.Vector3(47.7, 0.96, -39)
+        : new THREE.Vector3(47.9, 0.96, -38.77),
+      quaternion: new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        Math.PI * 0.7
+      ),
     },
     car: {
-      title: 'Детская машинка',
-      description:
-        'В&nbsp;эту машинку могли поместиться все фантазии ребёнка и&nbsp;унести его в&nbsp;далёкое путешествие, в&nbsp;котором рядом с&nbsp;ним&nbsp;&mdash; родители.',
+      name: 'car',
+      cameraTime: 77,
+      position: isDesktop
+        ? new THREE.Vector3(49.95, 0.5, -56.4)
+        : new THREE.Vector3(49.95, 0.5, -55.85),
+      quaternion: new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        Math.PI * 0.23
+      ),
     },
     doll: {
-      title: 'Кукла',
-      description:
-        'В&nbsp;&laquo;Дочки-матери&raquo; приходилось играть с&nbsp;куклой, ведь настоящей мамы не&nbsp;было рядом. Игрушка заменяла близких людей и&nbsp;слушала всё, чем с&nbsp;ними так хотелось поделиться.',
+      name: 'doll',
+      cameraTime: 81.5,
+      position: isDesktop
+        ? new THREE.Vector3(66.9, 1.02, -56.4)
+        : new THREE.Vector3(66.6, 1.02, -56.45),
+      quaternion: new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        -Math.PI * 0.3
+      ),
     },
     hand: {
-      title: 'Отказники',
-      description:
-        'Теперь вы&nbsp;узнали немного больше о&nbsp;том, как живут дети без родителей и&nbsp;что происходит в&nbsp;детских домах, которые, к&nbsp;сожалению, продолжают существовать. <br /><br /> Фонд &laquo;Волонтеры в&nbsp;помощь детям-сиротам&raquo; системно решает проблему социального сиротства в&nbsp;России. Вы&nbsp;тоже можете помочь и&nbsp;сделать шаг к&nbsp;тому, чтобы дети в&nbsp;нашей стране жили в&nbsp;семьях, а&nbsp;детские дома сохранились только в&nbsp;музеях.',
+      name: 'hand',
+      cameraTime: 83.7,
+      position: null,
+      quaternion: null,
     },
   };
+
+  const exhibitsDirections = {
+    boots: {
+      prev: null,
+      next: exhibits.cups,
+    },
+    cups: {
+      prev: exhibits.boots,
+      next: exhibits.bed,
+    },
+    bed: {
+      prev: exhibits.cups,
+      next: exhibits.cubes,
+    },
+    cubes: {
+      prev: exhibits.bed,
+      next: exhibits.art,
+    },
+    art: {
+      prev: exhibits.cubes,
+      next: exhibits.xylophone,
+    },
+    xylophone: {
+      prev: exhibits.art,
+      next: exhibits.diary,
+    },
+    diary: {
+      prev: exhibits.xylophone,
+      next: exhibits.collage,
+    },
+    collage: {
+      prev: exhibits.diary,
+      next: exhibits.bauble,
+    },
+    bauble: {
+      prev: exhibits.collage,
+      next: exhibits.bowTie,
+    },
+    bowTie: {
+      prev: exhibits.bauble,
+      next: exhibits.storageRoom,
+    },
+    storageRoom: {
+      prev: exhibits.bowTie,
+      next: exhibits.bear,
+    },
+    bear: {
+      prev: exhibits.storageRoom,
+      next: exhibits.car,
+    },
+    car: {
+      prev: exhibits.bear,
+      next: exhibits.doll,
+    },
+    doll: {
+      prev: exhibits.car,
+      next: exhibits.hand,
+    },
+    hand: {
+      prev: exhibits.doll,
+      next: null,
+    },
+  };
+
+  return { exhibits, exhibitsDirections };
 };

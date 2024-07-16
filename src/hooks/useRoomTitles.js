@@ -45,7 +45,7 @@ export const useRoomTitles = () => {
       className: 'wall wall--dreams',
       titleFontSize: isDesktop ? 0.7 : 0.6,
       descFontSize: 0.15,
-      titleWidth: isDesktop ? 4.0 : 2.0,
+      titleWidth: isDesktop ? 4.0 : 3.0,
       descWidth: isDesktop ? 4.46 : 3.0,
     },
     {

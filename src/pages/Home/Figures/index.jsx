@@ -17,7 +17,7 @@ import { useResize } from 'src/hooks/useResize';
 import { useFigures } from 'src/hooks/useFigures';
 import { useTouch } from 'src/hooks/useTouch';
 import { activeRoomKeys } from 'src/recoil/atoms/activeRoom';
-import { useHelper } from '@react-three/drei';
+import { Text, useHelper } from '@react-three/drei';
 import { DirectionalLightHelper } from 'three';
 import { useKTX2Loader } from 'src/hooks/useKTX2Loader';
 
@@ -55,12 +55,18 @@ export const Figures = () => {
     }
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     loadModel((model) => {
       setHomeModel(model);
-      // renderFigures.current.add(model.scene);
     });
   }, []);
+
+  useEffect(() => {
+    if (homeModel) {
+      const homeTitle = document.querySelector('.home-title');
+      homeTitle?.classList.remove('home-title--blurred');
+    }
+  }, [homeModel]);
 
   useLayoutEffect(() => {
     window.addEventListener('touchmove', slideToRoom);
@@ -74,7 +80,6 @@ export const Figures = () => {
     <group
       onWheel={slideToRoomByWheel}
       // visible={activeScreen !== 'room'}
-      ref={renderFigures}
       position={isDesktop ? [0, 0, 0] : [0, -1, -17]}
       rotation={[-Math.PI * 0.05, 0, 0]}
       dispose={null}
@@ -87,13 +92,55 @@ export const Figures = () => {
         dispose
       />
       <BackPlane />
+      <Text
+        maxWidth={isDesktop ? 4.5 : 3.5}
+        textAlign="center"
+        // whiteSpace="overflowWrap"
+        position={[-5.5, 1.3, 0.2]}
+        // rotation={item.rotation}
+        anchorX="center"
+        anchorY="middle"
+        color="#4a5468"
+        // key={item.key}
+        font={'/fonts/Inter/Inter-Regular.woff'}
+        fontSize={0.17}
+        lineHeight={1.5}
+        children={'СТАРТ •'}
+      />
+      <Text
+        maxWidth={isDesktop ? 4.5 : 3.5}
+        textAlign="center"
+        // whiteSpace="overflowWrap"
+        position={[5.2, -0.7, 0.2]}
+        // rotation={item.rotation}
+        anchorX="center"
+        anchorY="middle"
+        color="#4a5468"
+        // key={item.key}
+        font={'/fonts/Inter/Inter-Regular.woff'}
+        fontSize={0.17}
+        lineHeight={1.5}
+        children={'• ФИНИШ'}
+      />
       {homeModel && (
-        <group>
-          <Pyramid model={homeModel.scene.children[4]} />
-          <Rectangle model={homeModel.scene.children[3]} />
-          <HalfTorus model={homeModel.scene.children[1]} />
-          <Sphere model={homeModel.scene.children[5]} />
-          <Cube model={homeModel.scene.children[2]} />
+        <group ref={renderFigures}>
+          <Pyramid
+            model={homeModel.scene.children[4]}
+            groupRef={renderFigures}
+          />
+          <Rectangle
+            model={homeModel.scene.children[3]}
+            groupRef={renderFigures}
+          />
+          <HalfTorus
+            model={homeModel.scene.children[1]}
+            groupRef={renderFigures}
+          />
+          <Sphere
+            model={homeModel.scene.children[5]}
+            groupRef={renderFigures}
+          />
+          <Cube model={homeModel.scene.children[2]} groupRef={renderFigures} />
         </group>
       )}
     </group>

@@ -22,23 +22,23 @@ export const Floors = ({ nodes, rootRef }) => {
       {/*  />*/}
       {/*</mesh>*/}
       <mesh
-        name="FLOOR_11"
+        name="Floor_1_1"
         geometry={nodes.FLOOR_11.geometry}
         position={[-28.507, -0.001, 8.767]}
       />
-      <mesh name="FLOOR_12" geometry={nodes.FLOOR_12.geometry} />
+      <mesh name="Floor_1_2" geometry={nodes.FLOOR_12.geometry} />
       <mesh
-        name="FLOOR_13"
+        name="Floor_1_3"
         geometry={nodes.FLOOR_13.geometry}
         position={[35.151, 0.757, -0.695]}
       />
       <mesh
-        name="FLOOR_14"
+        name="Floor_1_4"
         geometry={nodes.FLOOR_14.geometry}
         position={[35.151, 0.757, -0.695]}
       />
       <mesh
-        name="FLOOR_15"
+        name="Floor_1_5"
         geometry={nodes.FLOOR_15.geometry}
         position={[35.151, 0.757, -0.695]}
       />

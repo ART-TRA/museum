@@ -20,7 +20,7 @@ export const useAudio = () => {
         ambient.play();
         gsap.timeline().to(ambient, {
           volume: 0.65,
-          duration: 1,
+          duration: 0.2,
           onComplete: () => {
             setBlockedButton(false);
             setSound(true);
@@ -29,7 +29,7 @@ export const useAudio = () => {
       } else {
         gsap.timeline().to(ambient, {
           volume: 0.0,
-          duration: 1,
+          duration: 0.2,
           onComplete: () => {
             ambient.pause();
             setSound(false);

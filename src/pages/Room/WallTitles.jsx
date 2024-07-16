@@ -4,6 +4,7 @@ import { Text } from '@react-three/drei';
 import { useRecoilValue } from 'recoil';
 import { roomDurationAtom } from 'src/recoil/atoms/roomDuration';
 import { useRoomTitles } from 'src/hooks/useRoomTitles';
+import { TITLES_COLOR } from 'src/pages/Room/constants';
 
 const AnimatedText = a(Text);
 
@@ -36,7 +37,7 @@ export const WallTitles = () => {
             rotation={item.rotation}
             anchorX="center"
             anchorY="middle"
-            color="#4c4c4c"
+            color={TITLES_COLOR}
             font={'/fonts/AmaticSC/AmaticSCBold.woff'}
             fontSize={item.titleFontSize}
             lineHeight={1}
@@ -57,7 +58,7 @@ export const WallTitles = () => {
             rotation={item.rotation}
             anchorX="center"
             anchorY="middle"
-            color="#4c4c4c"
+            color={TITLES_COLOR}
             font={'/fonts/Inter/Inter-Regular.woff'}
             fontSize={item.descFontSize}
             lineHeight={1.45}

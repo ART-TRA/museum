@@ -25,10 +25,11 @@ export const Scene = () => {
         far: 1000,
       }}
       gl={{
-        toneMapping: THREE.ACESFilmicToneMapping,
-        // toneMappingExposure: 1.2,
+        toneMapping: THREE.NeutralToneMapping,
+        toneMappingExposure: 1.1,
+        // autoClear: true,
         // antialias: true,
-        // physicallyCorrectLights: true,
+        physicallyCorrectLights: true,
       }}
       // eventSource={document.getElementById('root')}
       // eventPrefix="client"
