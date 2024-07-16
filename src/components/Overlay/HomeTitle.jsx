@@ -13,7 +13,6 @@ import logoAnimation from 'src/components/Suspense/data.json';
 export const HomeTitle = () => {
   const ref = useRef();
   const { progress } = useProgress();
-  console.log('progress', progress);
   const { playAmbientAudio } = useAudio();
   const [activeScreen, setActiveScreen] = useRecoilState(activeScreenAtom);
   const titleClassNames = cn('home-title home-title--blurred', {

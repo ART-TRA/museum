@@ -100,7 +100,9 @@ const ExhibitDescriptionInner = () => {
         </button>
       )}
       <div>
-        <h2>{exhibits?.[exhibitActive]?.title}</h2>
+        <h2
+          dangerouslySetInnerHTML={{ __html: exhibits?.[exhibitActive]?.title }}
+        />
         {exhibits?.[exhibitActive]?.owner && (
           <h3>
             ВЛАДЕЛЬЦЫ: <span>{exhibits?.[exhibitActive]?.owner}</span>
