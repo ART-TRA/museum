@@ -1,9 +1,9 @@
 import { useAudio } from 'src/hooks/useAudio';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { activeScreenAtom } from 'src/recoil/atoms/activeScreen';
 import cn from 'classnames';
 import { useProgress } from '@react-three/drei';
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import lottie from 'lottie-web';
 // import { DotLottiePlayer, Controls } from '@dotlottie/react-player';
 import logoAnimation from 'src/components/Suspense/data.json';
@@ -44,7 +44,7 @@ export const HomeTitle = () => {
     loadLottie();
 
     return () => {
-      animation.current.destroy();
+      animation.current?.destroy();
     };
   }, []);
 

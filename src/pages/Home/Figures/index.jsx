@@ -79,7 +79,6 @@ export const Figures = () => {
   return (
     <group
       onWheel={slideToRoomByWheel}
-      // visible={activeScreen !== 'room'}
       position={isDesktop ? [0, 0, 0] : [0, -1, -17]}
       rotation={[-Math.PI * 0.05, 0, 0]}
       dispose={null}
@@ -90,6 +89,7 @@ export const Figures = () => {
         position={[7, 4, 18]}
         castShadow={false}
         dispose
+        visible={activeScreen !== 'room'}
       />
       <BackPlane />
       <Text

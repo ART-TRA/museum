@@ -6,6 +6,7 @@ import { OverlayHeader } from 'src/components/Overlay/Header';
 import { ExhibitDescription } from 'src/components/Overlay/ExhibitDescription';
 import { OverlayFooter } from 'src/components/Overlay/Footer';
 import { HomeTitle } from 'src/components/Overlay/HomeTitle';
+import { Tutorial } from 'src/components/Overlay/Tutorial';
 
 export const Overlay = () => {
   const [activeScreen, setActiveScreen] = useRecoilState(activeScreenAtom);
@@ -17,6 +18,7 @@ export const Overlay = () => {
     <section className={classNames}>
       <OverlayHeader />
       <HomeTitle />
+      <Tutorial />
       <ExhibitDescription />
       <OverlayFooter screen={activeScreen} setScreen={setActiveScreen} />
     </section>

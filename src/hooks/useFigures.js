@@ -2,14 +2,9 @@ import { activeRoomAtom } from 'src/recoil/atoms/activeRoom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { activeScreenAtom } from 'src/recoil/atoms/activeScreen';
 import gsap from 'gsap';
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { changeScaleDown, changeScaleUp } from 'src/utils/changeScale';
-import {
-  hoveredKeys,
-  hoveredValues,
-  lastHoveredFigureValueAtom,
-} from 'src/recoil/atoms/lastHoveredFigureValue';
-import { useFrame, useThree } from '@react-three/fiber';
+import { hoveredKeys } from 'src/recoil/atoms/lastHoveredFigureValue';
 import { clickTransition } from 'src/recoil/atoms/clickTransition';
 import { setFadeTransition } from 'src/utils/setFadeTransition';
 
@@ -18,17 +13,14 @@ export const useFigures = () => {
   const [activeScreen, setActiveScreen] = useRecoilState(activeScreenAtom);
   const setActiveRoom = useSetRecoilState(activeRoomAtom);
   const oneClickLimit = useRef(true);
-  const { scene } = useThree();
 
   const onFigureHover = (event, activeRoomName, action, groupRef) => {
     const figures = [];
     groupRef.current.traverse((child) => {
       if (child.isMesh && child.name !== event.object.name) {
         figures.push(child);
-        // console.log(child);
       }
     });
-    console.log('FIGURES', figures);
     event.stopPropagation();
     if (activeScreen === 'figures') {
       if (action === 'out') {

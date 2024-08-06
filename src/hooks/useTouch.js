@@ -5,6 +5,11 @@ export const useTouch = () => {
   const tempTouchEnd = useRef([]);
   const deviceType = useRef('');
   const [swipeDirection, setSwipeDirection] = useState('');
+  // const swipeDirection = useRef('');
+  const swipeDelta = useRef({
+    start: 0,
+    move: 0,
+  });
 
   const defineTouchDevice = () => {
     try {
@@ -25,17 +30,20 @@ export const useTouch = () => {
 
   const defineTouchDirection = useCallback(
     (event) => {
-      const minValue = 10;
       if (event.type === 'touchstart') {
+        swipeDelta.current.start = event.changedTouches[0].clientY;
         tempTouchStart.current = [
           event.changedTouches[0].clientX,
           event.changedTouches[0].clientY,
         ];
       } else if (event.type === 'touchmove') {
+        swipeDelta.current.move =
+          event.changedTouches[0].clientY - swipeDelta.current.start;
         tempTouchEnd.current = [
           event.changedTouches[0].clientX,
           event.changedTouches[0].clientY,
         ];
+        // console.log(swipeDelta.current.move);
 
         // const deltaX = event.touches[0].clientX - tempTouchStart.current[0];
         // if (Math.abs(deltaX) > minValue) {
@@ -50,10 +58,11 @@ export const useTouch = () => {
         if (tempTouchEnd.current[1] > tempTouchStart.current[1]) {
           // if (swipeDirection !== 'left')
           setSwipeDirection('up');
-          console.log('UP');
+          // swipeDirection.current = 'up';
         } else {
           // if (swipeDirection !== 'right')
           setSwipeDirection('down');
+          // swipeDirection.current = 'down';
         }
 
         // setSwipeDirection((prev) => {
@@ -85,5 +94,10 @@ export const useTouch = () => {
     };
   }, [defineTouchDirection]);
 
-  return { swipeDirection, detectTrackpad, defineTouchDevice };
+  return {
+    swipeDirection,
+    detectTrackpad,
+    defineTouchDevice,
+    swipePower: swipeDelta.current.move,
+  };
 };

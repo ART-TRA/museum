@@ -16,9 +16,7 @@ export const Main = () => {
       <RecoilRoot>
         {isDesktop && <Cursor />}
         <Overlay />
-        <div className="scene">
-          <Scene />
-        </div>
+        <Scene />
       </RecoilRoot>
       {/*</Suspense>*/}
     </>

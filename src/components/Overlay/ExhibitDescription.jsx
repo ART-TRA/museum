@@ -10,6 +10,13 @@ import { Share } from 'src/icons/Share';
 import { Arrow } from 'src/icons/Arrow';
 import { useState } from 'react';
 import { Share2 } from 'src/icons/Share2';
+import { CopyIndex } from 'src/icons/Copy';
+
+const SHARE_DATA = {
+  title: 'Отказники',
+  text: 'Музей последнего детского дома',
+  url: 'https://museum.scaph.ru/',
+};
 
 const ExhibitDescriptionInner = () => {
   const { isDesktop, isPhone } = useResize();
@@ -17,6 +24,7 @@ const ExhibitDescriptionInner = () => {
   const exhibits = useExhibitsDescriptions();
   const [exhibitActive, setExhibitActive] = useRecoilState(activeExhibitAtom);
   const [isExpanded, setExpanded] = useState(false);
+  const [copiedText, setCopiedText] = useState(false);
 
   const classNames = cn('exhibit-description', {
     'exhibit-description--visible': exhibitActive,
@@ -30,9 +38,24 @@ const ExhibitDescriptionInner = () => {
     }
   };
 
-  const onShareExperience = (event) => {
+  const onShareExperience = async (event) => {
     event?.stopPropagation();
-    console.log('share', exhibitActive);
+
+    try {
+      if (navigator.canShare) {
+        console.log('web share supported!', exhibitActive);
+        await navigator.share(SHARE_DATA);
+      } else {
+        console.log('web share not supported!!');
+        setCopiedText(true);
+        await navigator.clipboard.writeText(SHARE_DATA.url);
+        setTimeout(() => {
+          setCopiedText(false);
+        }, 3000);
+      }
+    } catch (error) {
+      console.log('share error', error);
+    }
   };
 
   const onExitFromDescription = (event) => {
@@ -140,12 +163,25 @@ const ExhibitDescriptionInner = () => {
               type="button"
               className="exhibit-description__share"
               onClick={onShareExperience}
+              disabled={copiedText}
             >
-              <Share2 />
-              <p>
-                Поделиться <br />
-                сайтом
-              </p>
+              {copiedText ? (
+                <>
+                  <CopyIndex />
+                  <p>
+                    Ссылка <br />
+                    скопирована
+                  </p>
+                </>
+              ) : (
+                <>
+                  <Share2 />
+                  <p>
+                    Поделиться <br />
+                    сайтом
+                  </p>
+                </>
+              )}
             </button>
           )}
         </div>

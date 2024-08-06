@@ -48,7 +48,7 @@ button {
     justify-content: center;
     width: 100%;
     height: 100%;
-    background-color: #fff;
+    background-color: $blue-100;
 
     //background-color: #d8d7d7;
     cursor: default;
@@ -71,7 +71,7 @@ button {
   &--faded {
     @extend %overlay-faded;
 
-    background-color: #fff;
+    background-color: $blue-100;
   }
 
   & h1 {

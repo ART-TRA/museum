@@ -32,6 +32,8 @@ import {
 } from 'src/pages/Room/constants';
 import { setFadeTransition } from 'src/utils/setFadeTransition';
 import { useExhibits } from 'src/hooks/useExhibits';
+import { easing } from 'maath';
+import gsap from 'gsap';
 
 export const Room = () => {
   const renderRoom = useRef();
@@ -158,10 +160,9 @@ export const Room = () => {
     (event) => {
       if (
         activeScreen === 'room' &&
-        !exhibitActive &&
-        frameDelta.current >= 60
+        !exhibitActive
+        // frameDelta.current >= 60
       ) {
-        console.log('WHEEL', event.deltaMode);
         if (exhibitOnObserve.current) exhibitOnObserve.current = null;
         if (mixer.current.time < 0) mixer.current.update(0);
         if (mixer.current.time >= 0) {
@@ -224,94 +225,55 @@ export const Room = () => {
   );
 
   useEffect(() => {
-    exhibitsRef.current.traverse((child) => {
+    renderRoom.current.traverse((child) => {
       if (
-        child.isMesh &&
-        child.name &&
-        ALLOWED_NAMES_EXHIBITS.includes(child.name)
-      ) {
-        loadTexture(`/textures/room/${child.name}.ktx2`, (texture) => {
-          gl.initTexture(texture);
-          if (child.name === 'Hand') {
-            child.material = new THREE.MeshStandardMaterial({
-              color: '#eeeef5',
-              // toneMapped: false,
-              // map: texture,
-              aoMap: texture,
-              // envMap: texture,
-              aoMapIntensity: 0.3,
-              envMapIntensity: 0.2,
-            });
-          } else {
-            child.material = new THREE.MeshStandardMaterial({
-              color: '#fff',
-              toneMapped: false,
-              map: texture,
-            });
-          }
-        });
-      }
-    });
-
-    walls.current.children.forEach((child) => {
-      if (
-        child.isMesh &&
-        child.name &&
-        ALLOWED_NAMES_WALLS.includes(child.name)
-      ) {
-        loadTexture(`/textures/room/AO_${child.name}.ktx2`, (texture) => {
-          // gl.initTexture(texture);
-          child.material = new THREE.MeshPhysicalMaterial({
-            color: '#fff',
-            toneMapped: false,
-            aoMap: texture,
-            roughness: 0.9,
-            metalness: 0.01,
-            aoMapIntensity: 0.5,
-            envMapIntensity: 0.1,
-            // emissiveIntensity: 0.1,
-          });
-        });
-      }
-    });
-
-    floors.current.children.forEach((child) => {
-      if (
-        child.isMesh &&
-        child.name &&
-        ALLOWED_NAMES_FLOORS.includes(child.name)
-      ) {
-        loadTexture(`/textures/room/AO_${child.name}.ktx2`, (texture) => {
-          child.material = new THREE.MeshStandardMaterial({
-            color: '#fff',
-            toneMapped: false,
-            aoMap: texture,
-            roughness: 0.1,
-            metalness: 0.01,
-            aoMapIntensity: 0.8,
-            envMapIntensity: 0.1,
-          });
-        });
-      }
-    });
-
-    podiums.current.children.forEach((child) => {
-      if (
-        child.isMesh &&
-        child.name &&
+        (child.isMesh &&
+          child.name &&
+          (ALLOWED_NAMES_EXHIBITS.includes(child.name) ||
+            ALLOWED_NAMES_WALLS.includes(child.name))) ||
+        ALLOWED_NAMES_FLOORS.includes(child.name) ||
         ALLOWED_NAMES_PODIUMS.includes(child.name)
       ) {
-        loadTexture(`/textures/room/AO_${child.name}.ktx2`, (texture) => {
-          child.material = new THREE.MeshStandardMaterial({
-            color: '#fff',
-            toneMapped: false,
-            aoMap: texture,
-            roughness: 0.9,
-            metalness: 0.01,
-            aoMapIntensity: 0.8,
-            envMapIntensity: 0.9,
-          });
-        });
+        loadTexture(
+          ALLOWED_NAMES_EXHIBITS.includes(child.name)
+            ? `/textures/room/${child.name}.ktx2`
+            : `/textures/room/AO_${child.name}.ktx2`,
+          (texture) => {
+            gl.initTexture(texture);
+            if (child.name === 'Hand') {
+              child.material = new THREE.MeshStandardMaterial({
+                color: '#eeeef5',
+                // toneMapped: false,
+                // map: texture,
+                aoMap: texture,
+                // envMap: texture,
+                aoMapIntensity: ALLOWED_NAMES_EXHIBITS.includes(child.name)
+                  ? 0.3
+                  : 0.5,
+                envMapIntensity: ALLOWED_NAMES_EXHIBITS.includes(child.name)
+                  ? 0.2
+                  : 0.1,
+              });
+            } else {
+              child.material = new THREE.MeshStandardMaterial({
+                color: '#fff',
+                toneMapped: false,
+                ...(ALLOWED_NAMES_EXHIBITS.includes(child.name) && {
+                  map: texture,
+                }),
+                ...(!ALLOWED_NAMES_EXHIBITS.includes(child.name) && {
+                  aoMap: texture,
+                }),
+                aoMapIntensity: ALLOWED_NAMES_EXHIBITS.includes(child.name)
+                  ? 0.3
+                  : 0.5,
+                envMapIntensity: ALLOWED_NAMES_EXHIBITS.includes(child.name)
+                  ? 0.2
+                  : 0.1,
+              });
+            }
+          }
+        );
       }
     });
   }, [model.nodes]);
@@ -340,7 +302,7 @@ export const Room = () => {
     };
   }, [onRoomObserve]);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     renderRoom.current.visible = activeScreen === 'room';
     if (activeScreen === 'room') {
       updateActiveRoom();
@@ -358,6 +320,19 @@ export const Room = () => {
           SCROLL_MODIFIER + 0.02
         );
       } else {
+        // easing.damp3(
+        //   state.camera.position,
+        //   model?.cameras[0].parent.position,
+        //   isClickedTransition ? 0 : 0.8,
+        //   isClickedTransition ? SCROLL_MODIFIER * 20 : 0.01
+        // );
+        // easing.dampQ(
+        //   state.camera.quaternion,
+        //   model?.cameras[0].parent.quaternion,
+        //   isClickedTransition ? 0 : 0.8,
+        //   isClickedTransition ? SCROLL_MODIFIER * 20 : 0.01
+        // );
+
         state.camera.position.lerp(
           model?.cameras[0].parent.position,
           isClickedTransition ? SCROLL_MODIFIER * 20 : SCROLL_MODIFIER
