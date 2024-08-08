@@ -41,7 +41,7 @@ export const Room = () => {
   const { isDesktop } = useResize();
   const { loadTexture } = useKTX2Loader();
   const model = useGLTF('models/model.glb', true);
-  const { gl } = useThree();
+  const { gl, camera } = useThree();
 
   const exhibitOnObserve = useRef(null);
   const frameDelta = useRef(0);
@@ -224,6 +224,28 @@ export const Room = () => {
     [activeScreen, activeRoom, swipeDirection, exhibitActive, roomDuration]
   );
 
+  const onCameraViewUpdate = useCallback(() => {
+    if (mixer.current.time > 19 && mixer.current.time < 23) {
+      camera.far = 60;
+      camera.updateProjectionMatrix();
+    } else if (mixer.current.time > 23 && mixer.current.time < 32) {
+      camera.far = 70;
+      camera.updateProjectionMatrix();
+    } else if (mixer.current.time > 37 && mixer.current.time < 39) {
+      camera.far = 50;
+      camera.updateProjectionMatrix();
+    } else if (mixer.current.time > 48 && mixer.current.time < 54) {
+      camera.far = 74;
+      camera.updateProjectionMatrix();
+    } else if (mixer.current.time > 60 && mixer.current.time < 66) {
+      camera.far = 60;
+      camera.updateProjectionMatrix();
+    } else {
+      camera.far = 40;
+      camera.updateProjectionMatrix();
+    }
+  }, [roomDuration]);
+
   useEffect(() => {
     renderRoom.current.traverse((child) => {
       if (
@@ -306,6 +328,7 @@ export const Room = () => {
     renderRoom.current.visible = activeScreen === 'room';
     if (activeScreen === 'room') {
       updateActiveRoom();
+      onCameraViewUpdate();
       if (frameDelta.current <= 190) {
         frameDelta.current += 1;
       }
