@@ -25,9 +25,7 @@ export const Pyramid = ({ model, groupRef }) => {
           onPointerOut={(event) =>
             onFigureHover(event, activeRoomKeys[0], 'out', groupRef)
           }
-          onClick={(event) =>
-            onFigureClick(activeRoomKeys[0], event?.object?.scale)
-          }
+          onClick={(event) => onFigureClick(event, activeRoomKeys[0], groupRef)}
         />
       </FloatWrap>
     </>

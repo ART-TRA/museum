@@ -33,25 +33,23 @@ export const Figures = () => {
   const { onFigureClick } = useFigures();
   const activeScreen = useRecoilValue(activeScreenAtom);
   const { swipeDirection } = useTouch();
-  const firstMount = useRef(true);
+  const slidePermission = useRef(true);
 
   const slideToRoom = useCallback(() => {
     if (activeScreen === 'figures' && swipeDirection === 'up') {
-      if (firstMount.current) {
-        onFigureClick(activeRoomKeys[0]);
+      if (slidePermission.current) {
+        onFigureClick(null, activeRoomKeys[0]);
       }
 
-      firstMount.current = false;
+      slidePermission.current = false;
     }
   }, [activeScreen, swipeDirection]);
 
-  const slideToRoomByWheel = () => {
-    if (activeScreen === 'figures') {
-      if (firstMount.current) {
-        onFigureClick(activeRoomKeys[0]);
-      }
-
-      firstMount.current = false;
+  const slideToRoomByWheel = (event) => {
+    event?.stopPropagation();
+    if (activeScreen === 'figures' && slidePermission.current) {
+      slidePermission.current = false;
+      onFigureClick(null, activeRoomKeys[0]);
     }
   };
 

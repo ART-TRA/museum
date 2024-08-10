@@ -23,9 +23,7 @@ export const HalfTorus = ({ model, groupRef }) => {
         onPointerOut={(event) =>
           onFigureHover(event, activeRoomKeys[2], 'out', groupRef)
         }
-        onClick={(event) =>
-          onFigureClick(activeRoomKeys[2], event?.object?.scale, 1700)
-        }
+        onClick={(event) => onFigureClick(event, activeRoomKeys[2], groupRef)}
       >
         <meshStandardMaterial {...model.material} transparent={true} />
       </mesh>

@@ -160,8 +160,8 @@ export const Room = () => {
     (event) => {
       if (
         activeScreen === 'room' &&
-        !exhibitActive
-        // frameDelta.current >= 60
+        !exhibitActive &&
+        frameDelta.current >= 90
       ) {
         if (exhibitOnObserve.current) exhibitOnObserve.current = null;
         if (mixer.current.time < 0) mixer.current.update(0);

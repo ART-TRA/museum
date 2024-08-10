@@ -25,9 +25,7 @@ export const Sphere = ({ model, groupRef }) => {
         onPointerOut={(event) =>
           onFigureHover(event, activeRoomKeys[3], 'out', groupRef)
         }
-        onClick={(event) =>
-          onFigureClick(activeRoomKeys[3], event?.object?.scale, 2000)
-        }
+        onClick={(event) => onFigureClick(event, activeRoomKeys[3], groupRef)}
       >
         <meshPhysicalMaterial
           {...model.material}

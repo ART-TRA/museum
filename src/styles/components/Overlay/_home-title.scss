@@ -179,6 +179,10 @@
   %home-title-loading & {
     opacity: 1;
   }
+
+  @include media-breakpoint-up(tablet) {
+    max-width: 350px;
+  }
 }
 
 .home-title__preloader-duration {

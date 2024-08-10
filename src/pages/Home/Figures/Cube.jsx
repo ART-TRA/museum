@@ -23,9 +23,7 @@ export const Cube = ({ model, groupRef }) => {
         onPointerOut={(event) =>
           onFigureHover(event, activeRoomKeys[4], 'out', groupRef)
         }
-        onClick={(event) =>
-          onFigureClick(activeRoomKeys[4], event?.object?.scale, 3000)
-        }
+        onClick={(event) => onFigureClick(event, activeRoomKeys[4], groupRef)}
       />
     </FloatWrap>
   );

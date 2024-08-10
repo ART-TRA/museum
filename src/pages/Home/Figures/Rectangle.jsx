@@ -24,9 +24,7 @@ export const Rectangle = ({ model, groupRef }) => {
         onPointerOut={(event) =>
           onFigureHover(event, activeRoomKeys[1], 'out', groupRef)
         }
-        onClick={(event) =>
-          onFigureClick(activeRoomKeys[1], event?.object?.scale, 1200)
-        }
+        onClick={(event) => onFigureClick(event, activeRoomKeys[1], groupRef)}
       />
     </FloatWrap>
   );
