@@ -16,19 +16,10 @@
   pointer-events: none;
 
   &--visible {
+    @extend %tutorial-visible;
     visibility: visible;
     opacity: 1;
     pointer-events: all;
-
-    &::before {
-      position: absolute;
-      inset: calc(50% - 50dvh) 0 0 calc(50% - 50vw);
-      z-index: -1;
-      width: 100vw;
-      height: 100dvh;
-      content: '';
-      pointer-events: all;
-    }
   }
 
   @include media-breakpoint-up(tablet) {
@@ -63,5 +54,17 @@
         color: $blue-300;
       }
     }
+  }
+}
+
+.tutorial__background-close {
+  %tutorial-visible & {
+    position: absolute;
+    inset: calc(50% - 50dvh) 0 0 calc(50% - 50vw);
+    z-index: -1;
+    width: 100vw;
+    height: 100dvh;
+    opacity: 0;
+    pointer-events: all;
   }
 }

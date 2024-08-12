@@ -13,7 +13,7 @@ export const BackPlane = () => {
       onPointerEnter={(event) => onFigureHover(event, hoveredKeys.empty)}
     >
       <planeGeometry args={isDesktop ? [45, 25] : [20, 40]} />
-      <meshBasicMaterial color={'#fff'} toneMapped={false} />
+      <meshBasicMaterial color={'#fafbff'} toneMapped={false} />
     </mesh>
   );
 };

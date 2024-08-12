@@ -94,6 +94,11 @@ export const Tutorial = () => {
           spaceBetween={8}
           slidesPerView={1}
         />
+        <button
+          type="button"
+          className="tutorial__background-close"
+          onClick={(event) => onExitFromTutorial(event)}
+        />
       </div>
     );
   }
