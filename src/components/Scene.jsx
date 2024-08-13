@@ -24,7 +24,7 @@ export const Scene = () => {
           fov: isDesktop ? 32 : 40,
           position: [-17.6, 2.5, -2.7],
           near: 0.01,
-          far: 40,
+          far: 50,
         }}
         gl={{
           toneMapping: THREE.NeutralToneMapping,

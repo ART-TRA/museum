@@ -133,9 +133,7 @@ const ExhibitDescriptionInner = () => {
             onExitFromDescription(event);
           }
         }}
-      >
-        <p>closer</p>
-      </button>
+      />
       {exhibitActive && exhibitActive !== 'hand' && (
         <button
           type="button"

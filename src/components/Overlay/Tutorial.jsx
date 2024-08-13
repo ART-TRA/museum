@@ -67,7 +67,7 @@ export const Tutorial = () => {
     if (activeScreen === 'room') {
       setTimeout(() => {
         setOpen(true);
-      }, 2000);
+      }, 200);
     }
   }, [activeScreen]);
 
@@ -88,7 +88,7 @@ export const Tutorial = () => {
           allowTouchMove
           grabCursor
           pagination
-          autoplay
+          // autoplay
           elements={tutorialData}
           slide={TutorialSlide}
           spaceBetween={8}

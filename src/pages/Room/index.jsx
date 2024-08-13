@@ -167,7 +167,7 @@ export const Room = () => {
         if (mixer.current.time < 0) mixer.current.update(0);
         if (mixer.current.time >= 0) {
           if (
-            swipeDirection === 'up' &&
+            swipeDirection === 'down' &&
             mixer.current.time <= 85 - TOUCH_SPEED_X10
           ) {
             showLastDescription(
@@ -178,7 +178,7 @@ export const Room = () => {
             mixer.current.update(TOUCH_SPEED_X10);
           }
 
-          if (swipeDirection === 'down') {
+          if (swipeDirection === 'up') {
             if (mixer.current.time >= TOUCH_SPEED_X10) {
               mixer.current.update(-TOUCH_SPEED_X10);
             } else {
