@@ -1,4 +1,4 @@
-export const CopyIndex = () => {
+export const CopyIcon = () => {
   return (
     <svg
       width="34"

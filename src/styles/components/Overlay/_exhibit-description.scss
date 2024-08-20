@@ -8,7 +8,7 @@
   justify-content: space-between;
   width: 100%;
   height: 274px;
-  padding: 80px 30px 30px;
+  padding: 70px 30px 30px;
   border-radius: 40px 40px 0 0;
   transform: translateY(100%);
   opacity: 0;
@@ -70,7 +70,7 @@
   }
 
   &--hand {
-    padding: 50px 30px;
+    @extend %exhibit-description-hand;
   }
 
   @include media-breakpoint-up(desktop) {
@@ -80,6 +80,7 @@
     padding: 17vh 8vw 30px;
     border-radius: 0;
     transform: translateX(100%);
+    //transform: translateX(0);
 
     &--visible {
       transform: translateX(0);
@@ -87,12 +88,11 @@
 
     &--hand {
       z-index: 0;
-      width: 50%;
-      padding: 17vh 20vw 17vh 8vw;
       background-color: transparent !important;
       transform: unset;
       transition: opacity 0.4s;
       transition-delay: 0.4s;
+      pointer-events: none;
     }
 
     h2 {
@@ -147,14 +147,13 @@
 .exhibit-description__share {
   display: flex;
   align-items: center;
-  margin: 48px 0 0;
   padding: 0;
   background-color: transparent;
   border: none;
   cursor: pointer;
 
   svg {
-    margin: 0 14px 0 0;
+    margin: 0 12px 0 0;
     color: $blue-500;
     transition: 0.2s;
   }
@@ -189,7 +188,22 @@
   }
 }
 
-.exhibit-description__buttons {
+.exhibit-description__share-control {
+  display: none;
+  align-items: center;
+  margin: 28px 0 0;
+
+  %desc-visible & {
+    display: flex;
+  }
+  
+  button {
+    min-height: 52px;
+    pointer-events: all;
+  }
+}
+
+.exhibit-description__direction-control {
   display: flex;
   align-items: center;
   margin: auto 0 0;
@@ -205,13 +219,14 @@
     border-radius: 50%;
     cursor: pointer;
     transition: 0.2s;
+    pointer-events: all;
 
     svg {
       transition: 0.2s;
     }
 
     &:nth-child(2) {
-      margin: 0 0 0 20px;
+      margin: 0 auto 0 20px;
       transform: rotate(180deg);
     }
 
@@ -237,31 +252,41 @@
   }
 
   @include media-breakpoint-up(desktop) {
-    button {
-      &:hover {
-        background-color: $blue-300;
+    display: none;
 
-        svg {
-          rect {
-            color: $blue-300;
-          }
+    %exhibit-description-hand & {
+      display: none;
+    }
 
-          path {
-            color: $white;
+    %desc-visible & {
+      display: flex;
+
+      button {
+        &:hover {
+          background-color: $blue-300;
+
+          svg {
+            rect {
+              color: $blue-300;
+            }
+
+            path {
+              color: $white;
+            }
           }
         }
-      }
 
-      &:disabled {
-        background-color: transparent;
+        &:disabled {
+          background-color: transparent;
 
-        svg {
-          rect {
-            color: $blue-500;
-          }
+          svg {
+            rect {
+              color: $blue-500;
+            }
 
-          path {
-            color: $blue-500;
+            path {
+              color: $blue-500;
+            }
           }
         }
       }
@@ -313,9 +338,10 @@
     position: absolute;
     top: calc(100% - 100dvh);
     left: 0;
+    z-index: -1;
     display: block;
     width: 100vw;
-    height: 100dvh;
+    height: calc(100dvh - 100%);
     padding: 0;
     background-color: transparent;
     border: none;
@@ -326,6 +352,7 @@
     %desc-visible & {
       left: calc(-100vw * 0.6);
       width: calc(100vw * 0.6);
+      height: 100dvh;
     }
   }
 }
@@ -335,6 +362,7 @@
   align-items: center;
   justify-content: center;
   height: 52px;
+  margin: 0 20px 0 0;
   padding: 0 34px;
   color: #fff;
   font-weight: 500;

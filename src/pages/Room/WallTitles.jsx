@@ -5,6 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { roomDurationAtom } from 'src/recoil/atoms/roomDuration';
 import { useRoomTitles } from 'src/hooks/useRoomTitles';
 import { TITLES_COLOR } from 'src/pages/Room/constants';
+import { activeRoomTimes } from 'src/recoil/atoms/activeRoom';
 
 const AnimatedText = a(Text);
 
@@ -13,11 +14,16 @@ export const WallTitles = () => {
   const roomDuration = useRecoilValue(roomDurationAtom);
   const isTitlesVisible = useMemo(() => {
     return (
-      (roomDuration >= 0 && roomDuration < 0.36) ||
-      (roomDuration >= 17.6 && roomDuration < 20) ||
-      (roomDuration >= 35.6 && roomDuration < 38) ||
-      (roomDuration >= 49.3 && roomDuration < 51.6) ||
-      (roomDuration >= 62 && roomDuration < 64.7)
+      (roomDuration >= activeRoomTimes.same &&
+        roomDuration < activeRoomTimes.same + 0.36) ||
+      (roomDuration >= activeRoomTimes.talents - 0.4 &&
+        roomDuration < activeRoomTimes.talents + 2) ||
+      (roomDuration >= activeRoomTimes.dreams - 0.4 &&
+        roomDuration < activeRoomTimes.dreams + 2) ||
+      (roomDuration >= activeRoomTimes.celebrate - 1 &&
+        roomDuration < activeRoomTimes.celebrate + 2) ||
+      (roomDuration >= activeRoomTimes.toys - 1 &&
+        roomDuration < activeRoomTimes.toys + 2)
     );
   }, [roomDuration]);
 

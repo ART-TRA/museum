@@ -32,18 +32,21 @@ export const Figures = () => {
 
   const { onFigureClick } = useFigures();
   const activeScreen = useRecoilValue(activeScreenAtom);
-  const { swipeDirection } = useTouch();
+  const { defineSwipeDirection } = useTouch();
   const slidePermission = useRef(true);
 
-  const slideToRoom = useCallback(() => {
-    if (activeScreen === 'figures' && swipeDirection === 'up') {
-      if (slidePermission.current) {
-        onFigureClick(null, activeRoomKeys[0]);
-      }
+  const slideToRoom = useCallback(
+    (event) => {
+      if (activeScreen === 'figures' && defineSwipeDirection(event) === 'up') {
+        if (slidePermission.current) {
+          onFigureClick(null, activeRoomKeys[0]);
+        }
 
-      slidePermission.current = false;
-    }
-  }, [activeScreen, swipeDirection]);
+        slidePermission.current = false;
+      }
+    },
+    [activeScreen]
+  );
 
   const slideToRoomByWheel = (event) => {
     event?.stopPropagation();
@@ -72,7 +75,7 @@ export const Figures = () => {
     return () => {
       window.removeEventListener('touchmove', slideToRoom);
     };
-  }, [slideToRoom, swipeDirection]);
+  }, [slideToRoom]);
 
   return (
     <group

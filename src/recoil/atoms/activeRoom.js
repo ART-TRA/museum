@@ -30,11 +30,11 @@ export const activeRoomDesc = {
 };
 
 export const activeRoomTimes = {
-  [activeRoomKeys[0]]: 0,
-  [activeRoomKeys[1]]: 18,
-  [activeRoomKeys[2]]: 36,
-  [activeRoomKeys[3]]: 50,
-  [activeRoomKeys[4]]: 63,
+  same: 0,
+  talents: 13,
+  dreams: 24.55,
+  celebrate: 33.35,
+  toys: 41.3,
 };
 
 export const activeRoomAtom = atom({

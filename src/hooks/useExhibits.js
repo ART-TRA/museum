@@ -1,6 +1,34 @@
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useResize } from 'src/hooks/useResize';
+import { activeRoomTimes } from 'src/recoil/atoms/activeRoom';
+
+export const EXHIBITS_TIME_COORDS = {
+  roomTitle1: activeRoomTimes.same,
+  boots: 3.6,
+  cups: 7.5,
+  bed: 10.35,
+
+  roomTitle2: activeRoomTimes.talents,
+  cubes: 16,
+  childArt: 19.2,
+  xylophone: 22.2,
+
+  roomTitle3: activeRoomTimes.dreams,
+  diary: 27.6,
+  collage: 29.85,
+
+  roomTitle4: activeRoomTimes.celebrate,
+  christmasBall: 36.4,
+  bowTie: 38.6,
+
+  roomTitle5: activeRoomTimes.toys,
+  storageRoom: 43.75,
+  bear: 46.3,
+  truck: 49.2,
+  doll: 52.2,
+  hand: 55,
+};
 
 export const useExhibits = () => {
   const { viewport } = useThree();
@@ -9,7 +37,7 @@ export const useExhibits = () => {
   const exhibits = {
     boots: {
       name: 'boots',
-      cameraTime: 2.8,
+      cameraTime: EXHIBITS_TIME_COORDS.boots,
       position: isDesktop
         ? new THREE.Vector3(-26.983 + viewport.width * 0.003, 0.89, -6)
         : new THREE.Vector3(-27.6 + viewport.width * 0.003, 0.89, -5),
@@ -20,7 +48,7 @@ export const useExhibits = () => {
     },
     cups: {
       name: 'cups',
-      cameraTime: 8.3,
+      cameraTime: EXHIBITS_TIME_COORDS.cups,
       position: isDesktop
         ? new THREE.Vector3(-34, 0.93, 7.955)
         : new THREE.Vector3(-33.5, 0.93, 8.4),
@@ -31,7 +59,7 @@ export const useExhibits = () => {
     },
     bed: {
       name: 'bed',
-      cameraTime: 13.5,
+      cameraTime: EXHIBITS_TIME_COORDS.bed,
       position: isDesktop
         ? new THREE.Vector3(-23.25, 0.7, 13.3)
         : new THREE.Vector3(-21.8, 1.2, 10.3),
@@ -42,7 +70,7 @@ export const useExhibits = () => {
     },
     cubes: {
       name: 'cubes',
-      cameraTime: 23,
+      cameraTime: EXHIBITS_TIME_COORDS.cubes,
       position: isDesktop
         ? new THREE.Vector3(-0.338 + viewport.width * 0.053, 0.8, 4)
         : new THREE.Vector3(-0.35, 0.8, 4),
@@ -50,7 +78,7 @@ export const useExhibits = () => {
     },
     art: {
       name: 'art',
-      cameraTime: 27.3,
+      cameraTime: EXHIBITS_TIME_COORDS.childArt,
       position: isDesktop
         ? new THREE.Vector3(13.8 - viewport.width * 0.051, 1.6, 8)
         : new THREE.Vector3(14.2 - viewport.width * 0.051, 1.6, 7),
@@ -61,7 +89,7 @@ export const useExhibits = () => {
     },
     xylophone: {
       name: 'xylophone',
-      cameraTime: 32.7,
+      cameraTime: EXHIBITS_TIME_COORDS.xylophone,
       position: isDesktop
         ? new THREE.Vector3(24.43 + viewport.width * 0.0015, 1.8, 2)
         : new THREE.Vector3(23.36 + viewport.width * 0.0015, 1.8, 2),
@@ -72,7 +100,7 @@ export const useExhibits = () => {
     },
     diary: {
       name: 'diary',
-      cameraTime: 40.5,
+      cameraTime: EXHIBITS_TIME_COORDS.diary,
       position: isDesktop
         ? new THREE.Vector3(46.665 - viewport.width * 0.0045, 1.45, 31.6)
         : new THREE.Vector3(47.2 - viewport.width * 0.0045, 1.45, 31.3),
@@ -83,7 +111,7 @@ export const useExhibits = () => {
     },
     collage: {
       name: 'collage',
-      cameraTime: 44.8,
+      cameraTime: EXHIBITS_TIME_COORDS.collage,
       position: isDesktop
         ? new THREE.Vector3(64, 1.7, 27.6)
         : new THREE.Vector3(64, 1.7, 26.2),
@@ -94,7 +122,7 @@ export const useExhibits = () => {
     },
     bauble: {
       name: 'bauble',
-      cameraTime: 54.7,
+      cameraTime: EXHIBITS_TIME_COORDS.christmasBall,
       position: isDesktop
         ? new THREE.Vector3(59.6, 1.45, 4.2)
         : new THREE.Vector3(60.3, 1.45, 4.2),
@@ -105,7 +133,7 @@ export const useExhibits = () => {
     },
     bowTie: {
       name: 'bowTie',
-      cameraTime: 58.5,
+      cameraTime: EXHIBITS_TIME_COORDS.bowTie,
       position: isDesktop
         ? new THREE.Vector3(56.7, 1.6, -12.14)
         : new THREE.Vector3(57.1, 1.6, -11.3),
@@ -116,7 +144,7 @@ export const useExhibits = () => {
     },
     storageRoom: {
       name: 'storageRoom',
-      cameraTime: 68,
+      cameraTime: EXHIBITS_TIME_COORDS.storageRoom,
       position: isDesktop
         ? new THREE.Vector3(62.2, 0.56, -41.8)
         : new THREE.Vector3(61.5, 0.56, -41.8),
@@ -127,7 +155,7 @@ export const useExhibits = () => {
     },
     bear: {
       name: 'bear',
-      cameraTime: 71.8,
+      cameraTime: EXHIBITS_TIME_COORDS.bear,
       position: isDesktop
         ? new THREE.Vector3(47.7, 0.96, -39)
         : new THREE.Vector3(47.9, 0.96, -38.77),
@@ -138,7 +166,7 @@ export const useExhibits = () => {
     },
     car: {
       name: 'car',
-      cameraTime: 77,
+      cameraTime: EXHIBITS_TIME_COORDS.truck,
       position: isDesktop
         ? new THREE.Vector3(49.95, 0.5, -56.4)
         : new THREE.Vector3(49.95, 0.5, -55.85),
@@ -149,7 +177,7 @@ export const useExhibits = () => {
     },
     doll: {
       name: 'doll',
-      cameraTime: 81.5,
+      cameraTime: EXHIBITS_TIME_COORDS.doll,
       position: isDesktop
         ? new THREE.Vector3(66.9, 1.02, -56.4)
         : new THREE.Vector3(66.6, 1.02, -56.45),
@@ -160,9 +188,14 @@ export const useExhibits = () => {
     },
     hand: {
       name: 'hand',
-      cameraTime: 83.7,
-      position: null,
-      quaternion: null,
+      cameraTime: EXHIBITS_TIME_COORDS.hand,
+      position: isDesktop
+        ? new THREE.Vector3(77.4, 2.963, -41.2)
+        : new THREE.Vector3(76.5, 2.963, -43.1),
+      quaternion: new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(0, 1, 0),
+        -Math.PI * 0.8
+      ),
     },
   };
 

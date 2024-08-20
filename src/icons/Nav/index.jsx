@@ -40,10 +40,10 @@ const NavItem = ({ data }) => {
 
   const onChangeActivePath = () => {
     if (oneClickLimit.current) {
-      setClickedTransition(true);
       setFadeTransition();
       setExhibitActive(null);
       setTimeout(() => {
+        setClickedTransition(true);
         if (activeRoom !== data.key) {
           setActiveRoom(data.key);
         }

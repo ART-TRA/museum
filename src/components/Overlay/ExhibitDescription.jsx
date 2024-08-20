@@ -6,11 +6,10 @@ import { useExhibitsDescriptions } from 'src/hooks/useExhibitsDescriptions';
 import { activeScreenAtom } from 'src/recoil/atoms/activeScreen';
 import { useResize } from 'src/hooks/useResize';
 import { useTouch } from 'src/hooks/useTouch';
-import { Share } from 'src/icons/Share';
 import { Arrow } from 'src/icons/Arrow';
 import { useState } from 'react';
 import { Share2 } from 'src/icons/Share2';
-import { CopyIndex } from 'src/icons/Copy';
+import { CopyIcon } from 'src/icons/Copy';
 
 const SHARE_DATA = {
   title: 'Отказники',
@@ -20,7 +19,7 @@ const SHARE_DATA = {
 
 const ExhibitDescriptionInner = () => {
   const { isDesktop, isPhone } = useResize();
-  const { swipeDirection } = useTouch();
+  const { defineSwipeDirection } = useTouch();
   const exhibits = useExhibitsDescriptions();
   const [exhibitActive, setExhibitActive] = useRecoilState(activeExhibitAtom);
   const [isExpanded, setExpanded] = useState(false);
@@ -47,8 +46,8 @@ const ExhibitDescriptionInner = () => {
         await navigator.share(SHARE_DATA);
       } else {
         console.log('web share not supported!!');
-        setCopiedText(true);
         await navigator.clipboard.writeText(SHARE_DATA.url);
+        setCopiedText(true);
         setTimeout(() => {
           setCopiedText(false);
         }, 3000);
@@ -62,9 +61,6 @@ const ExhibitDescriptionInner = () => {
     if (event?.type !== 'wheel' && exhibitActive !== 'hand') {
       event?.preventDefault();
       event?.stopPropagation();
-    }
-    if (exhibitActive === 'hand') {
-      setExhibitActive(null);
     }
     setTimeout(() => {
       window.dispatchEvent(
@@ -91,57 +87,35 @@ const ExhibitDescriptionInner = () => {
     event.stopPropagation();
     setExpanded(false);
 
-    if (direction) {
-      window.dispatchEvent(
-        new CustomEvent('onChangeActiveExhibit', {
-          detail: { name: exhibitActive, direction: 'next' },
-        })
-      );
-    } else {
-      window.dispatchEvent(
-        new CustomEvent('onChangeActiveExhibit', {
-          detail: { name: exhibitActive, direction: 'prev' },
-        })
-      );
-    }
+    window.dispatchEvent(
+      new CustomEvent('onChangeActiveExhibit', {
+        detail: { name: exhibitActive, direction },
+      })
+    );
   };
 
   return (
-    <div
-      className={classNames}
-      onWheel={(event) => {
-        if (exhibitActive === 'hand' && event.deltaY < 0) {
-          onExitFromDescription(event);
-        }
-      }}
-      onClick={onExpandDescription}
-      onPointerMove={(event) => {
-        if (
-          !isDesktop &&
-          swipeDirection === 'down' &&
-          exhibitActive === 'hand'
-        ) {
-          onExitFromDescription();
-        }
-      }}
-    >
-      <button
-        type="button"
-        className="exhibit-description__close-field"
-        onClick={(event) => {
-          if (exhibitActive && exhibitActive !== 'hand') {
-            onExitFromDescription(event);
-          }
-        }}
-      />
+    <div className={classNames} onClick={onExpandDescription}>
       {exhibitActive && exhibitActive !== 'hand' && (
-        <button
-          type="button"
-          className="exhibit-description__close"
-          onClick={(event) => onExitFromDescription(event)}
-        >
-          <Cross />
-        </button>
+        <>
+          <button
+            type="button"
+            className="exhibit-description__close-field"
+            onClick={onExitFromDescription}
+            onPointerMove={(event) => {
+              if (!isDesktop && defineSwipeDirection(event)) {
+                event.preventDefault();
+              }
+            }}
+          />
+          <button
+            type="button"
+            className="exhibit-description__close"
+            onClick={onExitFromDescription}
+          >
+            <Cross />
+          </button>
+        </>
       )}
       <div>
         <h2>{exhibits?.[exhibitActive]?.title}</h2>
@@ -156,7 +130,16 @@ const ExhibitDescriptionInner = () => {
               __html: exhibits?.[exhibitActive]?.description,
             }}
           />
-          {exhibitActive && exhibitActive !== 'hand' && (
+          <div className="exhibit-description__share-control">
+            {exhibitActive && exhibitActive === 'hand' && (
+              <button
+                type="button"
+                className="exhibit-description__help"
+                onClick={onHelpClick}
+              >
+                Помочь сиротам
+              </button>
+            )}
             <button
               type="button"
               className="exhibit-description__share"
@@ -165,57 +148,45 @@ const ExhibitDescriptionInner = () => {
             >
               {copiedText ? (
                 <>
-                  <CopyIndex />
-                  <p>
-                    Ссылка <br />
-                    скопирована
-                  </p>
+                  <CopyIcon />
+                  {exhibitActive !== 'hand' && (
+                    <p>
+                      Ссылка <br />
+                      скопирована
+                    </p>
+                  )}
                 </>
               ) : (
                 <>
                   <Share2 />
-                  <p>
-                    Поделиться <br />
-                    сайтом
-                  </p>
+                  {exhibitActive !== 'hand' && (
+                    <p>
+                      Поделиться <br />
+                      сайтом
+                    </p>
+                  )}
                 </>
               )}
             </button>
-          )}
+          </div>
         </div>
       </div>
-      {exhibitActive && exhibitActive !== 'hand' && (
-        <div className="exhibit-description__buttons">
-          <button
-            type="button"
-            onClick={(event) => onDirectionClick(event, true)}
-            disabled={exhibitActive === 'doll'}
-          >
-            <Arrow />
-          </button>
-          <button
-            type="button"
-            onClick={(event) => onDirectionClick(event, false)}
-            disabled={exhibitActive === 'boots'}
-          >
-            <Arrow />
-          </button>
-        </div>
-      )}
-      {exhibitActive === 'hand' && (
-        <div className="exhibit-description__help-wrap">
-          <button
-            type="button"
-            className="exhibit-description__help"
-            onClick={onHelpClick}
-          >
-            Помочь сиротам
-          </button>
-          <button type="button" onClick={onShareClick}>
-            <Share />
-          </button>
-        </div>
-      )}
+      <div className="exhibit-description__direction-control">
+        <button
+          type="button"
+          onClick={(event) => onDirectionClick(event, 'next')}
+          disabled={exhibitActive === 'hand'}
+        >
+          <Arrow />
+        </button>
+        <button
+          type="button"
+          onClick={(event) => onDirectionClick(event, 'prev')}
+          disabled={exhibitActive === 'boots'}
+        >
+          <Arrow />
+        </button>
+      </div>
     </div>
   );
 };

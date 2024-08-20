@@ -73,27 +73,29 @@ export const Tutorial = () => {
 
   if (activeScreen === 'room') {
     return (
-      <div
-        className={tutorialClassNames}
-        onTouchMove={(event) => event.stopPropagation()}
-      >
-        <button
-          type="button"
-          className="tutorial__close"
-          onClick={(event) => onExitFromTutorial(event)}
+      <div className={tutorialClassNames}>
+        <div
+          className="tutorial__content"
+          onTouchMove={(event) => event.stopPropagation()}
         >
-          <Cross />
-        </button>
-        <Carousel
-          allowTouchMove
-          grabCursor
-          pagination
-          // autoplay
-          elements={tutorialData}
-          slide={TutorialSlide}
-          spaceBetween={8}
-          slidesPerView={1}
-        />
+          <button
+            type="button"
+            className="tutorial__close"
+            onClick={(event) => onExitFromTutorial(event)}
+          >
+            <Cross />
+          </button>
+          <Carousel
+            allowTouchMove
+            grabCursor
+            pagination
+            // autoplay
+            elements={tutorialData}
+            slide={TutorialSlide}
+            spaceBetween={8}
+            slidesPerView={1}
+          />
+        </div>
         <button
           type="button"
           className="tutorial__background-close"

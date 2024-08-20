@@ -1,5 +1,6 @@
 .carousel {
   height: 100%;
+  border-radius: 10px 10px 0 0;
 }
 
 .carousel__slide {
@@ -20,6 +21,13 @@
     line-height: 20px;
     text-align: center;
     text-transform: uppercase;
+  }
+
+  @include media-breakpoint-up(desktop) {
+    p {
+      font-size: 0.7vw;
+      line-height: 140%;
+    }
   }
 }
 

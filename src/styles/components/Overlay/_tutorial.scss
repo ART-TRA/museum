@@ -5,7 +5,6 @@
   z-index: 100;
   width: calc(100vw - 48px);
   height: 310px;
-  padding: 0 0 24px;
   background-color: $blue-100;
   border-radius: 10px;
   outline: none;
@@ -24,8 +23,22 @@
 
   @include media-breakpoint-up(tablet) {
     width: 450px;
-    height: 380px;
+    height: calc(450px * 0.84);
   }
+
+  @include media-breakpoint-up(desktop) {
+    width: 25vw;
+    height: calc(25vw * 0.84);
+  }
+}
+
+.tutorial__content {
+  position: sticky;
+  z-index: 2;
+  height: 100%;
+  padding: 0 0 24px;
+  background-color: #fafbff;
+  border-radius: 10px;
 }
 
 .tutorial__close {
@@ -66,7 +79,7 @@
     height: 100dvh;
     padding: 0;
     border: none;
-    opacity: 0;
+    opacity: 0.3;
     pointer-events: all;
   }
 }

@@ -18,7 +18,6 @@ import {
 import { useResize } from 'src/hooks/useResize';
 import { useTouch } from 'src/hooks/useTouch';
 import { useKTX2Loader } from 'src/hooks/useKTX2Loader';
-import { Effects } from 'src/components/Effects';
 import { clickTransition } from 'src/recoil/atoms/clickTransition';
 import {
   ALLOWED_NAMES_EXHIBITS,
@@ -26,18 +25,17 @@ import {
   ALLOWED_NAMES_PODIUMS,
   ALLOWED_NAMES_WALLS,
   SCROLL_MODIFIER,
-  SCROLL_SPEED,
-  TOUCH_SPEED,
-  TOUCH_SPEED_X10,
 } from 'src/pages/Room/constants';
 import { setFadeTransition } from 'src/utils/setFadeTransition';
-import { useExhibits } from 'src/hooks/useExhibits';
+import { EXHIBITS_TIME_COORDS, useExhibits } from 'src/hooks/useExhibits';
 import { easing } from 'maath';
 import gsap from 'gsap';
+import { CustomEase } from 'gsap/CustomEase';
+gsap.registerPlugin(CustomEase);
 
 export const Room = () => {
   const renderRoom = useRef();
-  const { swipeDirection, detectTrackpad } = useTouch();
+  const { defineSwipeDirection, detectTrackpad } = useTouch();
   const { isDesktop } = useResize();
   const { loadTexture } = useKTX2Loader();
   const model = useGLTF('models/model.glb', true);
@@ -62,6 +60,9 @@ export const Room = () => {
   action.current.setLoop(THREE.LoopOnce, 0);
   action.current.play();
 
+  const moveDirection = useRef(null);
+  let timeline = useRef(null);
+
   const onChangeActiveExhibit = useCallback(
     ({ detail }) => {
       setFadeTransition();
@@ -70,6 +71,13 @@ export const Room = () => {
           detail.direction === 'next' &&
           exhibitsDirections[detail.name].next
         ) {
+          gsap.to(mixer.current, {
+            time: exhibitsDirections[detail.name].next.cameraTime,
+            duration: 1,
+            onUpdate: () => {
+              mixer.current.setTime(mixer.current.time);
+            },
+          });
           setExhibitActive(exhibitsDirections[detail.name].next.name);
           exhibitOnObserve.current = {
             position: exhibitsDirections[detail.name].next.position,
@@ -79,6 +87,13 @@ export const Room = () => {
           detail.direction === 'prev' &&
           exhibitsDirections[detail.name].prev
         ) {
+          gsap.to(mixer.current, {
+            time: exhibitsDirections[detail.name].prev.cameraTime,
+            duration: 1,
+            onUpdate: () => {
+              mixer.current.setTime(mixer.current.time);
+            },
+          });
           setExhibitActive(exhibitsDirections[detail.name].prev.name);
           exhibitOnObserve.current = {
             position: exhibitsDirections[detail.name].prev.position,
@@ -94,150 +109,227 @@ export const Room = () => {
     [exhibitsDirections, setExhibitActive]
   );
 
-  const showLastDescription = useCallback(
-    (maxTime, minTime, type) => {
-      if (
-        roomDuration <= maxTime &&
-        roomDuration >= minTime &&
-        exhibitActive !== 'hand'
-      ) {
-        console.log('showLastDescription', type, roomDuration);
-        setExhibitActive('hand');
-        exhibitOnObserve.current = {
-          position: isDesktop
-            ? new THREE.Vector3(76.289, 2.963, -41.2)
-            : new THREE.Vector3(76.5, 2.963, -43.1),
-          quaternion: new THREE.Quaternion().setFromAxisAngle(
-            new THREE.Vector3(0, 1, 0),
-            -Math.PI * 0.8
-          ),
-        };
-      }
-    },
-    [roomDuration, activeRoom]
-  );
+  const showHandDescription = () => {
+    if (mixer.current.time === EXHIBITS_TIME_COORDS.hand) {
+      setExhibitActive('hand');
+      exhibitOnObserve.current = {
+        position: exhibits.hand.position,
+        quaternion: exhibits.hand.quaternion,
+      };
+    }
+  };
 
   const changeActiveRoom = (event) => {
+    timeline.current?.pause();
     mixer.current.setTime(activeRoomTimes[event.detail]);
     setRoomDuration(mixer.current?.time);
   };
 
   const onExitFromDescription = ({ detail }) => {
+    timeline.current?.pause();
     if (exhibitOnObserve.current) exhibitOnObserve.current = null;
     mixer.current.setTime(exhibits[detail].cameraTime);
-    console.log('TIME', mixer.current?.time);
     setRoomDuration(mixer.current?.time);
   };
 
   const updateActiveRoom = useCallback(() => {
-    if (mixer.current.time < 18 && activeRoom !== activeRoomKeys[0]) {
+    if (
+      mixer.current.time < activeRoomTimes.talents &&
+      activeRoom !== activeRoomKeys[0]
+    ) {
       setActiveRoom(activeRoomKeys[0]);
     } else if (
-      mixer.current.time >= 18 &&
-      mixer.current.time < 36 &&
+      mixer.current.time >= activeRoomTimes.talents &&
+      mixer.current.time < activeRoomTimes.dreams &&
       activeRoom !== activeRoomKeys[1]
     ) {
       setActiveRoom(activeRoomKeys[1]);
     } else if (
-      mixer.current.time >= 36 &&
-      mixer.current.time < 50 &&
+      mixer.current.time >= activeRoomTimes.dreams &&
+      mixer.current.time < activeRoomTimes.celebrate &&
       activeRoom !== activeRoomKeys[2]
     ) {
       setActiveRoom(activeRoomKeys[2]);
     } else if (
-      mixer.current.time >= 50 &&
-      mixer.current.time < 63 &&
+      mixer.current.time >= activeRoomTimes.celebrate &&
+      mixer.current.time < activeRoomTimes.toys &&
       activeRoom !== activeRoomKeys[3]
     ) {
       setActiveRoom(activeRoomKeys[3]);
-    } else if (mixer.current.time >= 63 && activeRoom !== activeRoomKeys[4]) {
+    } else if (
+      mixer.current.time >= activeRoomTimes.toys &&
+      activeRoom !== activeRoomKeys[4]
+    ) {
       setActiveRoom(activeRoomKeys[4]);
     }
     setRoomDuration(mixer.current?.time);
   }, [activeRoom, setActiveRoom, setRoomDuration, roomDuration]);
 
-  const onRoomObserve = useCallback(
-    (event) => {
+  // const onRoomObserve = useCallback(
+  //   (event) => {
+  //     if (
+  //       activeScreen === 'room' &&
+  //       !exhibitActive &&
+  //       frameDelta.current >= 140
+  //     ) {
+  //       if (exhibitOnObserve.current) exhibitOnObserve.current = null;
+  //       if (mixer.current.time < 0) mixer.current.update(0);
+  //       if (mixer.current.time >= 0) {
+  //         if (
+  //           swipeDirection === 'down' &&
+  //           mixer.current.time <= 85 - TOUCH_SPEED_X10
+  //         ) {
+  //           showLastDescription(
+  //             85 - TOUCH_SPEED_X10,
+  //             85 - TOUCH_SPEED_X10 - 0.1,
+  //             'swipe'
+  //           );
+  //           mixer.current.update(TOUCH_SPEED_X10);
+  //         }
+  //
+  //         if (swipeDirection === 'up') {
+  //           if (mixer.current.time >= TOUCH_SPEED_X10) {
+  //             mixer.current.update(-TOUCH_SPEED_X10);
+  //           } else {
+  //             mixer.current.update(-mixer.current.time + 0.001);
+  //           }
+  //         }
+  //
+  //         if (detectTrackpad(event)) {
+  //           if (event.deltaY > 0) {
+  //             mixer.current.update(TOUCH_SPEED);
+  //             if (mixer.current.time > 84) {
+  //               mixer.current.time = 84;
+  //             }
+  //           } else {
+  //             if (mixer.current?.time >= TOUCH_SPEED) {
+  //               mixer.current.update(-TOUCH_SPEED);
+  //             }
+  //           }
+  //         } else {
+  //           let speedModifier = 1;
+  //           if (Math.abs(event.deltaY) <= 30) {
+  //             speedModifier = 0.25;
+  //           }
+  //           if (event.deltaY > 0) {
+  //             mixer.current.update(SCROLL_SPEED * speedModifier);
+  //
+  //             if (mixer.current.time > 84) {
+  //               mixer.current.time = 84;
+  //             }
+  //           } else {
+  //             if (mixer.current?.time >= SCROLL_SPEED) {
+  //               mixer.current.update(-SCROLL_SPEED * speedModifier);
+  //             }
+  //           }
+  //         }
+  //         if (event.deltaY) {
+  //           showLastDescription(84, 84, 'all');
+  //         }
+  //         // updateActiveRoom();
+  //       }
+  //     }
+  //   },
+  //   [activeScreen, activeRoom, swipeDirection, exhibitActive, roomDuration]
+  // );
+
+  const onCameraPositionUpdate = useCallback(
+    (event, touchDirection) => {
+      let eventDirection = null;
+      if (event.deltaY > 0 || touchDirection === 'up') {
+        eventDirection = 'up';
+      } else if (event.deltaY < 0 || touchDirection === 'down') {
+        eventDirection = 'down';
+      }
       if (
-        activeScreen === 'room' &&
-        !exhibitActive &&
-        frameDelta.current >= 140
+        moveDirection.current !== eventDirection &&
+        (!exhibitOnObserve.current ||
+          JSON.stringify(exhibitOnObserve.current?.position) ===
+            JSON.stringify(exhibits.hand.position))
       ) {
-        if (exhibitOnObserve.current) exhibitOnObserve.current = null;
-        if (mixer.current.time < 0) mixer.current.update(0);
-        if (mixer.current.time >= 0) {
+        timeline.current?.pause();
+        moveDirection.current = eventDirection;
+        let tempTime = 0;
+        if (eventDirection === 'up') {
+          for (const [, value] of Object.entries(EXHIBITS_TIME_COORDS)) {
+            if (mixer.current.time < value) {
+              tempTime = value;
+              break;
+            } else tempTime = value;
+          }
+        } else if (eventDirection === 'down') {
+          for (const [, value] of Object.entries(
+            EXHIBITS_TIME_COORDS
+          ).reverse()) {
+            if (mixer.current.time > value) {
+              tempTime = value;
+              break;
+            }
+          }
+
           if (
-            swipeDirection === 'down' &&
-            mixer.current.time <= 85 - TOUCH_SPEED_X10
+            exhibitActive === 'hand' ||
+            mixer.current.time === EXHIBITS_TIME_COORDS.hand
           ) {
-            showLastDescription(
-              85 - TOUCH_SPEED_X10,
-              85 - TOUCH_SPEED_X10 - 0.1,
-              'swipe'
-            );
-            mixer.current.update(TOUCH_SPEED_X10);
+            setExhibitActive(null);
+            exhibitOnObserve.current = null;
+            tempTime = EXHIBITS_TIME_COORDS.doll;
+            // setRoomDuration(mixer.current?.time);
           }
+        }
 
-          if (swipeDirection === 'up') {
-            if (mixer.current.time >= TOUCH_SPEED_X10) {
-              mixer.current.update(-TOUCH_SPEED_X10);
-            } else {
-              mixer.current.update(-mixer.current.time + 0.001);
-            }
-          }
-
-          if (detectTrackpad(event)) {
-            if (event.deltaY > 0) {
-              mixer.current.update(TOUCH_SPEED);
-              if (mixer.current.time > 84) {
-                mixer.current.time = 84;
-              }
-            } else {
-              if (mixer.current?.time >= TOUCH_SPEED) {
-                mixer.current.update(-TOUCH_SPEED);
-              }
-            }
-          } else {
-            let speedModifier = 1;
-            if (Math.abs(event.deltaY) <= 30) {
-              speedModifier = 0.25;
-            }
-            if (event.deltaY > 0) {
-              mixer.current.update(SCROLL_SPEED * speedModifier);
-
-              if (mixer.current.time > 84) {
-                mixer.current.time = 84;
-              }
-            } else {
-              if (mixer.current?.time >= SCROLL_SPEED) {
-                mixer.current.update(-SCROLL_SPEED * speedModifier);
-              }
-            }
-          }
-          if (event.deltaY) {
-            showLastDescription(84, 84, 'all');
-          }
-          // updateActiveRoom();
+        if (mixer.current.time !== tempTime) {
+          timeline.current = gsap.to(mixer.current, {
+            time: tempTime,
+            duration: 4,
+            onUpdate: () => {
+              mixer.current.setTime(mixer.current.time);
+            },
+          });
         }
       }
     },
-    [activeScreen, activeRoom, swipeDirection, exhibitActive, roomDuration]
+    [mixer.current.time, exhibitActive]
   );
 
+  const resetCameraDirectionMove = () => {
+    for (const [, value] of Object.entries(EXHIBITS_TIME_COORDS)) {
+      if (roomDuration === value) {
+        moveDirection.current = null;
+        break;
+      }
+    }
+  };
+
   const onCameraViewUpdate = useCallback(() => {
-    if (mixer.current.time > 19 && mixer.current.time < 23) {
+    if (
+      mixer.current.time > activeRoomTimes.talents + 0.3 &&
+      mixer.current.time < activeRoomTimes.talents + 3
+    ) {
       camera.far = 60;
       camera.updateProjectionMatrix();
-    } else if (mixer.current.time > 23 && mixer.current.time < 32) {
+    } else if (
+      mixer.current.time > activeRoomTimes.talents + 3 &&
+      mixer.current.time < activeRoomTimes.dreams - 3
+    ) {
       camera.far = 70;
       camera.updateProjectionMatrix();
-    } else if (mixer.current.time > 37 && mixer.current.time < 39) {
+    } else if (
+      mixer.current.time > activeRoomTimes.dreams &&
+      mixer.current.time < activeRoomTimes.dreams + 2
+    ) {
       camera.far = 50;
       camera.updateProjectionMatrix();
-    } else if (mixer.current.time > 48 && mixer.current.time < 54) {
+    } else if (
+      mixer.current.time > activeRoomTimes.celebrate &&
+      mixer.current.time < activeRoomTimes.celebrate + 3
+    ) {
       camera.far = 74;
       camera.updateProjectionMatrix();
-    } else if (mixer.current.time > 60 && mixer.current.time < 66) {
+    } else if (
+      mixer.current.time > activeRoomTimes.toys - 3 &&
+      mixer.current.time < activeRoomTimes.toys + 2
+    ) {
       camera.far = 60;
       camera.updateProjectionMatrix();
     } else {
@@ -264,7 +356,7 @@ export const Room = () => {
             gl.initTexture(texture);
             if (child.name === 'Hand') {
               child.material = new THREE.MeshStandardMaterial({
-                color: '#eeeef5',
+                color: '#f1f1f6',
                 // toneMapped: false,
                 // map: texture,
                 aoMap: texture,
@@ -286,6 +378,9 @@ export const Room = () => {
                 ...(!ALLOWED_NAMES_EXHIBITS.includes(child.name) && {
                   aoMap: texture,
                 }),
+                // ...(child.name === 'Wall_1_11' && {
+                //   map: texture,
+                // }),
                 aoMapIntensity: ALLOWED_NAMES_EXHIBITS.includes(child.name)
                   ? 0.3
                   : 0.5,
@@ -300,12 +395,19 @@ export const Room = () => {
     });
   }, [model.nodes]);
 
+  useEffect(() => {
+    showHandDescription();
+  }, [roomDuration]);
+
   useLayoutEffect(() => {
     window.addEventListener('onChangeActiveRoom', changeActiveRoom);
     window.addEventListener('onExitFromDescription', onExitFromDescription);
     window.addEventListener('onChangeActiveExhibit', onChangeActiveExhibit);
     if (!isDesktop) {
-      window.addEventListener('touchmove', onRoomObserve);
+      window.addEventListener('touchstart', defineSwipeDirection);
+      window.addEventListener('touchmove', (event) => {
+        onCameraPositionUpdate(event, defineSwipeDirection(event));
+      });
     }
 
     return () => {
@@ -319,16 +421,20 @@ export const Room = () => {
         onChangeActiveExhibit
       );
       if (!isDesktop) {
-        window.removeEventListener('touchmove', onRoomObserve);
+        window.removeEventListener('touchstart', defineSwipeDirection);
+        window.removeEventListener('touchmove', (event) => {
+          onCameraPositionUpdate(event, defineSwipeDirection(event));
+        });
       }
     };
-  }, [onRoomObserve]);
+  }, [exhibitActive]);
 
   useFrame((state, delta) => {
     renderRoom.current.visible = activeScreen === 'room';
     if (activeScreen === 'room') {
       updateActiveRoom();
       onCameraViewUpdate();
+      resetCameraDirectionMove();
       if (frameDelta.current <= 190) {
         frameDelta.current += 1;
       }
@@ -372,7 +478,7 @@ export const Room = () => {
     <group
       ref={renderRoom}
       onWheel={(event) => {
-        onRoomObserve(event);
+        onCameraPositionUpdate(event);
       }}
     >
       <Walls nodes={model.nodes} rootRef={walls} />
