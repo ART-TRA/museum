@@ -102,8 +102,8 @@ export const useExhibits = () => {
       name: 'diary',
       cameraTime: EXHIBITS_TIME_COORDS.diary,
       position: isDesktop
-        ? new THREE.Vector3(46.665 - viewport.width * 0.0045, 1.45, 31.6)
-        : new THREE.Vector3(47.2 - viewport.width * 0.0045, 1.45, 31.3),
+        ? new THREE.Vector3(46.5 - viewport.width * 0.0045, 1.45, 32.2)
+        : new THREE.Vector3(46.98 - viewport.width * 0.0045, 1.45, 31.76),
       quaternion: new THREE.Quaternion().setFromAxisAngle(
         new THREE.Vector3(0, 1, 0),
         Math.PI * 0.86
@@ -190,7 +190,7 @@ export const useExhibits = () => {
       name: 'hand',
       cameraTime: EXHIBITS_TIME_COORDS.hand,
       position: isDesktop
-        ? new THREE.Vector3(77.4, 2.963, -41.2)
+        ? new THREE.Vector3(76.8, 2.963, -41.2)
         : new THREE.Vector3(76.5, 2.963, -43.1),
       quaternion: new THREE.Quaternion().setFromAxisAngle(
         new THREE.Vector3(0, 1, 0),

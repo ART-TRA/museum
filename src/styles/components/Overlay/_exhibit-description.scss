@@ -55,7 +55,6 @@
   }
 
   p {
-    max-width: 324px;
     margin: 24px 0 0;
     color: $blue-500;
     font-weight: 500;
@@ -80,7 +79,8 @@
     padding: 17vh 8vw 30px;
     border-radius: 0;
     transform: translateX(100%);
-    //transform: translateX(0);
+
+    // transform: translateX(0);
 
     &--visible {
       transform: translateX(0);
@@ -96,19 +96,18 @@
     }
 
     h2 {
-      font-size: 6vw;
+      font-size: 11.4vh;
       line-height: 100%;
       text-align: left;
     }
 
     h3 {
-      font-size: 1vw;
-      line-height: 1.3vw;
+      font-size: 2vh;
+      line-height: 130%;
     }
 
     p {
-      max-width: unset;
-      font-size: 1.1vw;
+      font-size: 2.2vh;
       line-height: 150%;
     }
   }
@@ -176,8 +175,8 @@
 
   @include media-breakpoint-up(desktop) {
     p {
-      font-size: 1vw;
-      line-height: 1.3vw;
+      font-size: 2vh;
+      line-height: 130%;
     }
 
     &:hover {
@@ -196,17 +195,42 @@
   %desc-visible & {
     display: flex;
   }
-  
+
   button {
     min-height: 52px;
     pointer-events: all;
   }
+
+  %exhibit-description-hand & {
+    position: absolute;
+    bottom: 0;
+    width: calc(100% - 60px);
+    margin: auto 0 0;
+    padding: 20px 0 30px;
+    background-color: $blue-100;
+  }
+
+  @include media-breakpoint-up(tablet) {
+    margin: 48px 0 0;
+
+    %exhibit-description-hand & {
+      position: unset;
+      margin: 48px 0 0;
+      padding: 0;
+      background-color: transparent;
+    }
+  }
 }
 
 .exhibit-description__direction-control {
+  position: absolute;
+  bottom: 0;
   display: flex;
   align-items: center;
+  width: calc(100% - 60px);
   margin: auto 0 0;
+  padding: 20px 0 30px;
+  background-color: $blue-100;
 
   button {
     width: 52px;
@@ -217,6 +241,7 @@
     background-color: transparent;
     border: none;
     border-radius: 50%;
+    transform: rotate(90deg);
     cursor: pointer;
     transition: 0.2s;
     pointer-events: all;
@@ -227,7 +252,7 @@
 
     &:nth-child(2) {
       margin: 0 auto 0 20px;
-      transform: rotate(180deg);
+      transform: rotate(270deg);
     }
 
     &:active {
@@ -253,6 +278,7 @@
 
   @include media-breakpoint-up(desktop) {
     display: none;
+    background-color: transparent;
 
     %exhibit-description-hand & {
       display: none;

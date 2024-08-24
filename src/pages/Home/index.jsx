@@ -28,6 +28,7 @@ export const Home = () => {
     return (
       <group
         ref={renderFigures}
+        position={isDesktop ? [0, 0, 0] : [-6, 0, -1]}
         rotation={
           isDesktop ? [0, -Math.PI * 0.539, 0] : [0, -Math.PI * 0.55, 0]
         }

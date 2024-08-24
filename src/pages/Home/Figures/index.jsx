@@ -20,6 +20,7 @@ import { activeRoomKeys } from 'src/recoil/atoms/activeRoom';
 import { Text, useHelper } from '@react-three/drei';
 import { DirectionalLightHelper } from 'three';
 import { useKTX2Loader } from 'src/hooks/useKTX2Loader';
+import { useFrame } from '@react-three/fiber';
 
 export const Figures = () => {
   const dirLight = useRef(null);
@@ -62,13 +63,6 @@ export const Figures = () => {
     });
   }, []);
 
-  useEffect(() => {
-    if (homeModel) {
-      const homeTitle = document.querySelector('.home-title');
-      homeTitle?.classList.remove('home-title--blurred');
-    }
-  }, [homeModel]);
-
   useLayoutEffect(() => {
     window.addEventListener('touchmove', slideToRoom);
 
@@ -76,6 +70,16 @@ export const Figures = () => {
       window.removeEventListener('touchmove', slideToRoom);
     };
   }, [slideToRoom]);
+
+  useFrame(() => {
+    if (homeModel) {
+      const homeTitle = document.querySelector('.home-title');
+      if (homeTitle?.classList.contains('home-title--blurred')) {
+        console.log('BLURED', homeTitle);
+        homeTitle?.classList.remove('home-title--blurred');
+      }
+    }
+  });
 
   return (
     <group
@@ -94,33 +98,33 @@ export const Figures = () => {
       />
       <BackPlane />
       <Text
-        maxWidth={isDesktop ? 4.5 : 3.5}
+        maxWidth={isDesktop ? 4.5 : 1.5}
         textAlign="center"
         // whiteSpace="overflowWrap"
-        position={[-5.5, 1.3, 0.2]}
+        position={isDesktop ? [-5.5, 1.3, 0.2] : [-4, 2.4, 0.2]}
         // rotation={item.rotation}
         anchorX="center"
         anchorY="middle"
         color="#4a5468"
         // key={item.key}
         font={'/fonts/Inter/Inter-Regular.woff'}
-        fontSize={0.17}
-        lineHeight={1.5}
+        fontSize={isDesktop ? 0.17 : 0.4}
+        lineHeight={isDesktop ? 1.5 : 1}
         children={'СТАРТ •'}
       />
       <Text
-        maxWidth={isDesktop ? 4.5 : 3.5}
+        maxWidth={isDesktop ? 4.5 : 1.5}
         textAlign="center"
         // whiteSpace="overflowWrap"
-        position={[5.2, -0.7, 0.2]}
+        position={isDesktop ? [5.2, -0.7, 0.2] : [3.7, -2.5, 0.2]}
         // rotation={item.rotation}
         anchorX="center"
         anchorY="middle"
         color="#4a5468"
         // key={item.key}
         font={'/fonts/Inter/Inter-Regular.woff'}
-        fontSize={0.17}
-        lineHeight={1.5}
+        fontSize={isDesktop ? 0.17 : 0.4}
+        lineHeight={isDesktop ? 1.5 : 1}
         children={'• ФИНИШ'}
       />
       {homeModel && (

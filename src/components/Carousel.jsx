@@ -25,6 +25,7 @@ export const Carousel = ({
       slidesPerGroup={1}
       slidesPerView={1}
       loop={false}
+      touchMoveStopPropagation
       modules={[Autoplay, Pagination, Navigation, EffectFade]}
       pagination={
         props.pagination && {
@@ -35,6 +36,8 @@ export const Carousel = ({
           //   bulletActiveClass: 'pagination-bullet--active',
         }
       }
+      allowTouchMove
+      grabCursor
       autoplay={
         props.autoplay && {
           delay: 4000,

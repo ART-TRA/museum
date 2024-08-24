@@ -567,6 +567,22 @@ export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
         name="hand"
         position={[83.289, 2.963, -34.818]}
         rotation={[Math.PI, -0.794, Math.PI]}
+        limits={[
+          EXHIBITS_TIME_COORDS.hand - 1,
+          EXHIBITS_TIME_COORDS.hand + 0.1,
+        ]}
+        clickAreaSize={1.3}
+        clickAreaPosition={[0, 0, 4.3]}
+        indicatorPosition={[0, 0, 5]}
+        onExhibitClick={() => {
+          if (!isExhibitActive) {
+            onExhibitClick(
+              exhibits.hand.name,
+              exhibits.hand.position,
+              exhibits.hand.quaternion
+            );
+          }
+        }}
       >
         <mesh
           name="Hand"

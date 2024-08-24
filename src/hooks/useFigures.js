@@ -8,9 +8,11 @@ import { hoveredKeys } from 'src/recoil/atoms/lastHoveredFigureValue';
 import { clickTransition } from 'src/recoil/atoms/clickTransition';
 import { setFadeTransition } from 'src/utils/setFadeTransition';
 import { blockedScrollAtom } from 'src/recoil/atoms/blockedScroll';
+import { tutorialVisibilityAtom } from 'src/recoil/atoms/tutorialVisibility';
 
 export const useFigures = () => {
   const setClickedTransition = useSetRecoilState(clickTransition);
+  const setTutorialOpen = useSetRecoilState(tutorialVisibilityAtom);
   const [activeScreen, setActiveScreen] = useRecoilState(activeScreenAtom);
   const setActiveRoom = useSetRecoilState(activeRoomAtom);
   const oneClickLimit = useRef(true);
@@ -52,6 +54,7 @@ export const useFigures = () => {
       setClickedTransition(true);
       document.body.style.cursor = 'auto';
       oneClickLimit.current = false;
+      setTutorialOpen(true);
       if (scale) {
         groupRef.current.traverse((child) => {
           if (child.isMesh && child.name !== event.object.name) {

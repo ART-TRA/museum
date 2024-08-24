@@ -57,7 +57,7 @@
   &--faded {
     @extend %overlay-faded;
 
-    background-color: $blue-100;
+    background-color: $blue-200;
   }
 
   & h1 {
@@ -96,8 +96,6 @@
   background-color: transparent;
   border: 1px solid #fff;
   border-radius: 20px;
-
-  //cursor: pointer;
   transition: 0.2s;
   pointer-events: none;
 
@@ -141,8 +139,6 @@
   background-color: #fff;
   border: 0;
   border-radius: 50%;
-
-  //cursor: pointer;
   transition: 0.2s;
   pointer-events: all;
 

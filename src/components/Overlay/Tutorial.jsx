@@ -5,9 +5,10 @@ import mask from '/images/mask.png';
 import tutorialVideo1 from './tutorial1.json';
 import tutorialVideo2 from './tutorial2.json';
 import lottie from 'lottie-web';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { activeScreenAtom } from 'src/recoil/atoms/activeScreen';
 import cn from 'classnames';
+import { tutorialVisibilityAtom } from 'src/recoil/atoms/tutorialVisibility';
 
 const tutorialData = [
   {
@@ -22,7 +23,6 @@ const tutorialData = [
 
 const TutorialSlide = ({ data }) => {
   const ref = useRef();
-  // const animation = useRef();
 
   useLayoutEffect(() => {
     const instance = lottie.loadAnimation({
@@ -38,7 +38,10 @@ const TutorialSlide = ({ data }) => {
   }, []);
 
   return (
-    <div className="carousel__slide">
+    <div
+      className="carousel__slide"
+      onPointerMove={(event) => event.stopPropagation()}
+    >
       <div className="carousel__slide-img-wrap">
         <img src={mask} alt="mask" className="carousel__slide-mask" />
         <div ref={ref} />
@@ -54,6 +57,7 @@ const TutorialSlide = ({ data }) => {
 
 export const Tutorial = () => {
   const [open, setOpen] = useState(false);
+  const setTutorialOpen = useSetRecoilState(tutorialVisibilityAtom);
   const activeScreen = useRecoilValue(activeScreenAtom);
   const tutorialClassNames = cn('tutorial', {
     'tutorial--visible': open,
@@ -61,6 +65,7 @@ export const Tutorial = () => {
 
   const onExitFromTutorial = (event) => {
     setOpen(false);
+    setTutorialOpen(false);
   };
 
   useEffect(() => {
@@ -74,10 +79,7 @@ export const Tutorial = () => {
   if (activeScreen === 'room') {
     return (
       <div className={tutorialClassNames}>
-        <div
-          className="tutorial__content"
-          onTouchMove={(event) => event.stopPropagation()}
-        >
+        <div className="tutorial__content">
           <button
             type="button"
             className="tutorial__close"
@@ -86,19 +88,21 @@ export const Tutorial = () => {
             <Cross />
           </button>
           <Carousel
-            allowTouchMove
-            grabCursor
             pagination
             // autoplay
             elements={tutorialData}
             slide={TutorialSlide}
-            spaceBetween={8}
-            slidesPerView={1}
           />
         </div>
         <button
           type="button"
           className="tutorial__background-close"
+          onPointerMove={(event) => {
+            event.stopPropagation();
+          }}
+          onTouchMove={(event) => {
+            event.stopPropagation();
+          }}
           onClick={(event) => onExitFromTutorial(event)}
         />
       </div>

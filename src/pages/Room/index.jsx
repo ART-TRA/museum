@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
@@ -31,11 +31,13 @@ import { EXHIBITS_TIME_COORDS, useExhibits } from 'src/hooks/useExhibits';
 import { easing } from 'maath';
 import gsap from 'gsap';
 import { CustomEase } from 'gsap/CustomEase';
+import { tutorialVisibilityAtom } from 'src/recoil/atoms/tutorialVisibility';
 gsap.registerPlugin(CustomEase);
 
 export const Room = () => {
   const renderRoom = useRef();
   const { defineSwipeDirection, detectTrackpad } = useTouch();
+  const tutorialOpen = useRecoilValue(tutorialVisibilityAtom);
   const { isDesktop } = useResize();
   const { loadTexture } = useKTX2Loader();
   const model = useGLTF('models/model.glb', true);
@@ -109,15 +111,15 @@ export const Room = () => {
     [exhibitsDirections, setExhibitActive]
   );
 
-  const showHandDescription = () => {
-    if (mixer.current.time === EXHIBITS_TIME_COORDS.hand) {
-      setExhibitActive('hand');
-      exhibitOnObserve.current = {
-        position: exhibits.hand.position,
-        quaternion: exhibits.hand.quaternion,
-      };
-    }
-  };
+  // const showHandDescription = () => {
+  //   if (mixer.current.time === EXHIBITS_TIME_COORDS.hand) {
+  //     setExhibitActive('hand');
+  //     exhibitOnObserve.current = {
+  //       position: exhibits.hand.position,
+  //       quaternion: exhibits.hand.quaternion,
+  //     };
+  //   }
+  // };
 
   const changeActiveRoom = (event) => {
     timeline.current?.pause();
@@ -242,6 +244,7 @@ export const Room = () => {
         eventDirection = 'down';
       }
       if (
+        !tutorialOpen &&
         moveDirection.current !== eventDirection &&
         (!exhibitOnObserve.current ||
           JSON.stringify(exhibitOnObserve.current?.position) ===
@@ -267,15 +270,15 @@ export const Room = () => {
             }
           }
 
-          if (
-            exhibitActive === 'hand' ||
-            mixer.current.time === EXHIBITS_TIME_COORDS.hand
-          ) {
-            setExhibitActive(null);
-            exhibitOnObserve.current = null;
-            tempTime = EXHIBITS_TIME_COORDS.doll;
-            // setRoomDuration(mixer.current?.time);
-          }
+          // if (
+          //   exhibitActive === 'hand' ||
+          //   mixer.current.time === EXHIBITS_TIME_COORDS.hand
+          // ) {
+          //   setExhibitActive(null);
+          //   exhibitOnObserve.current = null;
+          //   tempTime = EXHIBITS_TIME_COORDS.doll;
+          //   // setRoomDuration(mixer.current?.time);
+          // }
         }
 
         if (mixer.current.time !== tempTime) {
@@ -289,7 +292,7 @@ export const Room = () => {
         }
       }
     },
-    [mixer.current.time, exhibitActive]
+    [mixer.current.time, exhibitActive, tutorialOpen]
   );
 
   const resetCameraDirectionMove = () => {
@@ -395,11 +398,11 @@ export const Room = () => {
     });
   }, [model.nodes]);
 
-  useEffect(() => {
-    showHandDescription();
-  }, [roomDuration]);
+  // useEffect(() => {
+  //   showHandDescription();
+  // }, [roomDuration]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     window.addEventListener('onChangeActiveRoom', changeActiveRoom);
     window.addEventListener('onExitFromDescription', onExitFromDescription);
     window.addEventListener('onChangeActiveExhibit', onChangeActiveExhibit);
@@ -427,7 +430,7 @@ export const Room = () => {
         });
       }
     };
-  }, [exhibitActive]);
+  }, [exhibitActive, tutorialOpen]);
 
   useFrame((state, delta) => {
     renderRoom.current.visible = activeScreen === 'room';

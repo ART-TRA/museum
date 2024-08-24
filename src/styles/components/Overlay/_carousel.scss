@@ -11,6 +11,7 @@
   overflow: hidden;
   background-color: $blue-100;
   border-radius: 10px 10px 0 0;
+  pointer-events: none;
 
   p {
     margin: 0;
