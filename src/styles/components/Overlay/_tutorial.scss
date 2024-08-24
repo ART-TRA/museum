@@ -11,7 +11,7 @@
   transform: translate(-50%, -50%);
   visibility: hidden;
   opacity: 0;
-  transition: visibility, opacity 0.3s;
+  transition: visibility, opacity 0.5s;
 
   &--visible {
     @extend %tutorial-visible;

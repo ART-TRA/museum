@@ -1,5 +1,6 @@
 import React from 'react';
 import { WallTitles } from 'src/pages/Room/WallTitles';
+import * as THREE from 'three';
 
 export const Walls = ({ nodes, rootRef }) => {
   return (
@@ -35,6 +36,14 @@ export const Walls = ({ nodes, rootRef }) => {
         position={[52.797, 0.207, 0.163]}
         geometry={nodes.WALL_11.geometry}
       />
+      <mesh position={[80.62, 2.9, -37.1]} rotation={[0, Math.PI * 0.25, 0]}>
+        <meshStandardMaterial
+          color={'#485265'}
+          side={THREE.DoubleSide}
+          toneMapped={false}
+        />
+        <planeGeometry args={[3, 2]} />
+      </mesh>
     </group>
   );
 };

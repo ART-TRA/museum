@@ -9,17 +9,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { activeScreenAtom } from 'src/recoil/atoms/activeScreen';
 import cn from 'classnames';
 import { tutorialVisibilityAtom } from 'src/recoil/atoms/tutorialVisibility';
-
-const tutorialData = [
-  {
-    title: 'Скролльте чтобы <br /> перемещаться по музею',
-    src: tutorialVideo1,
-  },
-  {
-    title: 'Кликайте на экспонаты чтобы <br /> узнать о них подробнее',
-    src: tutorialVideo2,
-  },
-];
+import { useResize } from 'src/hooks/useResize';
 
 const TutorialSlide = ({ data }) => {
   const ref = useRef();
@@ -56,12 +46,28 @@ const TutorialSlide = ({ data }) => {
 };
 
 export const Tutorial = () => {
+  const { isDesktop } = useResize();
   const [open, setOpen] = useState(false);
   const setTutorialOpen = useSetRecoilState(tutorialVisibilityAtom);
   const activeScreen = useRecoilValue(activeScreenAtom);
   const tutorialClassNames = cn('tutorial', {
     'tutorial--visible': open,
   });
+
+  const getTutorialData = () => {
+    return [
+      {
+        title: `${
+          isDesktop ? 'Скролльте' : 'Свайпайте'
+        }, чтобы <br /> перемещаться по музею`,
+        src: tutorialVideo1,
+      },
+      {
+        title: 'Нажимайте на экспонаты, чтобы <br /> узнать о них подробнее',
+        src: tutorialVideo2,
+      },
+    ];
+  };
 
   const onExitFromTutorial = (event) => {
     setOpen(false);
@@ -90,7 +96,7 @@ export const Tutorial = () => {
           <Carousel
             pagination
             // autoplay
-            elements={tutorialData}
+            elements={getTutorialData()}
             slide={TutorialSlide}
           />
         </div>

@@ -39,8 +39,8 @@ export const useExhibits = () => {
       name: 'boots',
       cameraTime: EXHIBITS_TIME_COORDS.boots,
       position: isDesktop
-        ? new THREE.Vector3(-26.983 + viewport.width * 0.003, 0.89, -6)
-        : new THREE.Vector3(-27.6 + viewport.width * 0.003, 0.89, -5),
+        ? new THREE.Vector3(-27 + viewport.width * 0.003, 0.89, -6.4)
+        : new THREE.Vector3(-27.25 + viewport.width * 0.003, 0.89, -6.6),
       quaternion: new THREE.Quaternion().setFromAxisAngle(
         new THREE.Vector3(0, 0.15, 0),
         -Math.PI * 0.4
@@ -50,38 +50,32 @@ export const useExhibits = () => {
       name: 'cups',
       cameraTime: EXHIBITS_TIME_COORDS.cups,
       position: isDesktop
-        ? new THREE.Vector3(-34, 0.93, 7.955)
-        : new THREE.Vector3(-33.5, 0.93, 8.4),
-      quaternion: new THREE.Quaternion().setFromAxisAngle(
-        new THREE.Vector3(0, 1, 0),
-        Math.PI * 0.445 - viewport.width * 0.002
-      ),
+        ? new THREE.Vector3(-34.4, 1.25, 7.7)
+        : new THREE.Vector3(-34, 1.3, 7.99),
+      quaternion: new THREE.Quaternion(-0.05, 0.5, 0.05, 0.5),
     },
     bed: {
       name: 'bed',
       cameraTime: EXHIBITS_TIME_COORDS.bed,
       position: isDesktop
-        ? new THREE.Vector3(-23.25, 0.7, 13.3)
-        : new THREE.Vector3(-21.8, 1.2, 10.3),
-      quaternion: new THREE.Quaternion().setFromAxisAngle(
-        new THREE.Vector3(0, 1, 0),
-        Math.PI
-      ),
+        ? new THREE.Vector3(-23, 2.2, 14)
+        : new THREE.Vector3(-21.8, 2.3, 11.8),
+      quaternion: new THREE.Quaternion(0, 0.7, 0.1, 0),
     },
     cubes: {
       name: 'cubes',
       cameraTime: EXHIBITS_TIME_COORDS.cubes,
       position: isDesktop
-        ? new THREE.Vector3(-0.338 + viewport.width * 0.053, 0.8, 4)
-        : new THREE.Vector3(-0.35, 0.8, 4),
-      quaternion: new THREE.Quaternion(0, 0, 0, 1),
+        ? new THREE.Vector3(0.35, 1.4, 2.5)
+        : new THREE.Vector3(-0.35, 1.4, 3.5),
+      quaternion: new THREE.Quaternion(-0.05, 0, 0, 0.5),
     },
     art: {
       name: 'art',
       cameraTime: EXHIBITS_TIME_COORDS.childArt,
       position: isDesktop
         ? new THREE.Vector3(13.8 - viewport.width * 0.051, 1.6, 8)
-        : new THREE.Vector3(14.2 - viewport.width * 0.051, 1.6, 7),
+        : new THREE.Vector3(14.2 - viewport.width * 0.051, 1.3, 7),
       quaternion: new THREE.Quaternion().setFromAxisAngle(
         new THREE.Vector3(0, 1, 0),
         Math.PI
@@ -92,7 +86,7 @@ export const useExhibits = () => {
       cameraTime: EXHIBITS_TIME_COORDS.xylophone,
       position: isDesktop
         ? new THREE.Vector3(24.43 + viewport.width * 0.0015, 1.8, 2)
-        : new THREE.Vector3(23.36 + viewport.width * 0.0015, 1.8, 2),
+        : new THREE.Vector3(23.36 + viewport.width * 0.0015, 1.43, 2),
       quaternion: new THREE.Quaternion().setFromAxisAngle(
         new THREE.Vector3(0, 1, 0),
         -Math.PI * 0.13
@@ -103,7 +97,7 @@ export const useExhibits = () => {
       cameraTime: EXHIBITS_TIME_COORDS.diary,
       position: isDesktop
         ? new THREE.Vector3(46.5 - viewport.width * 0.0045, 1.45, 32.2)
-        : new THREE.Vector3(46.98 - viewport.width * 0.0045, 1.45, 31.76),
+        : new THREE.Vector3(46.98 - viewport.width * 0.0045, 1.35, 31.76),
       quaternion: new THREE.Quaternion().setFromAxisAngle(
         new THREE.Vector3(0, 1, 0),
         Math.PI * 0.86
@@ -114,7 +108,7 @@ export const useExhibits = () => {
       cameraTime: EXHIBITS_TIME_COORDS.collage,
       position: isDesktop
         ? new THREE.Vector3(64, 1.7, 27.6)
-        : new THREE.Vector3(64, 1.7, 26.2),
+        : new THREE.Vector3(64, 1.5, 26.2),
       quaternion: new THREE.Quaternion().setFromAxisAngle(
         new THREE.Vector3(0, 1, 0),
         Math.PI * 1.19
@@ -125,7 +119,7 @@ export const useExhibits = () => {
       cameraTime: EXHIBITS_TIME_COORDS.christmasBall,
       position: isDesktop
         ? new THREE.Vector3(59.6, 1.45, 4.2)
-        : new THREE.Vector3(60.3, 1.45, 4.2),
+        : new THREE.Vector3(60.3, 1.35, 4.2),
       quaternion: new THREE.Quaternion().setFromAxisAngle(
         new THREE.Vector3(0, 1, 0),
         Math.PI * 0.6
@@ -136,7 +130,7 @@ export const useExhibits = () => {
       cameraTime: EXHIBITS_TIME_COORDS.bowTie,
       position: isDesktop
         ? new THREE.Vector3(56.7, 1.6, -12.14)
-        : new THREE.Vector3(57.1, 1.6, -11.3),
+        : new THREE.Vector3(56.66, 1.5, -11.8),
       quaternion: new THREE.Quaternion().setFromAxisAngle(
         new THREE.Vector3(0, 1, 0),
         Math.PI * 0.24
@@ -147,7 +141,7 @@ export const useExhibits = () => {
       cameraTime: EXHIBITS_TIME_COORDS.storageRoom,
       position: isDesktop
         ? new THREE.Vector3(62.2, 0.56, -41.8)
-        : new THREE.Vector3(61.5, 0.56, -41.8),
+        : new THREE.Vector3(61.5, 0.36, -41.8),
       quaternion: new THREE.Quaternion().setFromAxisAngle(
         new THREE.Vector3(0, 1, 0),
         Math.PI * 0.1
@@ -158,7 +152,7 @@ export const useExhibits = () => {
       cameraTime: EXHIBITS_TIME_COORDS.bear,
       position: isDesktop
         ? new THREE.Vector3(47.7, 0.96, -39)
-        : new THREE.Vector3(47.9, 0.96, -38.77),
+        : new THREE.Vector3(48.14, 0.82, -38.95),
       quaternion: new THREE.Quaternion().setFromAxisAngle(
         new THREE.Vector3(0, 1, 0),
         Math.PI * 0.7
@@ -168,10 +162,10 @@ export const useExhibits = () => {
       name: 'car',
       cameraTime: EXHIBITS_TIME_COORDS.truck,
       position: isDesktop
-        ? new THREE.Vector3(49.95, 0.5, -56.4)
-        : new THREE.Vector3(49.95, 0.5, -55.85),
+        ? new THREE.Vector3(49.6, 0.7, -56.4)
+        : new THREE.Vector3(49.6, 0.7, -55.85),
       quaternion: new THREE.Quaternion().setFromAxisAngle(
-        new THREE.Vector3(0, 1, 0),
+        new THREE.Vector3(-0.2, 0.8, 0.1),
         Math.PI * 0.23
       ),
     },
@@ -180,7 +174,7 @@ export const useExhibits = () => {
       cameraTime: EXHIBITS_TIME_COORDS.doll,
       position: isDesktop
         ? new THREE.Vector3(66.9, 1.02, -56.4)
-        : new THREE.Vector3(66.6, 1.02, -56.45),
+        : new THREE.Vector3(66.6, 0.94, -56.45),
       quaternion: new THREE.Quaternion().setFromAxisAngle(
         new THREE.Vector3(0, 1, 0),
         -Math.PI * 0.3
@@ -191,7 +185,7 @@ export const useExhibits = () => {
       cameraTime: EXHIBITS_TIME_COORDS.hand,
       position: isDesktop
         ? new THREE.Vector3(76.8, 2.963, -41.2)
-        : new THREE.Vector3(76.5, 2.963, -43.1),
+        : new THREE.Vector3(76.32, 2.5, -43.3),
       quaternion: new THREE.Quaternion().setFromAxisAngle(
         new THREE.Vector3(0, 1, 0),
         -Math.PI * 0.8
