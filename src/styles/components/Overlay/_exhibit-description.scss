@@ -332,37 +332,39 @@
 }
 
 .exhibit-description__close {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  width: 42px;
-  height: 42px;
-  margin: 0;
-  padding: 0;
-  background-color: transparent;
-  border: 0;
-  cursor: pointer;
-  opacity: 0;
-  transition: 0.3s;
-  pointer-events: all;
-
-  svg {
-    color: $blue-500;
-  }
+  display: none;
 
   %desc-visible & {
-    opacity: 1;
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    display: block;
+    width: 42px;
+    height: 42px;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+    transition: 0.3s;
+    pointer-events: all;
+
+    svg {
+      color: $blue-500;
+    }
   }
 
   @include media-breakpoint-up(desktop) {
-    top: calc(5vh + (62px - 42px) / 2);
-    right: 5vh;
+    %desc-visible & {
+      top: calc(5vh + (62px - 42px) / 2);
+      right: 5vh;
 
-    &:hover {
-      transform: rotate(90deg);
+      &:hover {
+        transform: rotate(90deg);
 
-      svg {
-        color: $blue-300;
+        svg {
+          color: $blue-300;
+        }
       }
     }
   }
@@ -488,6 +490,7 @@
   z-index: 1;
   width: calc(100vh - 75px - 17vh);
   height: calc(40vw - 16vw);
+  background-color: $blue-100;
   transform: rotate(90deg);
   opacity: 0;
   pointer-events: none;
@@ -497,6 +500,7 @@
   }
 
   &--visible {
+    background-color: transparent;
     opacity: 1;
   }
 }
