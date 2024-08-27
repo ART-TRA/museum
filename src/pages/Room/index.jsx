@@ -167,74 +167,6 @@ export const Room = () => {
     setRoomDuration(mixer.current?.time);
   }, [activeRoom, setActiveRoom, setRoomDuration, roomDuration]);
 
-  // const onRoomObserve = useCallback(
-  //   (event) => {
-  //     if (
-  //       activeScreen === 'room' &&
-  //       !exhibitActive &&
-  //       frameDelta.current >= 140
-  //     ) {
-  //       if (exhibitOnObserve.current) exhibitOnObserve.current = null;
-  //       if (mixer.current.time < 0) mixer.current.update(0);
-  //       if (mixer.current.time >= 0) {
-  //         if (
-  //           swipeDirection === 'down' &&
-  //           mixer.current.time <= 85 - TOUCH_SPEED_X10
-  //         ) {
-  //           showLastDescription(
-  //             85 - TOUCH_SPEED_X10,
-  //             85 - TOUCH_SPEED_X10 - 0.1,
-  //             'swipe'
-  //           );
-  //           mixer.current.update(TOUCH_SPEED_X10);
-  //         }
-  //
-  //         if (swipeDirection === 'up') {
-  //           if (mixer.current.time >= TOUCH_SPEED_X10) {
-  //             mixer.current.update(-TOUCH_SPEED_X10);
-  //           } else {
-  //             mixer.current.update(-mixer.current.time + 0.001);
-  //           }
-  //         }
-  //
-  //         if (detectTrackpad(event)) {
-  //           if (event.deltaY > 0) {
-  //             mixer.current.update(TOUCH_SPEED);
-  //             if (mixer.current.time > 84) {
-  //               mixer.current.time = 84;
-  //             }
-  //           } else {
-  //             if (mixer.current?.time >= TOUCH_SPEED) {
-  //               mixer.current.update(-TOUCH_SPEED);
-  //             }
-  //           }
-  //         } else {
-  //           let speedModifier = 1;
-  //           if (Math.abs(event.deltaY) <= 30) {
-  //             speedModifier = 0.25;
-  //           }
-  //           if (event.deltaY > 0) {
-  //             mixer.current.update(SCROLL_SPEED * speedModifier);
-  //
-  //             if (mixer.current.time > 84) {
-  //               mixer.current.time = 84;
-  //             }
-  //           } else {
-  //             if (mixer.current?.time >= SCROLL_SPEED) {
-  //               mixer.current.update(-SCROLL_SPEED * speedModifier);
-  //             }
-  //           }
-  //         }
-  //         if (event.deltaY) {
-  //           showLastDescription(84, 84, 'all');
-  //         }
-  //         // updateActiveRoom();
-  //       }
-  //     }
-  //   },
-  //   [activeScreen, activeRoom, swipeDirection, exhibitActive, roomDuration]
-  // );
-
   const onCameraPositionUpdate = useCallback(
     (event, touchDirection) => {
       let eventDirection = null;
@@ -243,8 +175,17 @@ export const Room = () => {
       } else if (event.deltaY < 0 || touchDirection === 'down') {
         eventDirection = 'down';
       }
+
+      if (detectTrackpad(event)) {
+        if (event.deltaY > 0.1) {
+          eventDirection = 'up';
+        } else if (event.deltaY < -0.1) {
+          eventDirection = 'down';
+        }
+      }
       if (
         !tutorialOpen &&
+        eventDirection &&
         moveDirection.current !== eventDirection &&
         (!exhibitOnObserve.current ||
           JSON.stringify(exhibitOnObserve.current?.position) ===
