@@ -10,7 +10,7 @@
   background-color: $blue-99;
   opacity: 1;
   backdrop-filter: blur(25px);
-  transition: 0.4s;
+  transition: opacity 1.4s;
 
   &--blurred {
     backdrop-filter: blur(480px);

@@ -445,11 +445,11 @@ export const Room = () => {
       if (exhibitOnObserve.current) {
         state.camera.position.lerp(
           exhibitOnObserve.current?.position,
-          SCROLL_MODIFIER + 0.02
+          SCROLL_MODIFIER + 0.09
         );
         state.camera.quaternion.slerp(
           exhibitOnObserve.current?.quaternion,
-          SCROLL_MODIFIER + 0.02
+          SCROLL_MODIFIER + 0.09
         );
       } else {
         // easing.damp3(

@@ -7,9 +7,10 @@ import { activeScreenAtom } from 'src/recoil/atoms/activeScreen';
 import { useResize } from 'src/hooks/useResize';
 import { useTouch } from 'src/hooks/useTouch';
 import { Arrow } from 'src/icons/Arrow';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Share2 } from 'src/icons/Share2';
 import { CopyIcon } from 'src/icons/Copy';
+import gsap from 'gsap';
 
 const SHARE_DATA = {
   title: 'Отказники',
@@ -91,6 +92,7 @@ const ExhibitShareControl = () => {
 
 const ExhibitDirectionControl = ({ setExpanded }) => {
   const [exhibitActive] = useRecoilState(activeExhibitAtom);
+  const { isPhone } = useResize();
 
   const onDirectionClick = (event, direction) => {
     event.stopPropagation();
@@ -103,7 +105,7 @@ const ExhibitDirectionControl = ({ setExpanded }) => {
     );
   };
 
-  if (exhibitActive !== 'hand') {
+  if (!(isPhone && exhibitActive === 'hand')) {
     return (
       <div className="exhibit-description__direction-control">
         <button
@@ -133,11 +135,15 @@ const ExhibitDescriptionInner = () => {
   const exhibits = useExhibitsDescriptions();
   const [exhibitActive, setExhibitActive] = useRecoilState(activeExhibitAtom);
   const [isExpanded, setExpanded] = useState(false);
+  let timeline = useRef(null);
 
   const classNames = cn('exhibit-description', {
     'exhibit-description--visible': exhibitActive,
     'exhibit-description--expanded': isExpanded || !isPhone,
     'exhibit-description--hand': exhibitActive === 'hand',
+  });
+  const maskClassNames = cn('exhibit-description__mask', {
+    'exhibit-description__mask--visible': exhibitActive,
   });
 
   const onExpandDescription = (event, touchDirection) => {
@@ -164,6 +170,24 @@ const ExhibitDescriptionInner = () => {
     }, 200);
   };
 
+  useEffect(() => {
+    if (isDesktop && exhibitActive) {
+      timeline.current?.pause();
+      timeline.current = gsap
+        .timeline({ repeat: 0, repeatDelay: 0, yoyo: true })
+        .from(
+          '.m',
+          {
+            duration: (i) => [0.0, 1.0][i],
+            y: -10266,
+            ease: 'steps(29)',
+            stagger: 0.2,
+          },
+          0
+        );
+    }
+  }, [exhibitActive]);
+
   return (
     <div
       className={classNames}
@@ -171,6 +195,7 @@ const ExhibitDescriptionInner = () => {
         onExpandDescription(event, defineSwipeDirection(event))
       }
       onTouchStart={defineSwipeDirection}
+      onClick={() => setExpanded((prev) => !prev)}
     >
       <button
         type="button"
@@ -192,6 +217,56 @@ const ExhibitDescriptionInner = () => {
         </button>
       )}
       <div className="exhibit-description__body-wrap">
+        {isDesktop && exhibitActive && (
+          <div className={maskClassNames}>
+            <svg viewBox="0 0 630 352">
+              <mask id="m1">
+                <image
+                  className="m"
+                  xlinkHref="/images/liquidMask.svg"
+                  y="-1"
+                  width="630"
+                  height="10620"
+                />
+              </mask>
+              <mask id="m2">
+                <image
+                  className="m"
+                  xlinkHref="/images/liquidMask.svg"
+                  y="-1"
+                  width="630"
+                  height="10620"
+                />
+              </mask>
+              <image
+                mask="url(#m2)"
+                xlinkHref="/images/maskSvg.png"
+                // xlinkHref={
+                //   exhibitActive === 'hand'
+                //     ? '/images/maskSvgHand.png'
+                //     : '/images/maskSvg.png'
+                // }
+                width="932"
+                height="768"
+                // color="#fafbff"
+              />
+              <g mask="url(#m1)">
+                <image
+                  className="frog"
+                  xlinkHref="/images/maskSvg.png"
+                  // xlinkHref={
+                  //   exhibitActive === 'hand'
+                  //     ? '/images/maskSvgHand.png'
+                  //     : '/images/maskSvg.png'
+                  // }
+                  width="932"
+                  height="768"
+                  // color="#fafbff"
+                />
+              </g>
+            </svg>
+          </div>
+        )}
         <h2>{exhibits?.[exhibitActive]?.title}</h2>
         <div className="exhibit-description__body">
           {exhibits?.[exhibitActive]?.owner && (

@@ -38,6 +38,8 @@ export const Walls = ({ nodes, rootRef }) => {
       />
       <mesh position={[80.62, 2.9, -37.1]} rotation={[0, Math.PI * 0.25, 0]}>
         <meshStandardMaterial
+          transparent
+          opacity={0.7}
           color={'#485265'}
           side={THREE.DoubleSide}
           toneMapped={false}

@@ -84,7 +84,7 @@ export const Figures = () => {
   return (
     <group
       onWheel={slideToRoomByWheel}
-      position={isDesktop ? [0, 0, 0] : [0, -1, -17]}
+      position={isDesktop ? [0, 0, 0] : [0, 0.5, -17]}
       rotation={[-Math.PI * 0.05, 0, 0]}
       dispose={null}
     >
