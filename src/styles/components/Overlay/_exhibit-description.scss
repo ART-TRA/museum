@@ -121,6 +121,16 @@
 .exhibit-description__body-wrap {
   position: relative;
   height: 100%;
+
+  @include media-breakpoint-up(desktop) {
+    display: none;
+    opacity: 0;
+
+    &--visible {
+      display: block;
+      opacity: 1;
+    }
+  }
 }
 
 .exhibit-description__body {
@@ -492,7 +502,6 @@
   height: calc(40vw - 16vw);
   background-color: $blue-100;
   transform: rotate(90deg);
-  opacity: 0;
   pointer-events: none;
 
   svg {
@@ -501,6 +510,5 @@
 
   &--visible {
     background-color: transparent;
-    opacity: 1;
   }
 }

@@ -171,7 +171,13 @@ const ExhibitDescriptionInner = () => {
   };
 
   useEffect(() => {
+    const container = document.querySelector('.exhibit-description__body-wrap');
     if (isDesktop && exhibitActive) {
+      if (container) {
+        setTimeout(() => {
+          container.classList.add('exhibit-description__body-wrap--visible');
+        }, 300);
+      }
       timeline.current?.pause();
       timeline.current = gsap
         .timeline({ repeat: 0, repeatDelay: 0, yoyo: true })
@@ -185,6 +191,10 @@ const ExhibitDescriptionInner = () => {
           },
           0
         );
+    } else if (isDesktop) {
+      if (container) {
+        container.classList.remove('exhibit-description__body-wrap--visible');
+      }
     }
   }, [exhibitActive]);
 
@@ -241,29 +251,9 @@ const ExhibitDescriptionInner = () => {
               <image
                 mask="url(#m2)"
                 xlinkHref="/images/maskSvg.png"
-                // xlinkHref={
-                //   exhibitActive === 'hand'
-                //     ? '/images/maskSvgHand.png'
-                //     : '/images/maskSvg.png'
-                // }
                 width="932"
                 height="768"
-                // color="#fafbff"
               />
-              <g mask="url(#m1)">
-                <image
-                  className="frog"
-                  xlinkHref="/images/maskSvg.png"
-                  // xlinkHref={
-                  //   exhibitActive === 'hand'
-                  //     ? '/images/maskSvgHand.png'
-                  //     : '/images/maskSvg.png'
-                  // }
-                  width="932"
-                  height="768"
-                  // color="#fafbff"
-                />
-              </g>
             </svg>
           </div>
         )}
