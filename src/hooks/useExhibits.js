@@ -184,7 +184,7 @@ export const useExhibits = () => {
       name: 'hand',
       cameraTime: EXHIBITS_TIME_COORDS.hand,
       position: isDesktop
-        ? new THREE.Vector3(76.3, 2.963, -41.2)
+        ? new THREE.Vector3(76.8, 2.963, -41.2)
         : new THREE.Vector3(76.32, 2.5, -43.3),
       quaternion: new THREE.Quaternion().setFromAxisAngle(
         new THREE.Vector3(0, 1, 0),

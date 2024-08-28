@@ -9,7 +9,9 @@
   width: 100%;
   height: 240px;
   padding: 62px 30px 20px;
-  background-color: $blue-100;
+
+  // TEXT SPIRAL ANIMATION
+  // background-color: $blue-100;
   border-radius: 40px 40px 0 0;
   transform: translateY(100%);
   opacity: 0;
@@ -79,19 +81,19 @@
     height: 100%;
     padding: 17vh 8vw 75px;
     border-radius: 0;
+    transform: translateX(100%);
 
-    // transform: translateX(100%);
-
-    transform: translateX(0);
-    transition: 0.3s;
+    // TEXT SPIRAL ANIMATION
+    // transform: translateX(0);
+    // transition: 0.3s;
 
     &--visible {
       transform: translateX(0);
     }
 
     &--hand {
-      // z-index: 0;
-      // background-color: transparent !important;
+      z-index: 0;
+      background-color: transparent !important;
       transform: unset;
       transition: opacity 0.4s;
       transition-delay: 0.4s;
@@ -125,10 +127,16 @@
     display: none;
     opacity: 0;
 
-    &--visible {
+    %desc-visible & {
       display: block;
       opacity: 1;
     }
+
+    // TEXT SPIRAL ANIMATION
+    // &--visible {
+    //   display: block;
+    //   opacity: 1;
+    // }
   }
 }
 

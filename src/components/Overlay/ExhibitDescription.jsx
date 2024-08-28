@@ -135,15 +135,11 @@ const ExhibitDescriptionInner = () => {
   const exhibits = useExhibitsDescriptions();
   const [exhibitActive, setExhibitActive] = useRecoilState(activeExhibitAtom);
   const [isExpanded, setExpanded] = useState(false);
-  let timeline = useRef(null);
 
   const classNames = cn('exhibit-description', {
     'exhibit-description--visible': exhibitActive,
     'exhibit-description--expanded': isExpanded || !isPhone,
     'exhibit-description--hand': exhibitActive === 'hand',
-  });
-  const maskClassNames = cn('exhibit-description__mask', {
-    'exhibit-description__mask--visible': exhibitActive,
   });
 
   const onExpandDescription = (event, touchDirection) => {
@@ -170,33 +166,38 @@ const ExhibitDescriptionInner = () => {
     }, 200);
   };
 
-  useEffect(() => {
-    const container = document.querySelector('.exhibit-description__body-wrap');
-    if (isDesktop && exhibitActive) {
-      if (container) {
-        setTimeout(() => {
-          container.classList.add('exhibit-description__body-wrap--visible');
-        }, 300);
-      }
-      timeline.current?.pause();
-      timeline.current = gsap
-        .timeline({ repeat: 0, repeatDelay: 0, yoyo: true })
-        .from(
-          '.m',
-          {
-            duration: (i) => [0.0, 1.0][i],
-            y: -10266,
-            ease: 'steps(29)',
-            stagger: 0.2,
-          },
-          0
-        );
-    } else if (isDesktop) {
-      if (container) {
-        container.classList.remove('exhibit-description__body-wrap--visible');
-      }
-    }
-  }, [exhibitActive]);
+  //TEXT SPIRAL ANIMATION
+  // let timeline = useRef(null);
+  // const maskClassNames = cn('exhibit-description__mask', {
+  //   'exhibit-description__mask--visible': exhibitActive,
+  // });
+  // useEffect(() => {
+  //   const container = document.querySelector('.exhibit-description__body-wrap');
+  //   if (isDesktop && exhibitActive) {
+  //     if (container) {
+  //       setTimeout(() => {
+  //         container.classList.add('exhibit-description__body-wrap--visible');
+  //       }, 300);
+  //     }
+  //     timeline.current?.pause();
+  //     timeline.current = gsap
+  //       .timeline({ repeat: 0, repeatDelay: 0, yoyo: true })
+  //       .from(
+  //         '.m',
+  //         {
+  //           duration: (i) => [0.0, 1.0][i],
+  //           y: -10266,
+  //           ease: 'steps(29)',
+  //           stagger: 0.2,
+  //         },
+  //         0
+  //       );
+  //   } else if (isDesktop) {
+  //     if (container) {
+  //       container.classList.remove('exhibit-description__body-wrap--visible');
+  //     }
+  //   }
+  // }, [exhibitActive]);
 
   return (
     <div
@@ -227,36 +228,36 @@ const ExhibitDescriptionInner = () => {
         </button>
       )}
       <div className="exhibit-description__body-wrap">
-        {isDesktop && exhibitActive && (
-          <div className={maskClassNames}>
-            <svg viewBox="0 0 630 352">
-              <mask id="m1">
-                <image
-                  className="m"
-                  xlinkHref="/images/liquidMask.svg"
-                  y="-1"
-                  width="630"
-                  height="10620"
-                />
-              </mask>
-              <mask id="m2">
-                <image
-                  className="m"
-                  xlinkHref="/images/liquidMask.svg"
-                  y="-1"
-                  width="630"
-                  height="10620"
-                />
-              </mask>
-              <image
-                mask="url(#m2)"
-                xlinkHref="/images/maskSvg.png"
-                width="932"
-                height="768"
-              />
-            </svg>
-          </div>
-        )}
+        {/*{isDesktop && exhibitActive && (*/}
+        {/*  <div className={maskClassNames}>*/}
+        {/*    <svg viewBox="0 0 630 352">*/}
+        {/*      <mask id="m1">*/}
+        {/*        <image*/}
+        {/*          className="m"*/}
+        {/*          xlinkHref="/images/liquidMask.svg"*/}
+        {/*          y="-1"*/}
+        {/*          width="630"*/}
+        {/*          height="10620"*/}
+        {/*        />*/}
+        {/*      </mask>*/}
+        {/*      <mask id="m2">*/}
+        {/*        <image*/}
+        {/*          className="m"*/}
+        {/*          xlinkHref="/images/liquidMask.svg"*/}
+        {/*          y="-1"*/}
+        {/*          width="630"*/}
+        {/*          height="10620"*/}
+        {/*        />*/}
+        {/*      </mask>*/}
+        {/*      <image*/}
+        {/*        mask="url(#m2)"*/}
+        {/*        xlinkHref="/images/maskSvg.png"*/}
+        {/*        width="932"*/}
+        {/*        height="768"*/}
+        {/*      />*/}
+        {/*    </svg>*/}
+        {/*  </div>*/}
+        {/*)}*/}
         <h2>{exhibits?.[exhibitActive]?.title}</h2>
         <div className="exhibit-description__body">
           {exhibits?.[exhibitActive]?.owner && (

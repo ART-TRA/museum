@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { Cube } from 'src/pages/Home/Figures/Cube';
 import { Pyramid } from 'src/pages/Home/Figures/Pyramid';
 import { HalfTorus } from 'src/pages/Home/Figures/HalfTorus';
@@ -75,7 +69,6 @@ export const Figures = () => {
     if (homeModel) {
       const homeTitle = document.querySelector('.home-title');
       if (homeTitle?.classList.contains('home-title--blurred')) {
-        console.log('BLURED', homeTitle);
         homeTitle?.classList.remove('home-title--blurred');
       }
     }
