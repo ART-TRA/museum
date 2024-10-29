@@ -260,11 +260,6 @@ const ExhibitDescriptionInner = () => {
         {/*)}*/}
         <h2>{exhibits?.[exhibitActive]?.title}</h2>
         <div className="exhibit-description__body">
-          {exhibits?.[exhibitActive]?.owner && (
-            <h3>
-              ВЛАДЕЛЬЦЫ: <span>{exhibits?.[exhibitActive]?.owner}</span>
-            </h3>
-          )}
           <p
             dangerouslySetInnerHTML={{
               __html: exhibits?.[exhibitActive]?.description,
