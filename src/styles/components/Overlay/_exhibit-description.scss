@@ -202,7 +202,8 @@
     display: flex;
   }
 
-  button {
+  button,
+  a {
     min-height: 52px;
     pointer-events: all;
   }
@@ -404,6 +405,7 @@
   font-size: 14px;
   line-height: 20px;
   text-transform: uppercase;
+  text-decoration: none;
   background-color: #4a5468;
   border: 1px solid #4a5468;
   border-radius: 82px;

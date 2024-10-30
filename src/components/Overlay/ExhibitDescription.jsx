@@ -50,13 +50,15 @@ const ExhibitShareControl = () => {
   return (
     <div className="exhibit-description__share-control">
       {exhibitActive && exhibitActive === 'hand' && (
-        <button
-          type="button"
+        <a
           className="exhibit-description__help"
           onClick={onHelpClick}
+          href="https://otkazniki.ru"
+          target="_blank"
+          rel="noreferrer"
         >
           Помочь сиротам
-        </button>
+        </a>
       )}
       <button
         type="button"
