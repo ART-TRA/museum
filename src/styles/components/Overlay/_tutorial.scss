@@ -72,14 +72,17 @@
 }
 
 .tutorial__background-close {
+  position: absolute;
+  inset: calc(50% - 50dvh) 0 0 calc(50% - 50vw);
+  z-index: -1;
+  width: 100vw;
+  height: 100dvh;
+  padding: 0;
+  background-color: $blue-10;
+  border: none;
+  pointer-events: none;
+
   %tutorial-visible & {
-    position: absolute;
-    inset: calc(50% - 50dvh) 0 0 calc(50% - 50vw);
-    z-index: -1;
-    width: 100vw;
-    height: 100dvh;
-    padding: 0;
-    background-color: $blue-10;
-    border: none;
+    pointer-events: all;
   }
 }
