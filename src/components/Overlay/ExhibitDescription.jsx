@@ -140,7 +140,7 @@ const ExhibitDescriptionInner = () => {
 
   const classNames = cn('exhibit-description', {
     'exhibit-description--visible': exhibitActive,
-    'exhibit-description--expanded': isExpanded || !isPhone,
+    'exhibit-description--expanded': isExpanded || isDesktop,
     'exhibit-description--hand': exhibitActive === 'hand',
   });
 

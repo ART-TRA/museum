@@ -1,0 +1,40 @@
+@keyframes appear-img {
+  0% {
+    opacity: 0;
+  }
+  
+  100% {
+    opacity: 1;
+  }
+}
+
+.not-found {
+  position: relative;
+  height: 100svh;
+  background-color: $blue-100;
+
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    animation: appear-img 2s normal forwards;
+  }
+
+  a {
+    width: auto;
+    padding: 0 34px;
+  }
+
+  @include media-breakpoint-up(desktop) {
+    img {
+      left: 22%;
+      max-width: 56%;
+    }
+  }
+}
+
+.not-found__title {
+  background-color: unset;
+}

@@ -17,6 +17,7 @@ export const HalfTorus = ({ model, groupRef }) => {
       <mesh
         name="torus"
         {...model}
+        position-z={model.position.z + 0.4}
         onPointerEnter={(event) =>
           onFigureHover(event, activeRoomKeys[2], 'over', groupRef)
         }

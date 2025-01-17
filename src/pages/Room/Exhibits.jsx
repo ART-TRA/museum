@@ -480,6 +480,10 @@ export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
           }
         }}
       >
+        <mesh name="Bear_body_helper" position={[0.04, 1.13, -0.1]}>
+          <meshStandardMaterial color={'#6c5959'} />
+          <planeGeometry args={[0.09, 0.09]} />
+        </mesh>
         <mesh
           name="Bear_body"
           geometry={nodes.Bear_body.geometry}
@@ -487,7 +491,7 @@ export const Exhibits = ({ nodes, exhibitOnObserve, rootRef }) => {
           rotation={[Math.PI, -Math.PI / 4, Math.PI]}
         >
           <meshStandardMaterial
-            color={'#ffffff'}
+            color={'#6c5959'}
             // map={textures.exhibits.bear2}
             // aoMap={textures.exhibits.aoBear2}
             toneMapped={false}

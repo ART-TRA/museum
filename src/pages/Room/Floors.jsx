@@ -22,6 +22,14 @@ export const Floors = ({ nodes, rootRef }) => {
       {/*  />*/}
       {/*</mesh>*/}
       <mesh
+        name="floor_artifacts-helper"
+        position={[-44, -0.1, 8]}
+        rotation={[-Math.PI * 0.5, 0, 0]}
+      >
+        <meshStandardMaterial color={'#d7d7d7'} toneMapped={false} />
+        <planeGeometry args={[20, 20]} />
+      </mesh>
+      <mesh
         name="Floor_1_1"
         geometry={nodes.FLOOR_11.geometry}
         position={[-28.507, -0.001, 8.767]}

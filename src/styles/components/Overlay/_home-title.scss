@@ -45,7 +45,8 @@
     text-align: center;
   }
 
-  button {
+  button,
+  a {
     position: relative;
     display: flex;
     align-items: center;
@@ -54,6 +55,7 @@
     height: 52px;
     margin: 0 auto;
     padding: 0;
+    text-decoration: none;
     background-color: $blue-500;
     border: none;
     border-radius: 82px;
