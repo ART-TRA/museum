@@ -15,6 +15,7 @@ export const Walls = ({ nodes, rootRef }) => {
         name="Wall_1_9"
         position={[79.43, -0.001, -0.365]}
         geometry={nodes.WALL_19.geometry}
+        material-toneMapped={false}
       />
       <mesh name="Wall_1_8" geometry={nodes.WALL_18.geometry} />
       <mesh
