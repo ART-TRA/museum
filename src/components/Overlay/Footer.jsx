@@ -1,11 +1,9 @@
 import { useRecoilValue } from 'recoil';
-import React, { useRef } from 'react';
 import cn from 'classnames';
 import { AnimationDurationLine } from 'src/components/Overlay/DurationLine';
 import { SoundSwitch } from 'src/components/Overlay/SoundSwitch';
 import { activeExhibitAtom } from 'src/recoil/atoms/activeExhibit';
 import { activeRoomAtom, activeRoomNames } from 'src/recoil/atoms/activeRoom';
-import theme from '/sounds/ambient.mp3';
 import { useResize } from 'src/hooks/useResize';
 import { lastHoveredFigureValueAtom } from 'src/recoil/atoms/lastHoveredFigureValue';
 

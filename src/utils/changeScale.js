@@ -1,5 +1,4 @@
 import gsap from 'gsap';
-import * as THREE from 'three';
 
 export const changeScaleUp = (mesh, group) => {
   gsap.to(mesh?.scale, {
