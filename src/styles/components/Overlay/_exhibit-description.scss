@@ -134,7 +134,8 @@
   }
 
   %exhibit-description-expanded & {
-    height: auto;
+    height: calc(100% - 62px - 46px - 12px);
+    overflow: auto;
 
     &::after {
       opacity: 0;
@@ -246,6 +247,7 @@
     margin: 0;
     padding: 0;
     color: $blue-500;
+    overflow: hidden;
     background-color: transparent;
     border: none;
     border-radius: 50%;
@@ -330,6 +332,8 @@
 
 .exhibit-description__close {
   display: none;
+  overflow: hidden;
+  border-radius: 50%;
 
   %desc-visible & {
     position: absolute;
