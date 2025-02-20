@@ -6,17 +6,34 @@ import { useExhibitsDescriptions } from 'src/hooks/useExhibitsDescriptions';
 import { activeScreenAtom } from 'src/recoil/atoms/activeScreen';
 import { useResize } from 'src/hooks/useResize';
 import { useTouch } from 'src/hooks/useTouch';
-import { Arrow } from 'src/icons/Arrow';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { Share2 } from 'src/icons/Share2';
 import { CopyIcon } from 'src/icons/Copy';
-import gsap from 'gsap';
+import { ArrowNav } from 'src/icons/ArrowNav';
 
 const SHARE_DATA = {
   title: 'Отказники',
   text: 'Музей последнего детского дома',
   url: 'https://museum.scaph.ru/',
 };
+
+const EXHIBITS_NAMES = [
+  'boots',
+  'cups',
+  'bed',
+  'cubes',
+  'art',
+  'xylophone',
+  'diary',
+  'collage',
+  'bauble',
+  'bowTie',
+  'storageRoom',
+  'bear',
+  'car',
+  'doll',
+  'hand',
+];
 
 const ExhibitShareControl = () => {
   const [exhibitActive] = useRecoilState(activeExhibitAtom);
@@ -57,7 +74,7 @@ const ExhibitShareControl = () => {
           target="_blank"
           rel="noreferrer"
         >
-          Помочь сиротам
+          Помочь детям
         </a>
       )}
       <button
@@ -96,33 +113,49 @@ const ExhibitDirectionControl = ({ setExpanded }) => {
   const [exhibitActive] = useRecoilState(activeExhibitAtom);
   const { isPhone } = useResize();
 
-  const onDirectionClick = (event, direction) => {
+  const onDirectionClick = (event, direction, exhibitName) => {
     event.stopPropagation();
     setExpanded(false);
 
     window.dispatchEvent(
       new CustomEvent('onChangeActiveExhibit', {
-        detail: { name: exhibitActive, direction },
+        detail: { name: exhibitActive, direction, exhibitName },
       })
     );
   };
 
   if (!(isPhone && exhibitActive === 'hand')) {
     return (
-      <div className="exhibit-description__direction-control">
-        <button
-          type="button"
-          onClick={(event) => onDirectionClick(event, 'next')}
-          disabled={exhibitActive === 'hand'}
-        >
-          <Arrow />
-        </button>
+      <div className="exhibit-description__navigation">
         <button
           type="button"
           onClick={(event) => onDirectionClick(event, 'prev')}
           disabled={exhibitActive === 'boots'}
+          className="exhibit-description__navigation-prev"
         >
-          <Arrow />
+          <ArrowNav />
+        </button>
+        <div className="navigation-bullets__wrap">
+          <div className="navigation-bullets">
+            {EXHIBITS_NAMES.map((exhibit) => (
+              <button
+                key={exhibit}
+                type="button"
+                className={cn('navigation-bullet', {
+                  'navigation-bullet--active': exhibit === exhibitActive,
+                })}
+                onClick={(event) => onDirectionClick(event, null, exhibit)}
+              />
+            ))}
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={(event) => onDirectionClick(event, 'next')}
+          disabled={exhibitActive === 'hand'}
+          className="exhibit-description__navigation-next"
+        >
+          <ArrowNav />
         </button>
       </div>
     );

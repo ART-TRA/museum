@@ -10,7 +10,7 @@ export const hoveredKeys = {
 };
 
 export const hoveredValues = {
-  empty: 'скролльте <br /> или выберите объект',
+  empty: 'скрольте <br /> или выберите объект',
   same: 'Зал одинаковых вещей',
   talents: 'Зал талантов',
   dreams: 'Зал с мечтами и стремлениями',

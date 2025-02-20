@@ -10,7 +10,7 @@ export const Settings = () => {
         // enableZoom={false}
         // enableRotate={false}
       />
-      <Stats showPanel={0} className="stats" />
+      {/*<Stats showPanel={0} className="stats" />*/}
     </>
   );
 };

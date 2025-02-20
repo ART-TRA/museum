@@ -1,6 +1,4 @@
-import React from 'react';
-
-export const Cross = () => {
+export const Cross = ({ outline = true }) => {
   return (
     <svg
       width="42"
@@ -9,11 +7,13 @@ export const Cross = () => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path
-        opacity="0.11"
-        d="M21 42C9.40202 42 2.00186e-06 32.598 2.64685e-06 21C3.29183e-06 9.40202 9.40202 -1.81284e-06 21 -1.16785e-06C32.598 -5.22864e-07 42 9.40202 42 21C42 32.598 32.598 42 21 42Z"
-        fill="currentColor"
-      />
+      {outline && (
+        <path
+          opacity="0.11"
+          d="M21 42C9.40202 42 2.00186e-06 32.598 2.64685e-06 21C3.29183e-06 9.40202 9.40202 -1.81284e-06 21 -1.16785e-06C32.598 -5.22864e-07 42 9.40202 42 21C42 32.598 32.598 42 21 42Z"
+          fill="currentColor"
+        />
+      )}
       <path
         fillRule="evenodd"
         clipRule="evenodd"

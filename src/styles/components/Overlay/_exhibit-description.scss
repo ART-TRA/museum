@@ -81,7 +81,6 @@
       transform: unset;
       transition: opacity 0.4s;
       transition-delay: 0.4s;
-      pointer-events: none;
     }
 
     h2 {
@@ -246,8 +245,8 @@
     height: 52px;
     margin: 0;
     padding: 0;
-    color: $blue-500;
     overflow: hidden;
+    color: $blue-500;
     background-color: transparent;
     border: none;
     border-radius: 50%;

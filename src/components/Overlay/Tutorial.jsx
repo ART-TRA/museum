@@ -58,18 +58,20 @@ export const Tutorial = () => {
     return [
       {
         title: `${
-          isDesktop ? 'Скролльте' : 'Свайпайте'
-        }, чтобы <br /> перемещаться по музею`,
+          isDesktop
+            ? 'Скрольте для перемещения <br />по музею'
+            : 'Используйте вертикальный свайп <br />для перемещения по музею'
+        }`,
         src: tutorialVideo1,
       },
       {
-        title: 'Нажимайте на экспонаты, чтобы <br /> узнать о них подробнее',
+        title: 'Кликайте на экспонаты <br />для взаимодействия',
         src: tutorialVideo2,
       },
     ];
   };
 
-  const onExitFromTutorial = (event) => {
+  const onExitFromTutorial = () => {
     setOpen(false);
     setTutorialOpen(false);
   };

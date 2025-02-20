@@ -69,38 +69,53 @@ export const Room = () => {
     ({ detail }) => {
       setFadeTransition();
       setTimeout(() => {
-        if (
-          detail.direction === 'next' &&
-          exhibitsDirections[detail.name].next
-        ) {
+        if (detail.exhibitName) {
           gsap.to(mixer.current, {
-            time: exhibitsDirections[detail.name].next.cameraTime,
+            time: exhibits[detail.exhibitName].cameraTime,
             duration: 1,
             onUpdate: () => {
               mixer.current.setTime(mixer.current.time);
             },
           });
-          setExhibitActive(exhibitsDirections[detail.name].next.name);
+          setExhibitActive(detail.exhibitName);
           exhibitOnObserve.current = {
-            position: exhibitsDirections[detail.name].next.position,
-            quaternion: exhibitsDirections[detail.name].next.quaternion,
+            position: exhibits[detail.exhibitName].position,
+            quaternion: exhibits[detail.exhibitName].quaternion,
           };
-        } else if (
-          detail.direction === 'prev' &&
-          exhibitsDirections[detail.name].prev
-        ) {
-          gsap.to(mixer.current, {
-            time: exhibitsDirections[detail.name].prev.cameraTime,
-            duration: 1,
-            onUpdate: () => {
-              mixer.current.setTime(mixer.current.time);
-            },
-          });
-          setExhibitActive(exhibitsDirections[detail.name].prev.name);
-          exhibitOnObserve.current = {
-            position: exhibitsDirections[detail.name].prev.position,
-            quaternion: exhibitsDirections[detail.name].prev.quaternion,
-          };
+        } else {
+          if (
+            detail.direction === 'next' &&
+            exhibitsDirections[detail.name].next
+          ) {
+            gsap.to(mixer.current, {
+              time: exhibitsDirections[detail.name].next.cameraTime,
+              duration: 1,
+              onUpdate: () => {
+                mixer.current.setTime(mixer.current.time);
+              },
+            });
+            setExhibitActive(exhibitsDirections[detail.name].next.name);
+            exhibitOnObserve.current = {
+              position: exhibitsDirections[detail.name].next.position,
+              quaternion: exhibitsDirections[detail.name].next.quaternion,
+            };
+          } else if (
+            detail.direction === 'prev' &&
+            exhibitsDirections[detail.name].prev
+          ) {
+            gsap.to(mixer.current, {
+              time: exhibitsDirections[detail.name].prev.cameraTime,
+              duration: 1,
+              onUpdate: () => {
+                mixer.current.setTime(mixer.current.time);
+              },
+            });
+            setExhibitActive(exhibitsDirections[detail.name].prev.name);
+            exhibitOnObserve.current = {
+              position: exhibitsDirections[detail.name].prev.position,
+              quaternion: exhibitsDirections[detail.name].prev.quaternion,
+            };
+          }
         }
       }, 300);
 
@@ -344,32 +359,31 @@ export const Room = () => {
   // }, [roomDuration]);
 
   useEffect(() => {
-    window.addEventListener('onChangeActiveRoom', changeActiveRoom);
-    window.addEventListener('onExitFromDescription', onExitFromDescription);
-    window.addEventListener('onChangeActiveExhibit', onChangeActiveExhibit);
+    const abortController = new AbortController();
+    window.addEventListener('onChangeActiveRoom', changeActiveRoom, {
+      signal: abortController.signal,
+    });
+    window.addEventListener('onExitFromDescription', onExitFromDescription, {
+      signal: abortController.signal,
+    });
+    window.addEventListener('onChangeActiveExhibit', onChangeActiveExhibit, {
+      signal: abortController.signal,
+    });
     if (!isDesktop) {
-      window.addEventListener('touchstart', defineSwipeDirection);
-      window.addEventListener('touchmove', (event) => {
-        onCameraPositionUpdate(event, defineSwipeDirection(event));
+      window.addEventListener('touchstart', defineSwipeDirection, {
+        signal: abortController.signal,
       });
+      window.addEventListener(
+        'touchmove',
+        (event) => {
+          onCameraPositionUpdate(event, defineSwipeDirection(event));
+        },
+        { signal: abortController.signal }
+      );
     }
 
     return () => {
-      window.removeEventListener('onChangeActiveRoom', changeActiveRoom);
-      window.removeEventListener(
-        'onExitFromDescription',
-        onExitFromDescription
-      );
-      window.removeEventListener(
-        'onChangeActiveExhibit',
-        onChangeActiveExhibit
-      );
-      if (!isDesktop) {
-        window.removeEventListener('touchstart', defineSwipeDirection);
-        window.removeEventListener('touchmove', (event) => {
-          onCameraPositionUpdate(event, defineSwipeDirection(event));
-        });
-      }
+      abortController.abort();
     };
   }, [exhibitActive, tutorialOpen]);
 

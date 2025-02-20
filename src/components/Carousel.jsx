@@ -1,11 +1,48 @@
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
 import { Autoplay, Pagination, Navigation, EffectFade } from 'swiper/modules';
+import { ArrowNav } from 'src/icons/ArrowNav';
+import { useState } from 'react';
 import 'swiper/scss';
 import 'swiper/scss/pagination';
 import 'swiper/scss/navigation';
 import cn from 'classnames';
 
 import 'swiper/css/effect-fade';
+
+export const CarouselNavigation = () => {
+  const swiper = useSwiper();
+  const [swiperPosition, setSwiperPosition] = useState('start');
+  const carouselClassNames = cn('carousel__navigation', {
+    [`carousel__navigation--${swiperPosition}`]: swiperPosition,
+  });
+
+  if (!swiper) return null;
+
+  return (
+    <div className={carouselClassNames}>
+      <button
+        disabled={!swiper?.allowSlidePrev}
+        onClick={() => {
+          swiper?.slidePrev();
+          if (swiper.isBeginning) setSwiperPosition('start');
+        }}
+        className="carousel__navigation-el carousel__navigation-el--prev"
+      >
+        <ArrowNav />
+      </button>
+      <button
+        disabled={swiper.isEnd}
+        onClick={() => {
+          swiper?.slideNext();
+          if (swiper.isEnd) setSwiperPosition('end');
+        }}
+        className="carousel__navigation-el carousel__navigation-el--next"
+      >
+        <ArrowNav />
+      </button>
+    </div>
+  );
+};
 
 export const Carousel = ({
   elements,
@@ -36,8 +73,8 @@ export const Carousel = ({
           //   bulletActiveClass: 'pagination-bullet--active',
         }
       }
-      allowTouchMove
-      grabCursor
+      allowTouchMove={false}
+      // grabCursor
       autoplay={
         props.autoplay && {
           delay: 4000,
@@ -45,6 +82,7 @@ export const Carousel = ({
         }
       }
     >
+      <CarouselNavigation />
       {children}
       {elements?.length > 0 &&
         elements?.map((element, i) => {

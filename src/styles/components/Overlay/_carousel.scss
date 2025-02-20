@@ -6,7 +6,7 @@
 .carousel__slide {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-end;
   height: calc(100% - 20px - 12px);
   overflow: hidden;
   background-color: $blue-100;
@@ -34,7 +34,7 @@
 
 .carousel__slide-img-wrap {
   position: relative;
-  height: calc(100% - 40px - 12px);
+  height: calc(100% - 40px);
 
   div {
     height: 100%;
@@ -60,5 +60,57 @@
 
   &-active {
     background-color: $blue-500;
+  }
+}
+
+.carousel__navigation {
+  position: fixed;
+  top: 50%;
+  left: 20px;
+  z-index: 5;
+  display: flex;
+  justify-content: space-between;
+  width: calc(100% - 40px);
+  transform: translateY(-50%);
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    color: $blue-500;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s;
+
+    svg {
+      width: 7px;
+      height: 13px;
+    }
+
+    &:last-child {
+      rotate: 180deg;
+    }
+  }
+
+  &--start {
+    button {
+      &:first-child {
+        color: $blue-50;
+        pointer-events: none;
+      }
+    }
+  }
+
+  &--end {
+    button {
+      &:last-child {
+        color: $blue-50;
+        pointer-events: none;
+      }
+    }
   }
 }
