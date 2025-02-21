@@ -58,7 +58,7 @@ html {
   border-radius: 10px;
 }
 
-.favicon {
+link[rel='icon'] {
   @media (prefers-color-scheme: light) {
     path {
       fill: $blue-500;

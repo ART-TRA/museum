@@ -45,4 +45,15 @@
   border: none;
   border-radius: 50%;
   cursor: pointer;
+  transition: 0.3s;
+
+  @include media-breakpoint-up(desktop) {
+    &:hover {
+      transform: rotate(90deg);
+
+      svg {
+        color: $blue-300;
+      }
+    }
+  }
 }
