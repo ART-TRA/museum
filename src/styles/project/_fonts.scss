@@ -12,12 +12,12 @@ $fontFormatsAmaticSC: (
 $fontFamilyAmaticSC: 'AmaticSC', sans-serif;
 
 @include font-face(
-    'AmaticSC',
-    AmaticSC,
-    $fontVariantsAmaticSC,
-    $fontFormatsAmaticSC,
-    true,
-    true
+  'AmaticSC',
+  AmaticSC,
+  $fontVariantsAmaticSC,
+  $fontFormatsAmaticSC,
+  true,
+  true
 );
 
 $fontVariantsInter: (
@@ -33,10 +33,10 @@ $fontFormatsInter: (
 $fontFamilyInter: 'Inter', sans-serif;
 
 @include font-face(
-    'Inter',
-    Inter,
-    $fontVariantsInter,
-    $fontFormatsInter,
-    true,
-    true
+  'Inter',
+  Inter,
+  $fontVariantsInter,
+  $fontFormatsInter,
+  true,
+  true
 );
